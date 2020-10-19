@@ -135,14 +135,24 @@
 					</p:submenu>
 
 					<p:submenu label="Venta">
+						<p:menuitem value="Venta" icon="fa fa-fw fa-bar-chart-o"
+							title="Ver estadisticas ventas"
+							action="/pages/admi/sale/index?faces-redirect=true" />
+						<p:menuitem value="Registrar" icon="fa fa-fw fa-cart-plus"
+							title="Registrar Venta" actionListener="#{venta.initRenderizarTablaProductos()}"
+							action="/pages/admi/sale/register?faces-redirect=true" />
+						<p:menuitem value="Historial" icon="fa fa-fw fa-clipboard"
+							title="Historial ventas"
+							action="/pages/admi/sale/all?faces-redirect=true" />
 					</p:submenu>
 
 					<p:submenu label="Catalogo Producto">
 					</p:submenu>
 
 					<p:submenu label="Perfil">
-						<p:menuitem value="Perfil" icon="fa fa-fw fa-id-card-alt" actionListener="#{usuario.obtenerUsuario()}" 
-							title="Ver perfil" action="/pages/admi/profile/profile?faces-redirect=true" />
+						<p:menuitem value="Perfil" icon="fa fa-fw fa-id-card-alt"
+							actionListener="#{usuario.obtenerUsuario()}" title="Ver perfil"
+							action="/pages/admi/profile/profile?faces-redirect=true" />
 					</p:submenu>
 
 					<p:submenu label="Empresa">

@@ -19,9 +19,9 @@ $project:(
             ),
         ),
     ), 
-	"color":(
-		"body": (#FFFFFF, #34332F),    
-        "primary": (#305297, #FFFFFF),  
+	"color":( 
+		"body": (#FFFFFF, #34332F),     
+        "primary": (#305297, #FFFFFF),   
 		"error":(getMap($color, ("red", "base"))),
 		"info": (getMap($color, ("yellow", "base"))),
 		"succes": (getMap($color, ("green", "base"))),

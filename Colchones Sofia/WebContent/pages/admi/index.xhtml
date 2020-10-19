@@ -1,14 +1,13 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<!--          -->
-<!-- TEMPLATE -->
-<!--          -->
-<ui:composition template="../../template/template-admi.xhtml"
-	xmlns="http://www.w3.org/1999/xhtml"
+<html xmlns="http://www.w3.org/1999/xhtml"
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:p="http://primefaces.org/ui">
-
+<!--          -->
+<!-- TEMPLATE -->
+<!--          -->
+<ui:composition template="../../template/template-admi.xhtml">
 	<!--         -->
 	<!-- SECTION -->
 	<!--         -->
@@ -317,8 +316,9 @@
 								styleClass="p-d-flex p-jc-center p-ac-center p-flex-column">
 								<h:outputLabel value="#{u.persona.nombre} #{u.persona.apellido}"
 									styleClass="p-text-center p-mb-2" />
-									
-								<h:panelGroup layout="block" styleClass="p-d-flex p-jc-between p-ac-center">
+
+								<h:panelGroup layout="block"
+									styleClass="p-d-flex p-jc-between p-ac-center">
 									<h:outputLabel value="#{u.persona.tipoDocumento.nombre}:" />
 									<h:outputText value="#{u.persona.documento}"
 										styleClass="p-text-center p-p-1 #{u.estado ? 'sofia-statu-succes' : 'sofia-statu-error'} " />
@@ -371,3 +371,4 @@
 		</h:panelGroup>
 	</ui:define>
 </ui:composition>
+</html>

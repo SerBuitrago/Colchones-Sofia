@@ -1,0 +1,263 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui">
+
+<!--          -->
+<!-- TEMPLATE -->
+<!--          -->
+<ui:composition
+	template="../../../template/advanced/template-advaced-admi.xhtml">
+
+	<!--       -->
+	<!-- TITLE -->
+	<!--       -->
+	<ui:define name="title-advaced">
+			| Venta | Registrar
+	</ui:define>
+
+	<!--       -->
+	<!-- STATU -->
+	<!--       -->
+	<ui:define name="component-statu-advaced">
+		<p:menuitem value="Home" url="../index.xhtml" />
+		<p:menuitem value="Venta" url="index.xhtml" disabled="none" />
+		<p:menuitem value="Registrar" url="register.xhtml" disabled="none" />
+	</ui:define>
+
+	<!--       -->
+	<!-- TITLE -->
+	<!--       -->
+	<ui:define name="component-title-img-advaced">
+		<h:graphicImage library="img" name="all/sale.jpg"
+			styleClass="sofia-image-80 sofia-image-dark" />
+	</ui:define>
+	<ui:define name="component-title-h1-advaced">Venta</ui:define>
+	<ui:define name="component-title-h2-advaced">Registrar</ui:define>
+
+	<!--         -->
+	<!-- SECTION -->
+	<!--         -->
+	<ui:define name="component-other-advaced">
+		<p:fieldset legend="Registrar" toggleable="true" toggleSpeed="500">
+			<!-- TITLE -->
+			<h1 class="sofia-title p-my-4 p-mb-6">Registrar Venta</h1>
+
+			<!--        -->
+			<!-- CLIENT -->
+			<!--        -->
+			<p:panel header="Información Persona">
+				<!--        -->
+				<!-- FILTER -->
+				<!--        -->
+				<h:panelGroup layout="block"
+					styleClass="p-grid p-jc-between p-col-12 p-mt-4">
+					<!--        -->
+					<!-- CLIENT -->
+					<!--        -->
+					<h:panelGroup layout="block" styleClass="p-field p-col-12 p-md-3">
+						<p:outputLabel for="filtro-cliente" value="Filtar Persona:" />
+						<p:selectOneMenu id="filtro-cliente" filter="true"
+							value="#{venta.venta.cliente.documento}">
+							<p:ajax listener="#{venta.filtrarCliente()}"
+								update="@(.sofia-container-main-update)" />
+							<f:selectItem itemValue="" itemLabel="Seleccionar Cliente" />
+							<f:selectItems value="#{selection.personas}"
+								noSelectionOption="true" />
+						</p:selectOneMenu>
+					</h:panelGroup>
+				</h:panelGroup>
+
+				<!--             -->
+				<!-- INFORMATION -->
+				<!--             -->
+				<h:panelGroup layout="block"
+					styleClass="ui-fluid p-formgrid p-grid p-mt-2 p-jc-between">
+
+					<!--      -->
+					<!-- TYPE -->
+					<!--      -->
+					<h:panelGroup layout="block" styleClass="p-field p-col p-md-4">
+						<p:outputLabel for="cliente-tipo-documento"
+							value="Tipo Documento:" />
+						<p:selectOneMenu id="cliente-tipo-documento" filter="true"
+							disabled="#{venta.hidden}"
+							value="#{venta.venta.cliente.persona.tipoDocumento.nombre}">
+							<f:selectItem
+								itemValue="#{venta.venta.cliente.persona.tipoDocumento.nombre}"
+								itemLabel="Seleccionado #{venta.venta.cliente.persona.tipoDocumento.nombre}" />
+							<f:selectItems value="#{selection.documentos}"
+								noSelectionOption="true" />
+						</p:selectOneMenu>
+					</h:panelGroup>
+
+					<!--    -->
+					<!-- ID -->
+					<!--    -->
+					<h:panelGroup layout="block" styleClass="p-field p-col p-md-4">
+						<p:outputLabel for="cliente-documento" value="Documento:" />
+						<p:inputText id="cliente-documento" disabled="#{venta.hidden}"
+							value="#{venta.venta.cliente.persona.documento}" />
+					</h:panelGroup>
+				</h:panelGroup>
+
+				<h:panelGroup layout="block" styleClass="ui-fluid p-formgrid p-grid">
+
+					<!--      -->
+					<!-- NAME -->
+					<!--      -->
+					<h:panelGroup layout="block" styleClass="p-field p-col">
+						<p:outputLabel for="cliente-nombre" value="Nombre:" />
+						<p:inputText id="cliente-nombre" disabled="#{venta.hidden}"
+							value="#{venta.venta.cliente.persona.nombre}" />
+					</h:panelGroup>
+
+					<!--         -->
+					<!-- SURNAME -->
+					<!--         -->
+					<h:panelGroup layout="block" styleClass="p-field p-col">
+						<p:outputLabel for="cliente-apellido" value="Apellido:" />
+						<p:inputText id="cliente-apellido" disabled="#{venta.hidden}"
+							value="#{venta.venta.cliente.persona.apellido}" />
+					</h:panelGroup>
+				</h:panelGroup>
+
+				<h:panelGroup layout="block" styleClass="ui-fluid p-formgrid p-grid">
+
+					<!--      -->
+					<!-- EMAIL -->
+					<!--      -->
+					<h:panelGroup layout="block" styleClass="p-field p-col">
+						<p:outputLabel for="cliente-email" value="Email:" />
+						<p:inputText id="cliente-email" disabled="#{venta.hidden}"
+							value="#{venta.venta.cliente.persona.email}" />
+					</h:panelGroup>
+
+					<!--       -->
+					<!-- PHONE -->
+					<!--       -->
+					<h:panelGroup layout="block" styleClass="p-field p-col p-md-4">
+						<p:outputLabel for="cliente-telefono" value="Telefono:" />
+						<p:inputText id="cliente-telefono" disabled="#{venta.hidden}"
+							value="#{venta.venta.cliente.persona.telefono}" />
+					</h:panelGroup>
+				</h:panelGroup>
+			</p:panel>
+
+			<!--          -->
+			<!-- PRODUCTS -->
+			<!--          -->
+			<p:panel header="Productos" styleClass="p-mt-3">
+
+				<p:dataTable id="sofia-table-products" var="p"
+					value="#{venta.tabla_productos}"
+					paginatorTemplate="{CurrentPageReport} {RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} 
+								{CurrentPageReport} {NextPageLink} {LastPageLink} {Exporters}"
+					paginator="true" rows="20" rowIndexVar="index"
+					rowsPerPageTemplate="5,10,15,20,50,100"
+					selection="#{venta.tabla_productos_seleccionados}"
+					rowKey="#{p.idProducto}" sortBy="#{p.categoria.nombre}"
+					expandableRowGroups="true">
+
+					<f:facet name="header">
+						<h2>Productos</h2>
+					</f:facet>
+
+					<!--          -->
+					<!-- CATEGORY -->
+					<!--          -->
+					<p:headerRow>
+						<p:column colspan="4">
+							<h:outputText value="#{p.categoria.nombre}" />
+						</p:column>
+					</p:headerRow>
+
+					<!-- ID -->
+					<p:column selectionMode="multiple"
+						style="width:30px; text-align:center" />
+
+					<p:column headerText="Id">
+						<h:panelGroup layout="block"
+							styleClass="p-d-flex p-jc-center p-ac-center">
+							<h:outputText value="#{p.idProducto}" />
+						</h:panelGroup>
+					</p:column>
+
+					<!-- NAME -->
+					<p:column headerText="Nombre">
+						<h:panelGroup layout="block"
+							styleClass="p-d-flex p-jc-center p-ac-center">
+							<h:outputText value="#{p.nombre}" />
+						</h:panelGroup>
+					</p:column>
+
+					<!-- STOCK -->
+					<p:column headerText="Stock">
+						<h:panelGroup layout="block"
+							styleClass="p-d-flex p-jc-center p-ac-center">
+							<h:outputText value="#{p.stock}"
+								styleClass="#{(p.stock == 0) ? 'sofia-statu-error' : ((p.stock lt 5) ? 'sofia-statu-warn' : 'sofia-statu-succes') }
+													sofia-statu" />
+						</h:panelGroup>
+					</p:column>
+
+					<!--         -->
+					<!-- ACTIONS -->
+					<!--         -->
+					<f:facet name="footer">
+						<h:panelGroup layout="block"
+							styleClass="p-d-flex p-jc-between p-ac-center">
+
+							<!--     -->
+							<!-- ADD -->
+							<!--     -->
+							<p:commandButton title="Seleccionar productos"
+								icon="fa fa-fw fa-paper-plane"
+								action="#{venta.addProductosADetalleProductos()}"
+								styleClass="sofia-button-succes sofia-button-icon"
+								update="@(.sofia-container-main-update), @(.sofia-table-detail-products)" />
+
+							<!--         -->
+							<!-- UPDATE -->
+							<!--         -->
+							<p:commandButton type="button" icon="fa fa-fw fa-spinner"
+								title="Actualizar tabla productos"
+								styleClass="sofia-button-icon sofia-button-warn"
+								update="@(.sofia-container-main-update)"
+								action="#{venta.initRenderizarTablaProductos()}" />
+						</h:panelGroup>
+					</f:facet>
+				</p:dataTable>
+			</p:panel>
+
+			<!--                -->
+			<!-- PRODUCT DETAIL -->
+			<!--                -->
+			<p:panel
+				header="Detalles Producto#{venta.tabla_productos_seleccionados.size()>1 ? 's' : ''}"
+				styleClass="p-mt-3">
+
+				<p:dataTable id="sofia-table-detail-products" var="p"
+					styleClass="sofia-table-detail-products"
+					value="#{venta.tabla_detalle_producto}"
+					paginatorTemplate="{CurrentPageReport} {RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} 
+								{CurrentPageReport} {NextPageLink} {LastPageLink} {Exporters}"
+					paginator="true" rows="20" rowIndexVar="index"
+					rowsPerPageTemplate="5,10,15,20,50,100"
+					selection="#{venta.tabla_detalle_producto_seleccionados}"
+					rowKey="#{p.producto.idProducto}"
+					sortBy="#{p.producto.categoria.nombre}" expandableRowGroups="true">
+				</p:dataTable>
+			</p:panel>
+
+			<!--      -->
+			<!-- SALE -->
+			<!--      -->
+			<p:panel header="Venta" styleClass="p-mt-3">
+			</p:panel>
+		</p:fieldset>
+	</ui:define>
+</ui:composition>
+</html>
