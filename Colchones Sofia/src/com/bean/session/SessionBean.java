@@ -33,13 +33,13 @@ public class SessionBean implements Serializable {
 
 	private FacesMessage mensaje;   
    
-	private Validar usuario;
-	private String inicio, fin;
-	private int esperar;
-
-	private Usuario logeado;
 	private int intentos;
 	private String path;
+	private String inicio, fin;
+	private int esperar;   
+	
+	private Validar usuario;
+	private Usuario logeado;
 
 	///////////////////////////////////////////////////////
 	// Builders
@@ -74,7 +74,7 @@ public class SessionBean implements Serializable {
 		Fecha fecha = new Fecha();
 		if (this.logeado == null) {
 			if (this.intentos > 0) {
-				PersonaDao dao = new PersonaDao();
+				PersonaDao dao = new PersonaDao();   
 				Persona persona = dao.findByField("email", this.usuario.getEmail());
 				if (persona != null) {
 					UsuarioDao uDao = new UsuarioDao();
@@ -190,7 +190,7 @@ public class SessionBean implements Serializable {
 		FacesContext.getCurrentInstance().addMessage(null, message);
 		return "login";
 	}
-
+	
 	///////////////////////////////////////////////////////
 	// Direction
 	///////////////////////////////////////////////////////

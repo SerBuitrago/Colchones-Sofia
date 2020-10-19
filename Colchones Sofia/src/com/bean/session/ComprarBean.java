@@ -135,7 +135,7 @@ public class ComprarBean implements Serializable {
 			this.message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error",
 					"No has seleccionado ningun producto.");
 		}
-		FacesContext.getCurrentInstance().addMessage(null, this.message);
+		FacesContext.getCurrentInstance().addMessage(null, this.message);   
 	}
 
 	/**

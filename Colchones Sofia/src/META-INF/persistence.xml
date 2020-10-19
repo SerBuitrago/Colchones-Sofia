@@ -5,9 +5,7 @@
 	xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence http://xmlns.jcp.org/xml/ns/persistence/persistence_2_1.xsd">
         
 	<persistence-unit name="colchones">
-		<!--        --> 
-		<!-- Tables -->
-		<!--        -->
+		<class>com.entity.Carrusel</class>
 		<class>com.entity.Categoria</class>
 		<class>com.entity.Cliente</class>
 		<class>com.entity.Compra</class>
@@ -18,7 +16,7 @@
 		<class>com.entity.Email</class>
 		<class>com.entity.EstadoVenta</class>
 		<class>com.entity.Global</class>
-		<class>com.entity.Informacion</class>
+		<class>com.entity.HistorialPresupuesto</class>
 		<class>com.entity.Persona</class>
 		<class>com.entity.Producto</class>
 		<class>com.entity.Proveedor</class>
@@ -31,6 +29,9 @@
 		<class>com.entity.Usuario</class>
 		<class>com.entity.Vendedor</class>
 		<class>com.entity.Venta</class>
+		<!--        --> 
+		<!-- Tables -->
+		<!--        -->
 		
 		<!--            -->
 		<!-- Properties -->

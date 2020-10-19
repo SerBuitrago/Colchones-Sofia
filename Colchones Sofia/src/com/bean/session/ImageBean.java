@@ -44,12 +44,14 @@ public class ImageBean implements Serializable {
 	private StreamedContent stream;
 	private StreamedContent logo;
 	private StreamedContent carrousel;
-	
+	private StreamedContent perfil;
+
 	private StreamedContent vendedor;
 	private StreamedContent proveedor;
 	private StreamedContent usuario;
 	
-	
+	private boolean error;
+
 	///////////////////////////////////////////////////////
 	// Managed Bean
 	///////////////////////////////////////////////////////
@@ -68,6 +70,7 @@ public class ImageBean implements Serializable {
 	@PostConstruct
 	public void init() {
 		this.image = null;
+		this.error = true;
 	}
 
 	///////////////////////////////////////////////////////
@@ -144,39 +147,86 @@ public class ImageBean implements Serializable {
 	 * 
 	 * @param event representa la imagen.
 	 */
-	@SuppressWarnings("unused")
 	public void uploadImage(FileUploadEvent event) {
-		UploadedFile image = event.getFile();
-		boolean cambiar = false;
-		byte aux[] = null;
-		if (this.image != null) {
-			cambiar = true;
-			aux = this.image;
+		FacesContext.getCurrentInstance().addMessage(null, uploadImage(event.getFile()));
+	}
+
+	/**
+	 * Metodo que prepara la imagen.
+	 * 
+	 * @param file representa la imagen.
+	 */
+	public FacesMessage uploadImage(UploadedFile file) {
+		this.error = true;
+		FacesMessage message = validarArchivo(file, "([^\\s]+(\\.(?i)(jpg|jpeg|png|PNG|JPG|JPEG))$)", 100000,
+				"imagen");
+		if (message == null) {
+			
+			boolean cambiar = false;
+			byte aux[] = null;
+			if (this.image != null) {
+				cambiar = true;
+				aux = this.image;
+			}
+		
+			this.image = null;
+			try {
+				this.image = this.leer(file.getInputStream());
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			
+			if (this.image != null && cambiar) {
+				message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Success",
+						file.getFileName() + ", se ha cambiado la foto.");
+				this.error = false;
+			} else if (this.image != null && !cambiar) {
+				message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Success",
+						file.getFileName() + ", foto valida (tamaño " + this.image.length + ").");
+				this.error = false;
+			} else if (this.image == null && cambiar) {
+				message = new FacesMessage(FacesMessage.SEVERITY_WARN, "Warn", "No se ha cambiado la foto.");
+				if (aux != null && aux.length > 0) {
+					FacesContext.getCurrentInstance().addMessage(null, message);
+					message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Success", "Se ha dejado la foto anterior.");
+					this.image = aux;
+				}
+			} else {
+				message = new FacesMessage(FacesMessage.SEVERITY_WARN, "Warn", "No has seleccionado ninguna imagen.");
+			}
 		}
-		this.image = null;
-		try {
-			this.image = this.leer(image.getInputStream());
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		return message;
+	}
+
+	///////////////////////////////////////////////////////
+	// Validator
+	///////////////////////////////////////////////////////
+	/**
+	 * Metodo que permite validar un archivo.
+	 * 
+	 * @param file       representa el archivo.
+	 * @param expression representa la expresión.
+	 * @param size       representa el tamaño maximo.
+	 * @param type       representa el tipo de archivo.
+	 * @return el error obtenido.
+	 */
+	public FacesMessage validarArchivo(UploadedFile file, String expression, long size, String type) {
 		FacesMessage message = null;
-		if (image != null && cambiar) {
-			message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Success",
-					event.getFile().getFileName() + ", se ha cambiado la foto.");
-		} else if (image != null && !cambiar) {
-			message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Success",
-					event.getFile().getFileName() + ", foto valida (tamaño " + this.image.length + ").");
-		} else if (image == null && cambiar) {
-			message = new FacesMessage(FacesMessage.SEVERITY_WARN, "Warn", "No se ha cambiado la foto.");
-			if (aux != null && aux.length > 0) {
-				FacesContext.getCurrentInstance().addMessage(null, message);
-				message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Success", "Se ha dejado la foto anterior.");
-				this.image = aux;
+		if (file != null) {
+			if ((file.getFileName().matches(expression))) {
+				if (file.getSize() <= size) {
+				} else {
+					message = new FacesMessage(FacesMessage.SEVERITY_WARN, "Warn", "La " + type + " "
+							+ file.getFileName() + " es demasiado grande el tamaño maximo es " + size + ".");
+				}
+			} else {
+				message = new FacesMessage(FacesMessage.SEVERITY_WARN, "Warn",
+						"El archivo " + file.getFileName() + " no es una imagen.");
 			}
 		} else {
-			message = new FacesMessage(FacesMessage.SEVERITY_WARN, "Warn", "No has seleccionado ninguna imagen.");
+			message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "No has seleccionado ninguna imagen.");
 		}
-		FacesContext.getCurrentInstance().addMessage(null, message);
+		return message;
 	}
 
 	///////////////////////////////////////////////////////
@@ -238,7 +288,7 @@ public class ImageBean implements Serializable {
 		}
 		return vendedor;
 	}
-	
+
 	/**
 	 * Metodo que permite traer la imagen del proveedor.
 	 * 
@@ -252,19 +302,18 @@ public class ImageBean implements Serializable {
 		else {
 			int id = Integer.parseInt(Face.get("id-proveedor"));
 			if (id >= 0) {
-				ProveedorDao dao= new ProveedorDao();
-				Proveedor p= dao.find(id);
-				if(p!= null && p.getFoto() != null) {
-					this.proveedor = new DefaultStreamedContent(
-							new ByteArrayInputStream(p.getFoto()), "image/png");
-				}else {
+				ProveedorDao dao = new ProveedorDao();
+				Proveedor p = dao.find(id);
+				if (p != null && p.getFoto() != null) {
+					this.proveedor = new DefaultStreamedContent(new ByteArrayInputStream(p.getFoto()), "image/png");
+				} else {
 					this.proveedor = null;
 				}
 			}
 		}
 		return proveedor;
 	}
-	
+
 	/**
 	 * Metodo que permite traer la imagen del usuario.
 	 * 
@@ -278,11 +327,11 @@ public class ImageBean implements Serializable {
 		else {
 			int id = Integer.parseInt(Face.get("documento-usuario"));
 			if (id >= 0) {
-				UsuarioDao dao= new UsuarioDao();
-				Usuario u= dao.find(id);
-				if(u!= null && u.getFoto() != null) {
+				UsuarioDao dao = new UsuarioDao();
+				Usuario u = dao.find(id);
+				if (u != null && u.getFoto() != null) {
 					this.usuario = new DefaultStreamedContent(new ByteArrayInputStream(u.getFoto()), "image/png");
-				}else {
+				} else {
 					this.usuario = null;
 				}
 			}
@@ -295,6 +344,14 @@ public class ImageBean implements Serializable {
 	///////////////////////////////////////////////////////
 	public FacesMessage getMensaje() {
 		return mensaje;
+	}
+
+	public boolean isError() {
+		return error;
+	}
+
+	public void setError(boolean error) {
+		this.error = error;
 	}
 
 	public void setVendedor(StreamedContent vendedor) {
@@ -319,6 +376,14 @@ public class ImageBean implements Serializable {
 
 	public StreamedContent getStream() {
 		return stream;
+	}
+
+	public StreamedContent getPerfil() {
+		return perfil;
+	}
+
+	public void setPerfil(StreamedContent perfil) {
+		this.perfil = perfil;
 	}
 
 	public void setStream(StreamedContent stream) {
