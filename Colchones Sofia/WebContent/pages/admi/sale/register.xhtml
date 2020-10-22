@@ -149,10 +149,11 @@
 			<!--          -->
 			<!-- PRODUCTS -->
 			<!--          -->
-			<p:panel header="Productos" styleClass="p-mt-3">
+			<p:panel header="Productos" styleClass="p-mt-3"
+				rendered="#{venta.hidden_tablas == false}">
 
 				<p:dataTable id="sofia-table-products" var="p"
-					value="#{venta.tabla_productos}"
+					styleClass="sofia-table-products" value="#{venta.tabla_productos}"
 					paginatorTemplate="{CurrentPageReport} {RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} 
 								{CurrentPageReport} {NextPageLink} {LastPageLink} {Exporters}"
 					paginator="true" rows="20" rowIndexVar="index"
@@ -213,7 +214,7 @@
 							<!--     -->
 							<!-- ADD -->
 							<!--     -->
-							<p:commandButton title="Seleccionar productos"
+							<p:commandButton title="Seleccionar Productos"
 								icon="fa fa-fw fa-paper-plane"
 								action="#{venta.addProductosADetalleProductos()}"
 								styleClass="sofia-button-succes sofia-button-icon"
@@ -222,11 +223,12 @@
 							<!--         -->
 							<!-- UPDATE -->
 							<!--         -->
-							<p:commandButton type="button" icon="fa fa-fw fa-spinner"
-								title="Actualizar tabla productos"
-								styleClass="sofia-button-icon sofia-button-warn"
-								update="@(.sofia-container-main-update)"
-								action="#{venta.initRenderizarTablaProductos()}" />
+							<p:commandButton title="Actualizar Tabla"
+								icon="fa fa-fw fa-fw fa-spinner"
+								action="#{venta.regresarTabla()}"
+								styleClass="sofia-button-warn sofia-button-icon"
+								update="@(.sofia-container-main-update), @(.sofia-table-products)" />
+
 						</h:panelGroup>
 					</f:facet>
 				</p:dataTable>
@@ -236,8 +238,9 @@
 			<!-- PRODUCT DETAIL -->
 			<!--                -->
 			<p:panel
-				header="Detalles Producto#{venta.tabla_productos_seleccionados.size()>1 ? 's' : ''}"
-				styleClass="p-mt-3">
+				rendered="#{venta.tabla_productos_seleccionados.size() > 0 and venta.tabla_detalle_producto.size() > 0  and venta.hidden_tablas}"
+				header="Detalles Producto#{venta.tabla_productos_seleccionados.size() > 1 ? 's' : ''}"
+				styleClass="p-mt-3 p-mb-4">
 
 				<p:dataTable id="sofia-table-detail-products" var="p"
 					styleClass="sofia-table-detail-products"
@@ -247,15 +250,265 @@
 					paginator="true" rows="20" rowIndexVar="index"
 					rowsPerPageTemplate="5,10,15,20,50,100"
 					selection="#{venta.tabla_detalle_producto_seleccionados}"
-					rowKey="#{p.producto.idProducto}"
-					sortBy="#{p.producto.categoria.nombre}" expandableRowGroups="true">
+					rowKey="#{p.detalle.producto.idProducto}"
+					filteredValue="#{venta.tabla_filter_detalle_producto}"
+					emptyMessage="No se encontro ningun detalle producto."
+					sortBy="#{p.detalle.producto.nombre}" expandableRowGroups="true">
+
+					<f:facet name="header">
+						<h2>Detalles Productos</h2>
+					</f:facet>
+
+					<!--          -->
+					<!-- CATEGORY -->
+					<!--          -->
+					<p:headerRow>
+						<p:column colspan="8">
+							<h:outputText
+								value="#{p.detalle.producto.nombre} - #{p.detalle.producto.stock} U/D" />
+						</p:column>
+					</p:headerRow>
+
+					<!-- ID -->
+					<p:column selectionMode="multiple"
+						style="width:30px; text-align:center" />
+
+					<!-- IMAGE -->
+					<p:column headerText="Foto">
+						<h:panelGroup layout="block"
+							styleClass="p-d-flex p-jc-center p-ac-center">
+							<h:panelGroup layout="block"
+								styleClass="sofia-container-img-small">
+								<h:graphicImage rendered="#{p.detalle.foto == null}"
+									library="img" name="product.png"
+									styleClass="sofia-container-img-small-img" />
+
+								<p:graphicImage rendered="#{p.detalle.foto != null}"
+									styleClass="sofia-container-img-small-img"
+									value="#{image.detalle_producto}">
+									<f:param name="id-detalle-producto" value="#{p.detalle.id}" />
+								</p:graphicImage>
+							</h:panelGroup>
+						</h:panelGroup>
+					</p:column>
+
+					<!-- COLOR -->
+					<p:column headerText="Color" filterBy="#{p.detalle.color}">
+						<h:panelGroup layout="block"
+							styleClass="p-d-flex p-jc-center p-ac-center">
+							<h:outputText value="#{p.detalle.color}" />
+						</h:panelGroup>
+					</p:column>
+
+					<!-- DIMENSION -->
+					<p:column headerText="Dimensión">
+						<h:panelGroup layout="block"
+							styleClass="p-d-flex p-jc-end p-ac-center">
+							<h:outputText value="#{p.detalle.dimension}" />
+						</h:panelGroup>
+					</p:column>
+
+					<!-- STOCK -->
+					<p:column headerText="Stock" filterBy="#{p.detalle.stock}"
+						filterFunction="#{venta.filterByInteger}">
+						<h:panelGroup layout="block"
+							styleClass="p-d-flex p-jc-center p-ac-center">
+							<h:outputText value="#{p.detalle.stock}"
+								styleClass="#{(p.detalle.stock == 0) ? 'sofia-statu-error' : ((p.detalle.stock lt 5) ? 'sofia-statu-warn' : 'sofia-statu-succes') }
+													sofia-statu" />
+						</h:panelGroup>
+					</p:column>
+
+					<!-- QUANTITY -->
+					<p:column headerText="Cantidad">
+						<h:panelGroup layout="block"
+							styleClass="p-d-flex p-jc-end p-ac-center">
+							<p:spinner value="#{p.cantidad}" min="0" max="#{p.detalle.stock}"
+								rotate="true">
+							</p:spinner>
+						</h:panelGroup>
+					</p:column>
+
+					<!-- PRICE -->
+					<p:column headerText="Precio">
+						<h:panelGroup layout="block"
+							styleClass="p-d-flex p-jc-end p-ac-center">
+							<h:outputText value="$#{p.detalle.precioVenta}" />
+						</h:panelGroup>
+					</p:column>
+
+					<!-- DISCOUNT -->
+					<p:column headerText="Descuento">
+						<h:panelGroup layout="block"
+							styleClass="p-d-flex p-jc-end p-ac-center">
+							<h:outputText value="$#{p.detalle.descuento}"
+								styleClass="#{p.detalle.descuento == 0 ? 'sofia-statu-warn' : 'sofia-statu-succes'} sofia-statu" />
+						</h:panelGroup>
+					</p:column>
+
+					<!--         -->
+					<!-- ACTIONS -->
+					<!--         -->
+					<f:facet name="footer">
+						<h:panelGroup layout="block"
+							styleClass="p-d-flex p-jc-between p-ac-center">
+
+							<!--       -->
+							<!-- ANGLE -->
+							<!--       -->
+							<p:commandButton title="Seleccionar productos"
+								icon="fa fa-fw fa-fw fa-angle-double-left"
+								action="#{venta.regresarTabla()}"
+								styleClass="sofia-button-primary sofia-button-icon"
+								update="@(.sofia-container-main-update), @(.sofia-table-detail-products)" />
+
+							<!--     -->
+							<!-- ADD -->
+							<!--     -->
+							<p:commandButton title="Agregar Productos"
+								icon="fa fa-fw fa-fw fa-paper-plane"
+								action="#{venta.addDetallesProductos()}"
+								styleClass="sofia-button-succes sofia-button-icon"
+								update="@(.sofia-container-main-update), @(.sofia-table-detail-products)" />
+
+							<!--         -->
+							<!-- UPDATE -->
+							<!--         -->
+							<p:commandButton title="Actualizar tabla"
+								icon="fa fa-fw fa-fw fa-spinner"
+								action="#{venta.addProductosADetalleProductos()}"
+								styleClass="sofia-button-warn sofia-button-icon"
+								update="@(.sofia-container-main-update), @(.sofia-table-detail-products)" />
+						</h:panelGroup>
+					</f:facet>
 				</p:dataTable>
 			</p:panel>
+
 
 			<!--      -->
 			<!-- SALE -->
 			<!--      -->
-			<p:panel header="Venta" styleClass="p-mt-3">
+			<h:outputLabel styleClass="sofia-title p-mt-6 p-mb-5"
+				value="Productos Seleccionados"
+				rendered="#{venta.productos_selecionados.size() > 0}" />
+
+			<p:panel header="Venta" styleClass="p-mt-3"
+				rendered="#{venta.productos_selecionados.size() > 0}">
+
+				<p:dataTable id="sofia-table-all-products" var="p"
+					styleClass="sofia-table-all-products"
+					value="#{venta.productos_selecionados}"
+					paginatorTemplate="{CurrentPageReport} {RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} 
+								{CurrentPageReport} {NextPageLink} {LastPageLink} {Exporters}"
+					paginator="true" rows="20" rowIndexVar="index"
+					rowsPerPageTemplate="5,10,15,20,50,100"
+					rowKey="#{p.detalle.producto.idProducto}"
+					sortBy="#{p.detalle.producto.nombre}" expandableRowGroups="true"
+					emptyMessage="No se encontro ningun producto.">
+
+					<f:facet name="header">
+						<h2>Detalles Productos</h2>
+					</f:facet>
+
+					<!--         -->
+					<!-- PRODUCT -->
+					<!--         -->
+					<p:headerRow>
+						<p:column colspan="3">
+							<h:outputText value="#{p.detalle.producto.nombre}" />
+						</p:column>
+					</p:headerRow>
+
+					<!-- IMAGE -->
+					<p:column headerText="Detalle Producto">
+						<h:panelGroup layout="block"
+							styleClass="p-d-flex p-jc-between p-ac-center">
+							<h:panelGroup layout="block"
+								styleClass="sofia-container-img-small">
+								<h:graphicImage rendered="#{p.detalle.foto == null}"
+									library="img" name="product.png"
+									styleClass="sofia-container-img-small-img" />
+
+								<p:graphicImage rendered="#{p.detalle.foto != null}"
+									styleClass="sofia-container-img-small-img"
+									value="#{image.detalle_producto}">
+									<f:param name="id-detalle-producto" value="#{p.detalle.id}" />
+								</p:graphicImage>
+							</h:panelGroup>
+
+							<h:outputLabel value="#{p.detalle.id}" styleClass="p-as-center" />
+						</h:panelGroup>
+					</p:column>
+
+					<!-- COLOR -->
+					<p:column headerText="Cantidad">
+						<h:panelGroup layout="block"
+							styleClass="p-d-flex p-jc-center p-ac-center ">
+							<h:outputText value="#{p.cantidad}" />
+						</h:panelGroup>
+					</p:column>
+
+					<!-- SUBTOTAL -->
+					<p:column headerText="SubTotal">
+						<h:panelGroup layout="block"
+							styleClass="p-d-flex p-jc-end p-ac-center ">
+							<h:outputText value="$#{venta.subTotal(p.detalle.id)}" />
+						</h:panelGroup>
+					</p:column>
+
+					<!--        -->
+					<!-- FOOTER -->
+					<!--        -->
+					<p:columnGroup type="footer">
+						<!--       -->
+						<!-- TOTAL -->
+						<!--       -->
+						<p:row>
+							<p:column colspan="2" footerText="Total:"
+								styleClass="p-text-right" />
+							<p:column footerText="$#{venta.total()}"
+								styleClass="p-text-right" />
+						</p:row>
+					</p:columnGroup>
+
+					<!--         -->
+					<!-- ACTIONS -->
+					<!--         -->
+					<f:facet name="footer">
+						<h:panelGroup layout="block"
+							styleClass="p-d-flex p-jc-between p-ac-center">
+
+							<!--     -->
+							<!-- ADD -->
+							<!--     -->
+							<p:commandButton title="Agregar Productos"
+								icon="fa fa-fw fa-fw fa-paper-plane"
+								styleClass="sofia-button-succes sofia-button-icon"
+								oncomplete="PF('sofia-table-all-products').clearFilters()"
+								update="@(.sofia-container-main-update), @(.sofia-table-all-products)" />
+
+							<!--        -->
+							<!-- REMOVE -->
+							<!--        -->
+							<p:commandButton title="Agregar Productos"
+								icon="fa fa-fw fa-fw fa-trash"
+								action="#{venta.removeDetallesProductos()}"
+								styleClass="sofia-button-error sofia-button-icon"
+								oncomplete="PF('sofia-table-all-products').clearFilters()"
+								update="@(.sofia-container-main-update), @(.sofia-table-all-products)" />
+
+							<!--         -->
+							<!-- UPDATE -->
+							<!--         -->
+							<p:commandButton title="Actualizar tabla"
+								icon="fa fa-fw fa-fw fa-spinner"
+								action="#{venta.recargarDetallesProductos()}"
+								styleClass="sofia-button-warn sofia-button-icon"
+								oncomplete="PF('sofia-table-all-products').clearFilters()"
+								update="@(.sofia-container-main-update), @(.sofia-table-all-products)" />
+						</h:panelGroup>
+					</f:facet>
+				</p:dataTable>
 			</p:panel>
 		</p:fieldset>
 	</ui:define>

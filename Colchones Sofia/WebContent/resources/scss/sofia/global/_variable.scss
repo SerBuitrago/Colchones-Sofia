@@ -103,6 +103,22 @@ $default:(
 			
 		),
 		//############################################
+		//# NAVBAR 
+		//############################################
+		"navbar":(
+			"all":(
+				"generic":(
+					"color": (
+						"primary": getMap($project, ("color", "primary")),
+						"icon": getMap($color, ("white", "darken-2")),
+						"link": getMap($color, ("white", "base")),
+						"other": getMap($color, ("black", "base")),
+					),
+					"dimension":(18.125em, 100vh),
+				),
+			),
+		),
+		//############################################
 		//# EFFECT 
 		//############################################
 		"effect":(
