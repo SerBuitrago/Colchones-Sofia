@@ -49,6 +49,8 @@ public class ImageBean implements Serializable {
 	private StreamedContent vendedor;
 	private StreamedContent proveedor;
 	private StreamedContent usuario;
+	private StreamedContent persona;
+	private StreamedContent detalle_producto;
 	
 	private boolean error;
 
@@ -313,6 +315,31 @@ public class ImageBean implements Serializable {
 		}
 		return proveedor;
 	}
+	
+	/**
+	 * Metodo que permite traer la imagen del Detalle Producto.
+	 * 
+	 * @return representa la imagen del detalle producto.
+	 */
+	@SuppressWarnings("deprecation")
+	public StreamedContent getDetalle_producto() {
+		FacesContext context = FacesContext.getCurrentInstance();
+		if (context.getCurrentPhaseId() == PhaseId.RENDER_RESPONSE)
+			this.detalle_producto = new DefaultStreamedContent();
+		else {
+			int id = Integer.parseInt(Face.get("id-detalle-producto"));
+			if (id >= 0) {
+				DetalleProductoDao dao= new DetalleProductoDao();
+				DetalleProducto detalle= dao.find(id);
+				if (detalle != null && detalle.getFoto() != null) {
+					this.detalle_producto = new DefaultStreamedContent(new ByteArrayInputStream(detalle.getFoto()), "image/png"); 
+				} else {
+					this.detalle_producto = null;
+				}
+			}
+		}
+		return detalle_producto;
+	}
 
 	/**
 	 * Metodo que permite traer la imagen del usuario.
@@ -337,6 +364,31 @@ public class ImageBean implements Serializable {
 			}
 		}
 		return usuario;
+	}
+	
+	/**
+	 * Metodo que permite traer la imagen de una persona.
+	 * 
+	 * @return representa la imagen de la persona.
+	 */
+	@SuppressWarnings("deprecation")
+	public StreamedContent getPersona() {
+		FacesContext context = FacesContext.getCurrentInstance();
+		if (context.getCurrentPhaseId() == PhaseId.RENDER_RESPONSE)
+			this.persona = new DefaultStreamedContent();
+		else {
+			int id = Integer.parseInt(Face.get("documento-persona"));
+			if (id >= 0) {
+				PersonaDao dao = new PersonaDao();
+				Persona p = dao.find(id);
+				if (p != null && p.getFoto() != null) {
+					this.persona = new DefaultStreamedContent(new ByteArrayInputStream(p.getFoto()), "image/png");
+				} else {
+					this.persona = null;
+				}
+			}
+		}
+		return persona;
 	}
 
 	///////////////////////////////////////////////////////
@@ -412,5 +464,13 @@ public class ImageBean implements Serializable {
 
 	public void setUsuario(StreamedContent usuario) {
 		this.usuario = usuario;
+	}
+
+	public void setDetalle_producto(StreamedContent detalle_producto) {
+		this.detalle_producto = detalle_producto;
+	}
+
+	public void setPersona(StreamedContent persona) {
+		this.persona = persona;
 	}
 }

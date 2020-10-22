@@ -1,6 +1,7 @@
 package com.entity.other;
 
 import java.io.Serializable;
+import java.util.Locale;
 
 /**
  * Implementation Convertidor.
@@ -12,20 +13,21 @@ import java.io.Serializable;
  */
 public class Convertidor implements Serializable {
 	private static final long serialVersionUID = 1L;
-	
+
 	///////////////////////////////////////////////////////
 	// Builder
 	///////////////////////////////////////////////////////
-	public Convertidor() {	
+	public Convertidor() {
 	}
-	
+
 	///////////////////////////////////////////////////////
 	// Method
 	///////////////////////////////////////////////////////
 	/**
 	 * Metodo que retorna el genero de una persona.
+	 * 
 	 * @param nombre representa el genero.
-	 * @return  el nombre del genero.
+	 * @return el nombre del genero.
 	 */
 	public static String genero(String genero) {
 		String aux = "";
@@ -42,18 +44,51 @@ public class Convertidor implements Serializable {
 		}
 		return aux;
 	}
-	
+
 	/**
 	 * Metodo que permite convertir un numero a cadena.
+	 * 
 	 * @param telefono representa el numero.
 	 * @return la cadena resultante.
 	 */
 	public static String telefono(String telefono) {
-		String aux =  null;
-		if(telefono != null && telefono.length() > 0) {
-			aux=telefono.replace("-", "");
+		String aux = null;
+		if (telefono != null && telefono.length() > 0) {
+			aux = telefono.replace("-", "");
 		}
 		return aux;
+	}
+
+	/**
+	 * 
+	 * @param value
+	 * @param filter
+	 * @param locale
+	 * @return
+	 */
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	public static boolean filterByInteger(Object value, Object filter, Locale locale) {
+		String filterText = (filter == null) ? null : filter.toString().trim();
+		if (filterText == null || filterText.equals("")) {
+			return true;
+		}
+		if (value == null) {
+			return false;
+		}
+		return ((Comparable) value).compareTo(Convertidor.getInteger(filterText)) >= 0;
+	}
+
+	/**
+	 * 
+	 * @param string
+	 * @return
+	 */
+	private static int getInteger(String string) {
+		try {
+			return Integer.valueOf(string);
+		} catch (NumberFormatException ex) {
+			return 0;
+		}
 	}
 
 	///////////////////////////////////////////////////////
