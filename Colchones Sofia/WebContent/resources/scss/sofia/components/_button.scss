@@ -191,6 +191,16 @@ $--element-color: getMap($--element, ("color"));
 	}
 }
 
+.sofia-button-icon-small{
+	&.ui-state-default{
+		width: 30px !important;
+		height: 30px !important;
+	} 
+	.ui-icon{
+		font-size: 0.8em !important;
+	}
+}
+
 /***************************************************
  * ICON
  ***************************************************/

@@ -405,7 +405,8 @@
   				width: 100%;
   				bottom: 0;
   				display: flex;
-				padding-top: 1em; 
+				padding-top: .5em; 
+				padding-button: .5em;
 				background: darken(nth(getMap($--element, ("color", "primary")), 1), 13);
 				& > a {
   					flex-grow: 1;

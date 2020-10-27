@@ -504,6 +504,18 @@
 								</h:panelGroup>
 							</f:facet>
 						</p:dataTable>
+
+						<!--        -->
+						<!-- REPORT -->
+						<!--        -->
+						<p:commandButton value="Generar Reporte"
+							update="@(.sofia-container-main-update)" actionListener="#{comprar.generateReport()}" >
+							<f:param name="id-venta" value="1"/>
+						</p:commandButton>
+
+						<p:commandButton value="Descargar"
+							rendered="#{reportBean.media ne null}" ajax="false"
+							actionListener="#{reportBean.downloadFile}" />
 					</h:panelGroup>
 
 					<!--                           -->

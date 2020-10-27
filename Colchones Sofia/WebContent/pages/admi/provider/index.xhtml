@@ -50,9 +50,10 @@
 									<p:outputLabel for="fecha-inicio" value="Fecha Inicio:" />
 									<p:datePicker id="fecha-inicio" required="true"
 										requiredMessage="El campo fecha inicio no puede estar vacia."
-										value="" />
+										value="#{reporte.fecha_inicio}">
+									</p:datePicker>
 								</h:panelGroup>
-								
+
 								<!--          -->
 								<!-- DATE END -->
 								<!--          -->
@@ -60,11 +61,100 @@
 									<p:outputLabel for="fecha-fin" value="Fecha Fin:" />
 									<p:datePicker id="fecha-fin" required="true"
 										requiredMessage="El campo fecha fin no puede estar vacia."
-										value="" />
+										value="#{reporte.fecha_fin}">
+									</p:datePicker>
 								</h:panelGroup>
+							</h:panelGroup>
+							<h:panelGroup layout="block"
+								styleClass="p-d-flex p-jc-center p-ac-center p-mb-3">
+								<p:commandButton update="@(.sofia-container-main-update)"
+									styleClass="sofia-button-succes"
+									action="#{reporte.consultarProveedor()}" value="Consultar" />
 							</h:panelGroup>
 						</p:fieldset>
 					</h:panelGroup>
+
+					<!--           -->
+					<!-- DATA VIEW -->
+					<!--           -->
+					<p:dataTable rendered="#{reporte.proveedores.size() > 0}" var="p"
+						value="#{reporte.proveedores}" widgetVar="sofia-table-update"
+						id="sofia-table-update"
+						emptyMessage="No se encontro ningun proveedor."
+						filteredValue="#{reporte.proveedor_filter}"
+						paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} 
+								         {CurrentPageReport} {NextPageLink} {LastPageLink}"
+						paginator="true" rows="20" rowIndexVar="index"
+						rowsPerPageTemplate="5,10,15,20,50,100" reflow="true"
+						scrollable="true" styleClass="p-mt-4">
+
+						<!-- HEADER -->
+						<f:facet name="header">
+							<p:outputPanel layout="block"
+								styleClass="p-d-flex p-jc-end p-ac-center">
+								<h:outputText value="Buscar:" styleClass="p-mt-1 p-mr-2" />
+								<p:inputText id="globalFilter"
+									onkeyup="PF('sofia-table-update').filter()" />
+							</p:outputPanel>
+							<p:outputPanel layout="block"
+								styleClass="p-d-flex p-jc-center p-ac-center p-p-3">
+								<h2>Proveedores</h2>
+								<h4 class="p-as-end">(#{reporte.proveedores.size()}
+									resultados)</h4>
+							</p:outputPanel>
+						</f:facet>
+
+						<!--        -->
+						<!-- COLUMN -->
+						<!--        -->
+						<p:column style="width:50px">
+							<p:rowToggler />
+							<h:panelGroup layout="block"
+								styleClass="p-d-flex p-jc-center p-ac-center">
+								<h:outputLabel value="#{index + 1}" />
+							</h:panelGroup>
+						</p:column>
+
+
+						<!-- ID -->
+						<p:column filterBy="#{p.idProveedor}" sortBy="#{p.idProveedor}"
+							footerText="ID" filterMatchMode="contains">
+							<f:facet name="header">
+								<h:outputText value="ID" />
+							</f:facet>
+							<h:panelGroup layout="block"
+								styleClass="p-d-flex p-jc-center p-ac-center">
+								<h:outputText value="#{p.idProveedor}" />
+							</h:panelGroup>
+						</p:column>
+
+						<!-- NAME -->
+						<p:column filterBy="#{p.nombre}" footerText="Nombre"
+							sortBy="#{p.nombre}">
+							<f:facet name="header">
+								<h:outputText value="Nombre" />
+							</f:facet>
+							<h:panelGroup layout="block"
+								styleClass="p-d-flex p-jc-center p-ac-center">
+								<h:outputText value="#{p.nombre}" />
+							</h:panelGroup>
+						</p:column>
+
+						<!-- PHONE -->
+						<p:column filterBy="${p.telefono}" footerText="Telefono">
+							<f:facet name="header">
+								<h:outputText value="Telefono" />
+							</f:facet>
+							<h:panelGroup layout="block"
+								styleClass="p-d-flex p-jc-center p-ac-center">
+								<h:outputText value="#{p.telefono}" />
+							</h:panelGroup>
+						</p:column>
+					</p:dataTable>
+					
+					<h:commandButton value="Exportar PDF"
+						actionListener="#{reporte.exportarPDF}" />
+						
 				</p:tab>
 			</p:tabView>
 		</p:fieldset>

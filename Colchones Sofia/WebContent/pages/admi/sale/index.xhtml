@@ -78,6 +78,25 @@
 						</p:fieldset>
 					</h:panelGroup>
 				</p:tab>
+
+				<!--         -->
+				<!-- REPORST -->
+				<!--         -->
+				<p:tab title="Estadisticas">
+					<h:panelGroup layout="block" styleClass="p-mt-4 p-mb-4">
+						<h:outputLabel styleClass="sofia-subtitle" value="Anuales:" />
+						<p:barChart
+							model="#{chartjs.horizontal_chart_model_ventas_anuales}"
+							style="width: 100%; height: 600px;" />
+					</h:panelGroup>
+
+					<h:panelGroup layout="block" styleClass="p-mt-4 p-mb-4 p-pt-4">
+						<h:outputLabel styleClass="sofia-subtitle p-mt-4" value="Mensuales:" />
+						<p:barChart
+							model="#{chartjs.horizontal_chart_model_ventas_mensuales}"
+							style="width: 100%; height: 600px;" />
+					</h:panelGroup>
+				</p:tab>
 			</p:tabView>
 		</p:fieldset>
 	</ui:define>

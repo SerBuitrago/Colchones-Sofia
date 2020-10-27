@@ -1,0 +1,104 @@
+/***************************************************
+ ********************** TABLE **********************
+ ***************************************************/
+
+//***********************************************
+// COLOR
+//***********************************************
+.sofia-table-color-error{
+	$--element-color: getMap($project, ("color", "error"));
+ 	background-color: nth($--element-color, 1) !important;
+    background-image: none !important;
+    color: nth($--element-color, 2) !important; 
+}
+
+.sofia-table-color-succes{
+	$--element-color: getMap($project, ("color", "succes"));
+ 	background-color: nth($--element-color, 1) !important;
+    background-image: none !important;
+    color: nth($--element-color, 2) !important; 
+}
+
+.sofia-table-color-primary{
+	$--element-color: getMap($project, ("color", "primary"));
+ 	background-color: nth($--element-color, 1) !important;
+    background-image: none !important;
+    color: nth($--element-color, 2) !important; 
+}
+
+.sofia-table-color-fatal{
+	$--element-color: getMap($project, ("color", "fatal"));
+ 	background-color: nth($--element-color, 1) !important;
+    background-image: none !important; 
+    color: nth($--element-color, 2) !important; 
+}
+
+.sofia-table-color-warn{
+	$--element-color: getMap($project, ("color", "info"));
+ 	background-color: nth($--element-color, 1) !important;
+    background-image: none !important;
+    color: nth($--element-color, 2) !important; 
+}
+
+.sofia-table-color-other{
+	$--element-color: getMap($project, ("color", "other"));
+ 	background-color: nth($--element-color, 1) !important;
+    background-image: none !important;
+    color: nth($--element-color, 2) !important; 
+}
+
+.sofia-table-color-orange{
+	$--element-color: getMap($color, ("orange", "base"));
+ 	background-color: nth($--element-color, 1) !important;
+    background-image: none !important;
+    color: nth($--element-color, 2) !important; 
+}
+
+.sofia-table-color-error-rgba{
+	$--element-color: getMap($project, ("color", "error"));
+ 	background-color: rgba(nth($--element-color, 1),.5) !important;
+    background-image: none !important;
+    color: nth($--element-color, 2) !important; 
+}
+
+.sofia-table-color-succes-rgba{
+	$--element-color: getMap($project, ("color", "succes"));
+ 	background-color: rgba(nth($--element-color, 1),.5) !important;
+    background-image: none !important;
+    color: nth($--element-color, 2) !important; 
+}
+
+.sofia-table-color-primary-rgba{
+	$--element-color: getMap($project, ("color", "primary"));
+ 	background-color: rgba(nth($--element-color, 1),.5) !important;
+    background-image: none !important;
+    color: nth($--element-color, 2) !important; 
+}
+
+.sofia-table-color-fatal-rgba{
+	$--element-color: getMap($project, ("color", "fatal"));
+ 	background-color: rgba(nth($--element-color, 1),.5) !important;
+    background-image: none !important; 
+    color: nth($--element-color, 2) !important; 
+}
+
+.sofia-table-color-warn-rgba{
+	$--element-color: getMap($project, ("color", "info"));
+ 	background-color: rgba(nth($--element-color, 1),.5) !important;
+    background-image: none !important;
+    color: nth($--element-color, 2) !important; 
+}
+
+.sofia-table-color-other-rgba{
+	$--element-color: getMap($project, ("color", "other"));
+ 	background-color: rgba(nth($--element-color, 1),.5) !important;
+    background-image: none !important;
+    color: nth($--element-color, 2) !important; 
+}
+
+.sofia-table-color-orange-rgba{
+	$--element-color: getMap($color, ("orange", "base"));
+ 	background-color: rgba(nth($--element-color, 1),.5) !important;
+    background-image: none !important;
+    color: nth($--element-color, 2) !important; 
+}
