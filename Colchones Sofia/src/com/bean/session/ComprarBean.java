@@ -15,7 +15,7 @@ import javax.faces.model.SelectItem;
 import javax.faces.model.SelectItemGroup;
 
 import com.entity.*;
-import com.util.Face;
+import com.util.*;
 import com.dao.*;
 
 /**
@@ -41,7 +41,7 @@ public class ComprarBean implements Serializable {
 	private DetalleCompra detalleCompra;
 
 	private List<SelectItem> productos;
-	private List<DetalleCompra> tabla;
+	private List<DetalleCompra> tabla; //
 	private List<DetalleProducto> detalles;
 
 	///////////////////////////////////////////////////////
@@ -135,7 +135,7 @@ public class ComprarBean implements Serializable {
 			this.message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error",
 					"No has seleccionado ningun producto.");
 		}
-		FacesContext.getCurrentInstance().addMessage(null, this.message);   
+		FacesContext.getCurrentInstance().addMessage(null, this.message);
 	}
 
 	/**

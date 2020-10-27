@@ -31,6 +31,8 @@ public class SelectionBean implements Serializable {
 	private List<SelectItem> proveedores;
 	private List<SelectItem> categorias;
 	private List<SelectItem> personas;
+	private List<SelectItem> tipos_pagos;
+	private List<SelectItem> vendedores;
 
 	///////////////////////////////////////////////////////
 	// Builders
@@ -44,6 +46,12 @@ public class SelectionBean implements Serializable {
 	@PostConstruct
 	public void init() {
 		this.roles = null;
+		this.documentos = null;
+		this.proveedores = null;
+		this.categorias = null;
+		this.personas = null;
+		this.tipos_pagos = null;
+		this.vendedores = null;
 	}
 
 	///////////////////////////////////////////////////////
@@ -143,7 +151,7 @@ public class SelectionBean implements Serializable {
 		this.personas = new ArrayList<SelectItem>();
 		PersonaDao dao = new PersonaDao();
 		List<Persona> p = dao.list();
-		SelectItemGroup g1 = new SelectItemGroup("Proveedores");
+		SelectItemGroup g1 = new SelectItemGroup("Personas");
 		SelectItem[] items = new SelectItem[p.size()];
 		for (int i = 0; i < p.size(); i++) {
 			Persona persona = p.get(i);
@@ -153,6 +161,48 @@ public class SelectionBean implements Serializable {
 		g1.setSelectItems(items);
 		this.personas.add(g1);
 		return personas;
+	}
+
+	/**
+	 * Metodo que permita traer todos los tipos de pagos registrados en el sistema.
+	 * 
+	 * @return una lista con los tipos de pagos.
+	 */
+	public List<SelectItem> getTipos_pagos() {
+		this.tipos_pagos = new ArrayList<SelectItem>();
+		TipoPagoDao dao = new TipoPagoDao();
+		List<TipoPago> list = dao.findByFieldList("estado", true);
+		SelectItemGroup g1 = new SelectItemGroup("Tipos Pagos");
+		SelectItem[] items = new SelectItem[list.size()];
+		for (int i = 0; i < list.size(); i++) {
+			TipoPago tipo = list.get(i);
+			items[i] = new SelectItem(tipo.getNombre(), tipo.getNombre());
+		}
+		g1.setSelectItems(items);
+		this.tipos_pagos.add(g1);
+		return tipos_pagos;
+	}
+
+	/**
+	 * Metodo que permita traer todos los vendedores registrados en el sistema y
+	 * este activos.
+	 * 
+	 * @return una lista con los vendedores.
+	 */
+	public List<SelectItem> getVendedores() {
+		this.vendedores = new ArrayList<SelectItem>();
+		VendedorDao dao = new VendedorDao();
+		List<Vendedor> list = dao.findByFieldList("estado", true);
+		SelectItemGroup g1 = new SelectItemGroup("Vendedores");
+		SelectItem[] items = new SelectItem[list.size()];
+		for (int i = 0; i < list.size(); i++) {
+			Vendedor tipo = list.get(i);
+			items[i] = new SelectItem(String.valueOf(tipo.getDocumento()), String.valueOf(tipo.getDocumento() + " - "
+					+ tipo.getPersona().getNombre() + " " + tipo.getPersona().getApellido()));
+		}
+		g1.setSelectItems(items);
+		this.vendedores.add(g1);
+		return vendedores;
 	}
 
 	///////////////////////////////////////////////////////
@@ -181,5 +231,13 @@ public class SelectionBean implements Serializable {
 
 	public void setPersonas(List<SelectItem> personas) {
 		this.personas = personas;
+	}
+
+	public void setTipos_pagos(List<SelectItem> tipos_pagos) {
+		this.tipos_pagos = tipos_pagos;
+	}
+
+	public void setVendedores(List<SelectItem> vendedores) {
+		this.vendedores = vendedores;
 	}
 }

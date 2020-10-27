@@ -26,6 +26,8 @@ public class Fecha implements Serializable {
 	private Date diferencia;
 	private String formatoHora;
 	private long minutos;
+	
+	private String meses [] = {"January" , "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"};
 
 	///////////////////////////////////////////////////////
 	// Builder
@@ -77,6 +79,12 @@ public class Fecha implements Serializable {
 			return true;
 		}
 		return false;
+	}
+	
+	public String darFormato(Date fecha, String formato) {
+		format = new SimpleDateFormat(formato);
+		String aux = this.format.format(fecha);
+		return aux;
 	}
 
 	/**
@@ -136,6 +144,33 @@ public class Fecha implements Serializable {
 		c.set(Calendar.HOUR_OF_DAY, hours);
 		return c.getTime();
 	}
+	
+	/**
+	 * Metodo que permite calcular el año actual.
+	 * @return retorna el año actual.
+	 */
+	public int anioActual() {
+		Calendar cal = Calendar.getInstance();
+		return cal.get(Calendar.YEAR);
+	}
+	
+	/**
+	 * Metodo que permite calcular el mes actual.
+	 * @return retorna el mes actual.
+	 */
+	public int mesActual() {
+		Calendar cal = Calendar.getInstance();
+		return cal.get(Calendar.MONTH);
+	}
+	
+	/**
+	 * Metodo que permite calcular el mes actual.
+	 * @return retorna el mes actual.
+	 */
+	public String mesActualCadena() {
+		int mes= mesActual();
+		return this.meses[mes];
+	}
 
 	///////////////////////////////////////////////////////
 	// Getter y Setters
@@ -182,5 +217,13 @@ public class Fecha implements Serializable {
 
 	public void setFormat(DateFormat format) {
 		this.format = format;
+	}
+
+	public String[] getMeses() {
+		return meses;
+	}
+
+	public void setMeses(String[] meses) {
+		this.meses = meses;
 	}
 }

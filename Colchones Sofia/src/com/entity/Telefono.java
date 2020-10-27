@@ -17,8 +17,7 @@ public class Telefono implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private int telefono;
+	private String telefono;
 
 	private String descripcion;
 	private boolean estado;
@@ -40,11 +39,11 @@ public class Telefono implements Serializable {
 	///////////////////////////////////////////////////////
 	// Getter and Setters
 	///////////////////////////////////////////////////////
-	public int getTelefono() {
+	public String getTelefono() {
 		return this.telefono;
 	}
 
-	public void setTelefono(int telefono) {
+	public void setTelefono(String telefono) {
 		this.telefono = telefono;
 	}
 

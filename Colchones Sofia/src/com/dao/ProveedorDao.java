@@ -41,4 +41,17 @@ public class ProveedorDao extends Conexion<Proveedor> implements Interface<Prove
 			return null;
 		}
 	}	
+	
+	/**
+	 * 
+	 * @param inicio
+	 * @param fin
+	 * @return
+	 */
+	@SuppressWarnings({"unchecked" })
+	public List<Proveedor> consultaProveedor(String inicio, String fin){
+		Query query = getEm().createQuery("FROM Proveedor WHERE fechaRegistro BETWEEN '"+inicio+"' AND '"+fin+"' ORDER BY fechaRegistro");
+		List<Proveedor> list= query.getResultList();
+		return list;
+	}
 }

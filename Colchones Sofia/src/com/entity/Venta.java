@@ -21,7 +21,6 @@ public class Venta implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	@Column(name="id_venta")
 	private int idVenta;
 
@@ -65,6 +64,7 @@ public class Venta implements Serializable {
 	@ManyToOne
 	@JoinColumn(name="usuario")
 	private Usuario usuario;
+
 	
 	///////////////////////////////////////////////////////
 	// Builder

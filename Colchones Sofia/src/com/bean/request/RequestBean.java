@@ -10,6 +10,8 @@ import javax.faces.bean.RequestScoped;
 
 import com.dao.*;
 import com.entity.*;
+import com.entity.other.ChartJS;
+import com.util.Fecha;
 
 /**
  * Implementation RequestBean.
@@ -59,10 +61,11 @@ public class RequestBean implements Serializable {
 	 */
 	public BigInteger getPresupuesto_ventas() {
 		VentaDao dao = new VentaDao();
-		List<Venta> ventas = dao.list();
-		this.presupuesto_ventas = this.presupuesto_ventas.add(BigInteger.valueOf(0));
-		for (Venta venta : ventas) {
-			this.presupuesto_ventas = this.presupuesto_ventas.add(venta.getTotal());
+		Fecha fecha= new Fecha();
+		ChartJS aux= dao.ventasMensual(fecha.mesActualCadena(), String.valueOf(fecha.anioActual()));
+		presupuesto_ventas = BigInteger.ZERO;
+		if(aux!= null) {
+			presupuesto_ventas = aux.getTotal();
 		}
 		return presupuesto_ventas;
 	}

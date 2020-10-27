@@ -18,12 +18,11 @@ public class HistorialPresupuesto implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
 
 	private String descripcion;
 
-	private byte estado;
+	private boolean estado;
 
 	///////////////////////////////////////////////////////
 	// Map
@@ -70,11 +69,11 @@ public class HistorialPresupuesto implements Serializable {
 		this.descripcion = descripcion;
 	}
 
-	public byte getEstado() {
+	public boolean getEstado() {
 		return this.estado;
 	}
 
-	public void setEstado(byte estado) {
+	public void setEstado(boolean estado) {
 		this.estado = estado;
 	}
 

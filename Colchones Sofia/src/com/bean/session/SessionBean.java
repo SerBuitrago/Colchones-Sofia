@@ -4,11 +4,13 @@ import java.io.Serializable;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
 
@@ -31,15 +33,24 @@ public class SessionBean implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	private FacesMessage mensaje;   
-   
+	private FacesMessage mensaje;
+
 	private int intentos;
 	private String path;
 	private String inicio, fin;
-	private int esperar;   
-	
+	private int esperar;
+
 	private Validar usuario;
 	private Usuario logeado;
+
+	///////////////////////////////////////////////////////
+	// Managed
+	///////////////////////////////////////////////////////
+	@ManagedProperty("#{mail}")
+	private EmailBean mail;
+
+	@ManagedProperty("#{app}")
+	private AppBean app;
 
 	///////////////////////////////////////////////////////
 	// Builders
@@ -58,7 +69,7 @@ public class SessionBean implements Serializable {
 		this.usuario = new Validar();
 		this.intentos = 3;
 		this.esperar = 5;
-	} 
+	}
 
 	///////////////////////////////////////////////////////
 	// Method
@@ -74,7 +85,7 @@ public class SessionBean implements Serializable {
 		Fecha fecha = new Fecha();
 		if (this.logeado == null) {
 			if (this.intentos > 0) {
-				PersonaDao dao = new PersonaDao();   
+				PersonaDao dao = new PersonaDao();
 				Persona persona = dao.findByField("email", this.usuario.getEmail());
 				if (persona != null) {
 					UsuarioDao uDao = new UsuarioDao();
@@ -175,6 +186,13 @@ public class SessionBean implements Serializable {
 				UsuarioDao dao = new UsuarioDao();
 				Usuario usuario = dao.findByField("documento", persona.getDocumento());
 				if (usuario != null) {
+					List<Telefono> telefonos = app.getApp().getTelefono();
+					String mensaje = mail.formatRecuperar(usuario.getClave(),
+							((telefonos != null && telefonos.size() > 0)
+									? String.valueOf(telefonos.get(0).getTelefono())
+									: ""),
+							app.getApp().getGlobal().getDireccion());
+					mail.send(usuario.getPersona().getEmail(), "Recuperación Contraseña", mensaje);
 					message = new FacesMessage(FacesMessage.SEVERITY_INFO, "",
 							"Se te ha enviado un correo con la clave.");
 				} else {
@@ -190,7 +208,7 @@ public class SessionBean implements Serializable {
 		FacesContext.getCurrentInstance().addMessage(null, message);
 		return "login";
 	}
-	
+
 	///////////////////////////////////////////////////////
 	// Direction
 	///////////////////////////////////////////////////////
@@ -207,7 +225,7 @@ public class SessionBean implements Serializable {
 	}
 
 	///////////////////////////////////////////////////////
-	// Getter y Setters
+	// Getter and Setters
 	///////////////////////////////////////////////////////
 	public FacesMessage getMensaje() {
 		return mensaje;
@@ -275,5 +293,21 @@ public class SessionBean implements Serializable {
 
 	public static long getSerialversionuid() {
 		return serialVersionUID;
+	}
+
+	public EmailBean getMail() {
+		return mail;
+	}
+
+	public void setMail(EmailBean mail) {
+		this.mail = mail;
+	}
+
+	public AppBean getApp() {
+		return app;
+	}
+
+	public void setApp(AppBean app) {
+		this.app = app;
 	}
 }
