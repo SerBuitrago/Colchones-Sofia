@@ -61,10 +61,10 @@ public class RequestBean implements Serializable {
 	 */
 	public BigInteger getPresupuesto_ventas() {
 		VentaDao dao = new VentaDao();
-		Fecha fecha= new Fecha();
-		ChartJS aux= dao.ventasMensual(fecha.mesActualCadena(), String.valueOf(fecha.anioActual()));
+		Fecha fecha = new Fecha();
+		ChartJS aux = dao.ventasMensual(fecha.mesActualCadena(), String.valueOf(fecha.anioActual()));
 		presupuesto_ventas = BigInteger.ZERO;
-		if(aux!= null) {
+		if (aux != null) {
 			presupuesto_ventas = aux.getTotal();
 		}
 		return presupuesto_ventas;
@@ -77,10 +77,11 @@ public class RequestBean implements Serializable {
 	 */
 	public BigInteger getPresupuesto_compras() {
 		CompraDao dao = new CompraDao();
-		List<Compra> ventas = dao.list();
-		this.presupuesto_ventas = this.presupuesto_ventas.add(BigInteger.valueOf(0));
-		for (Compra compra : ventas) {
-			this.presupuesto_ventas = this.presupuesto_ventas.add(compra.getTotal());
+		Fecha fecha = new Fecha();
+		ChartJS aux = dao.comprasMensual(fecha.mesActualCadena(), String.valueOf(fecha.anioActual()));
+		this.presupuesto_compras = BigInteger.ZERO;
+		if (aux != null) {
+			this.presupuesto_compras = aux.getTotal();
 		}
 		return presupuesto_compras;
 	}

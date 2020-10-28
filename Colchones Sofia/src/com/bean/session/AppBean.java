@@ -62,7 +62,7 @@ public class AppBean implements Serializable {
 		this.app = new App(email, telefonos, global);
 		this.app.setCarrousel(informacion);
 	}
-
+	
 	///////////////////////////////////////////////////////
 	// Getter y Setters
 	///////////////////////////////////////////////////////
