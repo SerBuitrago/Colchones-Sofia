@@ -36,12 +36,4 @@ public class UsuarioDao extends Conexion<Usuario> implements Interface<Usuario> 
 		Query query = getEm().createQuery("SELECT u FROM Usuario u WHERE u.session=true ORDER BY u.fechaSesion");
 		return query.getResultList();
 	}
-	
-	
-	@SuppressWarnings("unchecked")
-	public List<Usuario> consultarAsistente() {
-		Query query = getEm().createQuery("FROM Usuario u WHERE u.rol.nombre='Asistente Administrativo'");
-		return query.getResultList();
-	}
-	
 }
