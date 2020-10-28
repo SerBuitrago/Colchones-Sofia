@@ -40,6 +40,12 @@ public class DataTableBean implements Serializable {
 	private List<Usuario> usuarios_logeados;
 	private List<Categoria> filter_usuarios_logeados;
 	private int renderizar_usuarios_logeados;
+	
+	private List<Usuario> asistente;
+	private List<Rol> filter_asistente;
+	private int renderizar_asistente;
+	
+
 
 	///////////////////////////////////////////////////////
 	// Builders
@@ -56,6 +62,7 @@ public class DataTableBean implements Serializable {
 		this.renderizar_proveedor = 0;
 		this.renderizar_categoria = 0;
 		this.renderizar_usuarios_logeados = 0;
+		this.renderizar_asistente = 0;
 	}
 
 	///////////////////////////////////////////////////////
@@ -74,6 +81,41 @@ public class DataTableBean implements Serializable {
 			this.vendedor.add(v);
 		}
 	}
+	
+	/**
+	 * Metodo que inicializa los valores de la tabla asistente.
+	 */
+	/**public void initAsistente() {
+		this.asistente = asistente();
+		List<Usuario> aux = asistente();
+		//this.asistente = new ArrayList<Usuario>();
+		for (Usuario u : aux) {
+			List<Usuario> usu = new ArrayList<Usuario>();
+			UsuarioDao dao = new UsuarioDao();
+			usu = dao.rolAdd();
+			aux.add(u);
+		}
+	}*/
+	
+	/**public void initAsistente() {
+		this.asistente = asistente();
+		List<Usuario> aux = new ArrayList<Usuario>();
+		for (Usuario u : this.asistente) {
+			List<Usuario> usuarios = new ArrayList<Usuario>();
+			UsuarioDao dao = new UsuarioDao();
+			usuarios = dao.rolAdd();
+			u.setProveedorProductos(usuarios);
+			aux.add(u);
+		}*/
+	
+	
+	public void initAsistente() {
+		
+		UsuarioDao dao = new UsuarioDao();
+		this.asistente = dao.consultarAsistente();
+	}
+	
+	
 
 	/**
 	 * Metodo que inicializa los valores de la tabla proveedor.
@@ -144,6 +186,12 @@ public class DataTableBean implements Serializable {
 		CategoriaDao dao = new CategoriaDao();
 		return dao.list();
 	}
+	
+	/**public List<Usuario> asistente(){
+	UsuarioDao dao = new UsuarioDao();
+	return dao.list();
+	}*/
+	
 
 	///////////////////////////////////////////////////////
 	// Renderizar
@@ -198,6 +246,14 @@ public class DataTableBean implements Serializable {
 			this.renderizar_usuarios_logeados = 1;
 		}
 		return usuarios_logeados;
+	}
+	
+	public List<Usuario> getAsistente() {
+		if (this.renderizar_asistente == 0) {
+			initAsistente();
+			this.renderizar_asistente = 1;
+		}
+		return asistente;
 	}
 
 	///////////////////////////////////////////////////////
@@ -286,4 +342,26 @@ public class DataTableBean implements Serializable {
 	public void setRenderizar_usuarios_logeados(int renderizar_usuarios_logeados) {
 		this.renderizar_usuarios_logeados = renderizar_usuarios_logeados;
 	}
+
+	public List<Rol> getFilter_asistente() {
+		return filter_asistente;
+	}
+
+	public void setFilter_asistente(List<Rol> filter_asistente) {
+		this.filter_asistente = filter_asistente;
+	}
+
+	public int getRenderizar_asistente() {
+		return renderizar_asistente;
+	}
+
+	public void setRenderizar_asistente(int renderizar_asistente) {
+		this.renderizar_asistente = renderizar_asistente;
+	}
+
+	public void setAsistente(List<Usuario> asistente) {
+		this.asistente = asistente;
+	}
+	
+	
 }
