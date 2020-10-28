@@ -1,7 +1,10 @@
 package com.bean.session;
 
+import javax.faces.event.ActionEvent;
+
 import java.io.Serializable;
 import java.util.Date;
+
 import java.util.List;
 
 import javax.annotation.PostConstruct;
@@ -10,7 +13,6 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
-import javax.faces.event.ActionEvent;
 
 import com.dao.*;
 import com.entity.*;
@@ -20,12 +22,17 @@ import com.util.Fecha;
 @ManagedBean(name = "reporte")
 @SessionScoped
 public class ReportesBean implements Serializable {
+	///////////////////////////////////////////////////////
+	// Managed
+	///////////////////////////////////////////////////////
+	@ManagedProperty("#{sesion}")
+	private SessionBean sesion;
 
 	private static final long serialVersionUID = 1L;
 
 	private FacesMessage mensage;
 
-	private Reporte<Compra> reporte_fecha_reporte;
+	private Reporte<Compra> reporte_fecha_compra;
 
 	private Reporte<Proveedor> reporte_fecha_proveedor;
 	private List<Proveedor> proveedores;
@@ -36,18 +43,12 @@ public class ReportesBean implements Serializable {
 	private Date fecha_fin;
 	private String fecha_formato_fin;
 
-	///////////////////////////////////////////////////////
-	// Managed
-	///////////////////////////////////////////////////////
-	@ManagedProperty("#{sesion}")
-	private SessionBean sesion;
-	
 	public ReportesBean() {
-
 	}
 
 	@PostConstruct
 	public void init() {
+
 	}
 
 	public void consultarProveedor() {
@@ -55,14 +56,16 @@ public class ReportesBean implements Serializable {
 		if (this.fecha_inicio != null) {
 			if (this.fecha_fin != null) {
 				ProveedorDao dao = new ProveedorDao();
-				Fecha fecha= new Fecha();
+				Fecha fecha = new Fecha();
 				this.fecha_formato_inicio = fecha.darFormato(fecha_inicio, "yyyy/MM/dd HH:mm:ss");
 				this.fecha_formato_fin = fecha.darFormato(fecha_fin, "yyyy/MM/dd HH:mm:ss");
 				System.out.println(this.fecha_formato_inicio + "   " + this.fecha_formato_fin);
-				this.proveedores = dao.consultaProveedor(this.fecha_formato_inicio,this.fecha_formato_fin);
+				this.proveedores = dao.consultaProveedor(this.fecha_formato_inicio, this.fecha_formato_fin);
 				if (this.proveedores.size() > 0) {
 					this.mensage = new FacesMessage(FacesMessage.SEVERITY_INFO, "Succes",
 							"Se han obtenido " + this.proveedores.size() + " proveedores.");
+					this.reporte_fecha_proveedor = new Reporte<Proveedor>(this.proveedores, "/reporteP.jasper",
+							sesion.getLogeado());
 				} else {
 					this.mensage = new FacesMessage(FacesMessage.SEVERITY_WARN, "Warn",
 							"No se ha encontrado ningun proveedor.");
@@ -81,20 +84,20 @@ public class ReportesBean implements Serializable {
 			FacesContext.getCurrentInstance().addMessage(null, this.mensage);
 		}
 	}
-	
-	public void exportarPDF(ActionEvent actionEvent) throws Exception{
-		this.reporte_fecha_proveedor = new Reporte<Proveedor>(this.proveedores,"/report.jasper",sesion.getLogeado()); 
-		this.reporte_fecha_proveedor.verPDF(actionEvent); 
-	}
-	
-	
+   
+	public void exportarPDF(ActionEvent actionEvent) throws Exception {
+		this.reporte_fecha_proveedor = new Reporte<Proveedor>(this.proveedores, "/report.jasper", sesion.getLogeado());
+		this.reporte_fecha_proveedor.exportarPDF(actionEvent);
+		this.reporte_fecha_proveedor.verPDF(actionEvent);
 
-	public Reporte<Compra> getReporte_fecha_reporte() {
-		return reporte_fecha_reporte;
 	}
 
-	public void setReporte_fecha_reporte(Reporte<Compra> reporte_fecha_reporte) {
-		this.reporte_fecha_reporte = reporte_fecha_reporte;
+	public Reporte<Compra> getReporte_fecha_compra() {
+		return reporte_fecha_compra;
+	}
+
+	public void setReporte_fecha_compra(Reporte<Compra> reporte_fecha_compra) {
+		this.reporte_fecha_compra = reporte_fecha_compra;
 	}
 
 	public Reporte<Proveedor> getReporte_fecha_proveedor() {
@@ -108,7 +111,7 @@ public class ReportesBean implements Serializable {
 	public static long getSerialversionuid() {
 		return serialVersionUID;
 	}
-	
+
 	public Date getFecha_inicio() {
 		return fecha_inicio;
 	}
@@ -161,15 +164,15 @@ public class ReportesBean implements Serializable {
 		return fecha_formato_fin;
 	}
 
-	public void setFecha_formato_fin(String fecha_formato_fin) {
-		this.fecha_formato_fin = fecha_formato_fin;
-	}
-
 	public SessionBean getSesion() {
 		return sesion;
 	}
 
 	public void setSesion(SessionBean sesion) {
 		this.sesion = sesion;
+	}
+
+	public void setFecha_formato_fin(String fecha_formato_fin) {
+		this.fecha_formato_fin = fecha_formato_fin;
 	}
 }

@@ -61,7 +61,7 @@ public class VentaBean implements Serializable {
 	private SessionBean sesion;
 
 	@ManagedProperty("#{mail}")
-	private EmailBean emial;
+	private EmailBean email;
 
 	@ManagedProperty("#{app}")
 	private AppBean app;
@@ -330,13 +330,13 @@ public class VentaBean implements Serializable {
 								if (this.message == null) {
 									// AQUI VA CORREO
 									List<Telefono> telefonos = app.getApp().getTelefono();
-									String cadena= this.emial.formatVenta(this.venta.getIdVenta(), this.tabla_venta.size(),
+									String cadena= this.email.formatVenta(this.venta.getIdVenta(), this.tabla_venta.size(),
 											this.venta.getTotal(),
 											((telefonos != null && telefonos.size() > 0)
 													? String.valueOf(telefonos.get(0).getTelefono())
 													: ""),
 											app.getApp().getGlobal().getDireccion());
-									this.emial.send(this.venta.getCliente().getPersona().getEmail(), "Confirmación Venta", cadena);
+									this.email.send(this.venta.getCliente().getPersona().getEmail(), "Confirmación Venta", cadena);
 
 									this.message = new FacesMessage(FacesMessage.SEVERITY_INFO, "succes",
 											"Se ha completado la venta sin errores.");
@@ -470,7 +470,7 @@ public class VentaBean implements Serializable {
 	 * Metodo que permite registrar la devolucion garantia
 	 */
 	@SuppressWarnings("deprecation")
-	public void registrarDevoluciónGarantia() {
+	public void registrarDevolucionGarantia() { 
 		this.message = null;
 		if (this.venta != null) {
 			DevolucionGarantiaDao dao = new DevolucionGarantiaDao();
@@ -1230,5 +1230,21 @@ public class VentaBean implements Serializable {
 
 	public void setDocumento_vendedor(int documento_vendedor) {
 		this.documento_vendedor = documento_vendedor;
+	}
+
+	public EmailBean getEmail() {
+		return email;
+	}
+
+	public void setEmail(EmailBean email) {
+		this.email = email;
+	}
+
+	public AppBean getApp() {
+		return app;
+	}
+
+	public void setApp(AppBean app) {
+		this.app = app;
 	}
 }
