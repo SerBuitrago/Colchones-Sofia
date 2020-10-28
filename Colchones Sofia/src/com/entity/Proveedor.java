@@ -21,8 +21,10 @@ public class Proveedor implements Serializable {
 	@Id
 	@Column(name = "id_proveedor")
 	private int idProveedor;
-
+	
+	@Column(name = "nombre")
 	private String nombre;
+	@Column(name = "telefono")
 	private String telefono;
 	private String direccion;
 	private boolean estado;

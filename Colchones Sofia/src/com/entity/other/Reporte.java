@@ -19,21 +19,13 @@ import net.sf.jasperreports.engine.JRExporterParameter;
 import net.sf.jasperreports.engine.JasperExportManager;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
-import net.sf.jasperreports.engine.JasperReport;
 import net.sf.jasperreports.engine.JasperRunManager;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import net.sf.jasperreports.engine.export.JRXlsExporter;
 import net.sf.jasperreports.engine.export.ooxml.JRDocxExporter;
 import net.sf.jasperreports.engine.export.ooxml.JRPptxExporter;
 
-/**
- * Implementation Reporte.
- * 
- * @author DeveUp.
- * @phone 3118398189.
- * @email deveup@gmail.com.
- * @version 1.0.0.0.
- */
+
 @SuppressWarnings("deprecation")
 public class Reporte<T> implements Serializable {
 
@@ -44,15 +36,11 @@ public class Reporte<T> implements Serializable {
 	private Usuario usuario;
 
 	private JasperPrint jasperPrint;
-	private JasperReport jrxml;
 	private Map<String, Object> parametros;
 	private File jasper;
-
-	///////////////////////////////////////////////////////
-	// Builders
-	///////////////////////////////////////////////////////
+	
 	public Reporte() {
-		this(null, null, new Usuario());
+		this(null, null, new Usuario()); 
 	}
 
 	public Reporte(List<T> entidad, String ruta, Usuario usuario) {
@@ -60,31 +48,20 @@ public class Reporte<T> implements Serializable {
 		this.entidad = entidad;
 		this.ruta = ruta;
 		this.usuario = usuario;
-		if (usuario != null) {
-			System.out.println("RUTA: " + ruta);
+		if(usuario!= null) {
+			System.out.println("PERSONA 2: "+usuario.getPersona());
 		}
-
+		
 	}
 
-	///////////////////////////////////////////////////////
-	// Method
-	///////////////////////////////////////////////////////
-	/**
-	 * Metood que permite inicializar el reporte.
-	 */
 	public void init() throws JRException {
-		// jrxml =
-		// JasperCompileManager.compileReport(FacesContext.getCurrentInstance().getExternalContext().getRealPath(this.ruta));
 		parametros = new HashMap<String, Object>();
-		parametros.put("txtUsuario",
-				String.valueOf(this.usuario.getPersona().getNombre() + " " + this.usuario.getPersona().getApellido()));
+		//parametros.put("txtUsuario", String.valueOf(this.usuario.getPersona().getNombre() + " " + this.usuario.getPersona().getApellido()));
 		jasper = new File(FacesContext.getCurrentInstance().getExternalContext().getRealPath(this.ruta));
-		jasperPrint = JasperFillManager.fillReport(jrxml, parametros, new JRBeanCollectionDataSource(this.entidad));
+		jasperPrint = JasperFillManager.fillReport(jasper.getPath(), parametros,
+				new JRBeanCollectionDataSource(this.entidad));
 	}
 
-	/**
-	 * Metodo que permite descargar el reporte en PDF.
-	 */
 	public void exportarPDF(ActionEvent actionEvent) throws JRException, IOException {
 		this.init();
 
@@ -100,9 +77,6 @@ public class Reporte<T> implements Serializable {
 		FacesContext.getCurrentInstance().responseComplete();
 	}
 
-	/**
-	 * Metodo que permite descargar el reporte en EXCEL.
-	 */
 	public void exportarExcel(ActionEvent actionEvent) throws JRException, IOException {
 		this.init();
 
@@ -121,9 +95,6 @@ public class Reporte<T> implements Serializable {
 		FacesContext.getCurrentInstance().responseComplete();
 	}
 
-	/**
-	 * Metodo que permite descargar el reporte en PPT.
-	 */
 	public void exportarPPT(ActionEvent actionEvent) throws JRException, IOException {
 		this.init();
 
@@ -142,9 +113,6 @@ public class Reporte<T> implements Serializable {
 		FacesContext.getCurrentInstance().responseComplete();
 	}
 
-	/**
-	 * Metodo que permite descargar el reporte en DOC.
-	 */
 	public void exportarDOC(ActionEvent actionEvent) throws JRException, IOException {
 		this.init();
 
@@ -163,12 +131,9 @@ public class Reporte<T> implements Serializable {
 		FacesContext.getCurrentInstance().responseComplete();
 	}
 
-	/**
-	 * Metodo que permite ver el reporte en PDF.
-	 */
 	public void verPDF(ActionEvent actionEvent) throws Exception {
 		this.init();
-
+		
 		File jasper = new File(FacesContext.getCurrentInstance().getExternalContext().getRealPath(this.ruta));
 		byte[] bytes = JasperRunManager.runReportToPdf(jasper.getPath(), null,
 				new JRBeanCollectionDataSource(this.entidad));
@@ -183,9 +148,6 @@ public class Reporte<T> implements Serializable {
 		FacesContext.getCurrentInstance().responseComplete();
 	}
 
-	///////////////////////////////////////////////////////
-	// Getter and Setters
-	///////////////////////////////////////////////////////
 	public List<T> getEntidad() {
 		return entidad;
 	}
@@ -236,13 +198,5 @@ public class Reporte<T> implements Serializable {
 
 	public void setJasper(File jasper) {
 		this.jasper = jasper;
-	}
-
-	public JasperReport getJrxml() {
-		return jrxml;
-	}
-
-	public void setJrxml(JasperReport jrxml) {
-		this.jrxml = jrxml;
 	}
 }
