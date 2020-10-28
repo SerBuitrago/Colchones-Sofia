@@ -82,7 +82,7 @@
 				<!--         -->
 				<!-- REPORST -->
 				<!--         -->
-				<p:tab title="Estadisticas">
+				<p:tab title="Venta">
 					<h:panelGroup layout="block" styleClass="p-mt-4 p-mb-4">
 						<h:outputLabel styleClass="sofia-subtitle" value="Anuales:" />
 						<p:barChart
@@ -91,10 +91,30 @@
 					</h:panelGroup>
 
 					<h:panelGroup layout="block" styleClass="p-mt-4 p-mb-4 p-pt-4">
-						<h:outputLabel styleClass="sofia-subtitle p-mt-4" value="Mensuales:" />
+						<h:outputLabel styleClass="sofia-subtitle p-mt-4"
+							value="Mensuales:" />
 						<p:barChart
 							model="#{chartjs.horizontal_chart_model_ventas_mensuales}"
 							style="width: 100%; height: 600px;" />
+					</h:panelGroup>
+				</p:tab>
+
+				<!--         -->
+				<!-- REPORST -->
+				<!--         -->
+				<p:tab title="Productos">
+					<h:panelGroup layout="block" styleClass="p-mt-4 p-pt-4">
+						<h:outputLabel styleClass="sofia-subtitle"
+							value="Producto Vendidos:" />
+						<h:panelGroup layout="block">
+							<p:pieChart model="#{chartjs.pie_venta_unidad_producto}"
+								style="width: 100%; height: 500px;" />
+						</h:panelGroup>
+						<h:panelGroup layout="block"
+							styleClass="p-as-center p-mt-4 p-pt-4 p-text-center p-pb-4">
+							<h:outputLabel
+								value="Representa el la cantidad de unidades compradas por un producto." />
+						</h:panelGroup>
 					</h:panelGroup>
 				</p:tab>
 			</p:tabView>

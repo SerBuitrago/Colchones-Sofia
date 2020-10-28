@@ -177,6 +177,36 @@
 											</ul>
 										</h:panelGroup>
 									</li>
+									
+									<!--           -->
+									<!-- CUSTOMERS -->
+									<!--           -->
+									<li class="sidebar-dropdown">
+										<p:commandLink>
+											<i class="fa fa-fw fa-male"></i>
+											<span>Cliente</span>
+										</p:commandLink> 
+										<h:panelGroup layout="block" styleClass="sidebar-submenu">
+											<ul>
+												<li>
+													<p:commandLink
+														action="/pages/admi/customers/index?faces-redirect=true">
+														<i class="far fa-chart-bar"></i>Estadisticas
+													</p:commandLink>
+												</li>
+												<li>
+													<p:commandLink
+														action="/pages/admi/customers/all?faces-redirect=true">
+														<i class="fa fa-fw fa-clipboard"></i>Historial
+													</p:commandLink>
+												</li>
+											</ul>
+										</h:panelGroup>
+									</li>
+									
+									<!--          -->
+									<!-- PROVIDER -->
+									<!--          -->
 									<li class="sidebar-dropdown">
 										<p:commandLink>
 											<i class="pi pi-users"></i>
@@ -184,55 +214,80 @@
 										</p:commandLink> 
 										<h:panelGroup layout="block" styleClass="sidebar-submenu">
 											<ul>
-												<li><p:commandLink
+												<li>
+													<p:commandLink
 														action="/pages/admi/provider/index?faces-redirect=true">
 														<i class="far fa-chart-bar"></i>Estadisticas
-													</p:commandLink></li>
-												<li><p:commandLink
+													</p:commandLink>
+												</li>
+												<li>
+													<p:commandLink
 														action="/pages/admi/provider/all?faces-redirect=true">
 														<i class="fa fa-fw fa-clipboard"></i>Historial
-													</p:commandLink></li>
-												<li><p:commandLink
+													</p:commandLink>
+												</li>
+												<li>
+													<p:commandLink
 														action="/pages/admi/provider/register?faces-redirect=true">
 														<i class="fas fa-user-plus"></i>Registrar
-													</p:commandLink></li>
+													</p:commandLink>
+												</li>
 											</ul>
-										</h:panelGroup></li>
-									<li class="sidebar-dropdown"><p:commandLink>
+										</h:panelGroup>
+									</li>
+									<li class="sidebar-dropdown">
+										<p:commandLink>
 											<i class="fa fa-fw fa-user-tag"></i>
 											<span>Vendedor</span>
-										</p:commandLink> <h:panelGroup layout="block" styleClass="sidebar-submenu">
+										</p:commandLink> 
+										<h:panelGroup layout="block" styleClass="sidebar-submenu">
 											<ul>
-												<li><p:commandLink
+												<li>
+													<p:commandLink
 														action="/pages/admi/seller/index?faces-redirect=true">
 														<i class="far fa-chart-bar"></i>Estadisticas
-													</p:commandLink></li>
-												<li><p:commandLink
+													</p:commandLink>
+												</li>
+												<li>
+													<p:commandLink
 														action="/pages/admi/seller/all?faces-redirect=true">
 														<i class="fa fa-fw fa-clipboard"></i>Historial
-													</p:commandLink></li>
-												<li><p:commandLink
+													</p:commandLink>
+												</li>
+												<li>
+													<p:commandLink
 														action="/pages/admi/seller/register?faces-redirect=true">
 														<i class="fas fa-user-plus"></i>Registrar
-													</p:commandLink></li>
+													</p:commandLink>
+												</li>
 											</ul>
-										</h:panelGroup></li>
-									<li class="sidebar-dropdown"><p:commandLink>
+										</h:panelGroup>
+									</li>
+									
+									<!--          -->
+									<!-- CATEGORY -->
+									<!--          -->
+									<li class="sidebar-dropdown">
+										<p:commandLink>
 											<i class="fa fa-fw fa-bar-chart-o"></i>
 											<span>Categoria</span>
 											<span class="badge badge-pill sofia-statu-succes sofia-statu">Pro</span>
 										</p:commandLink> <h:panelGroup layout="block" styleClass="sidebar-submenu">
 											<ul>
-												<li><p:commandLink
+												<li>
+													<p:commandLink
 														action="/pages/admi/category/index?faces-redirect=true">
 														<i class="far fa-chart-bar"></i>Estadisticas
 													</p:commandLink></li>
-												<li><p:commandLink
+												<li>
+													<p:commandLink
 														action="/pages/admi/category/all?faces-redirect=true">
 														<i class="fa fa-fw fa-clipboard"></i>Historial
-													</p:commandLink></li>
+													</p:commandLink>
+												</li>
 											</ul>
-										</h:panelGroup></li>
+										</h:panelGroup>
+									</li>
 
 									<!--     -->
 									<!-- BUY -->
@@ -272,8 +327,7 @@
 										</p:commandLink>
 									</li>
 									<li>
-										<p:commandLink actionListener="#{venta.initRendedirzarTablaVenta()}"
-											action="/pages/admi/sale/all?faces-redirect=true">
+										<p:commandLink  action="/pages/admi/sale/all?faces-redirect=true">
 											<i class="fa fa-fw fa-clipboard"></i>Historial
 										</p:commandLink>
 									</li>
@@ -284,29 +338,42 @@
 										</p:commandLink>
 									</li>
 									
+									<!--         -->
+									<!-- COMPANY -->
+									<!--         -->
 									<li class="header-menu">
 										<span>#{app.app.getGlobal().getNombre()}</span>
 									</li>
 									<li>
 										<p:commandLink
-											action="/pages/admi/sale/index?faces-redirect=true">
-											<i class="fa fa-fw fa-bar-chart-o"></i>Empresa
+											action="/pages/admi/setting/setting?faces-redirect=true">
+											<i class="fa fa-fw fa-building"></i>Empresa
+											<span class="badge badge-pill sofia-statu-succes sofia-statu">Pro</span>
 										</p:commandLink>
+									</li>
+									<li>
+										<p:commandLink
+											action="/pages/admi/setting/all?faces-redirect=true">
+											<i class="fa fa-fw fa-dollar-sign"></i>Histotial Presupuesto
+											<span class="badge badge-pill sofia-statu-succes sofia-statu">Pro</span>
+										</p:commandLink>
+										
 									</li>
 								</ul>
 							</h:panelGroup>
 						</h:panelGroup>
 
-
 						<!--       -->
 						<!-- STATU -->
 						<!--       -->
 						<h:panelGroup layout="block" styleClass="sidebar-footer">
-							<a href="#"> <i class="fa fa-cog"></i> <span
-								class="badge-sonar"></span>
-							</a>
-							<a href="#"> <i class="fa fa-power-off"></i>
-							</a>
+							<h:commandLink action="/pages/admi/setting/setting?faces-redirect=true"> 
+								<i class="fa fa-cog"></i> 
+								<span class="badge-sonar"></span> 
+							</h:commandLink>
+							<h:commandLink action="#{security.close()}" title="Cerrar Sesión">
+								 <i class="fa fa-power-off"></i>
+							</h:commandLink>
 						</h:panelGroup>
 					</h:panelGroup>
 				</h:panelGroup>
