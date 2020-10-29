@@ -122,6 +122,19 @@ public class VentaDao extends Conexion<Venta> implements Interface<Venta> {
 		}
 		return c;
 	}
+	
+	/**
+	 * Metodo que permite conocer las ventas mensuales.
+	 * 
+	 * @param anio represenat el año a consultar.
+	 * @return representa la lista obtenida.
+	 */
+	@SuppressWarnings("unchecked")
+	public List<Venta> ventaMensual(String mes, String anio) {
+		String jpa = "FROM Venta v WHERE MONTHNAME(v.fechaRegistro)='"+ mes + "' AND YEAR(v.fechaRegistro) = '" + anio + "'";
+		Query query = getEm().createQuery(jpa);
+		return query.getResultList();
+	} 
 
 	/**
 	 * Metodo que permite conocer conocer la cantidad de unidades vendidas de un

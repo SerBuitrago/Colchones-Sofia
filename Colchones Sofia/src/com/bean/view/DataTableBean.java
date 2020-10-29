@@ -9,6 +9,7 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
 
 import com.entity.*;
+import com.util.Fecha;
 import com.dao.*;
 
 /**
@@ -44,6 +45,10 @@ public class DataTableBean implements Serializable {
 	private List<Cliente> cliente;
 	private List<Cliente> filter_cliente;
 	private int renderizar_cliente;
+	
+	private List<Venta> venta_mensual;
+	private List<Venta> filter_venta_mensual;
+	private int renderizar_venta_mensual;
 
 	///////////////////////////////////////////////////////
 	// Builders
@@ -128,6 +133,21 @@ public class DataTableBean implements Serializable {
 			VentaDao vDao = new VentaDao();
 			c.setVentas(vDao.findByFieldList("cliente", c));
 			this.cliente.add(c);
+		}
+	}
+	
+	/**
+	 * Metodo que permite conocer las ventas mensual.
+	 */
+	public void initVentaMensual() {
+		VentaDao dao= new VentaDao();
+		Fecha fecha = new Fecha();
+		List<Venta> aux = dao.ventaMensual(fecha.mesActualCadena(), String.valueOf(fecha.anioActual()));
+		this.venta_mensual = new ArrayList<Venta>();
+		for(Venta v: aux) {
+			DetalleVentaDao dvDao = new DetalleVentaDao();
+			v.setDetalleVentas(dvDao.findByFieldList("venta", v));
+			this.venta_mensual.add(v);
 		}
 	}
 
@@ -230,6 +250,19 @@ public class DataTableBean implements Serializable {
 			this.renderizar_cliente = 1;
 		}
 		return cliente;
+	}
+	
+	/**
+	 * Renderizando la tabla venta mensual.
+	 * 
+	 * @return una lista nueva.
+	 */
+	public List<Venta> getVenta_mensual() {
+		if(this.renderizar_venta_mensual == 0) {
+			initVentaMensual();
+			this.renderizar_venta_mensual = 1;
+		}
+		return venta_mensual;
 	}
 
 	///////////////////////////////////////////////////////
@@ -337,5 +370,25 @@ public class DataTableBean implements Serializable {
 
 	public void setRenderizar_cliente(int renderizar_cliente) {
 		this.renderizar_cliente = renderizar_cliente;
+	}
+
+	public void setVenta_mensual(List<Venta> venta_mensual) {
+		this.venta_mensual = venta_mensual;
+	}
+
+	public List<Venta> getFilter_venta_mensual() {
+		return filter_venta_mensual;
+	}
+
+	public void setFilter_venta_mensual(List<Venta> filter_venta_mensual) {
+		this.filter_venta_mensual = filter_venta_mensual;
+	}
+
+	public int getRenderizar_venta_mensual() {
+		return renderizar_venta_mensual;
+	}
+
+	public void setRenderizar_venta_mensual(int renderizar_venta_mensual) {
+		this.renderizar_venta_mensual = renderizar_venta_mensual;
 	}
 }

@@ -12,11 +12,15 @@ import org.primefaces.model.charts.ChartData;
 import org.primefaces.model.charts.axes.cartesian.CartesianScales;
 import org.primefaces.model.charts.axes.cartesian.linear.CartesianLinearAxes;
 import org.primefaces.model.charts.axes.cartesian.linear.CartesianLinearTicks;
+import org.primefaces.model.charts.bar.BarChartDataSet;
+import org.primefaces.model.charts.bar.BarChartModel;
 import org.primefaces.model.charts.bar.BarChartOptions;
 import org.primefaces.model.charts.donut.DonutChartDataSet;
 import org.primefaces.model.charts.donut.DonutChartModel;
 import org.primefaces.model.charts.hbar.HorizontalBarChartDataSet;
 import org.primefaces.model.charts.hbar.HorizontalBarChartModel;
+import org.primefaces.model.charts.optionconfig.legend.Legend;
+import org.primefaces.model.charts.optionconfig.legend.LegendLabel;
 import org.primefaces.model.charts.optionconfig.title.Title;
 import org.primefaces.model.charts.pie.PieChartDataSet;
 import org.primefaces.model.charts.pie.PieChartModel;
@@ -43,12 +47,15 @@ public class ChartJsBean implements Serializable {
 	private PieChartModel pie_venta_unidad_producto;
 	private PieChartModel pie_compra_unidad_producto;
 
+	private BarChartModel bar_cliente_cantidad_venta;
+	private BarChartModel bar_cliente_total_venta;
+
 	private HorizontalBarChartModel horizontal_chart_model_ventas_mensuales;
 	private HorizontalBarChartModel horizontal_chart_model_ventas_anuales;
 	private HorizontalBarChartModel horizontal_chart_model_compras_mensuales;
 	private HorizontalBarChartModel horizontal_chart_model_compras_anuales;
 
-	private Color colores;
+	private Color colores; 
 
 	///////////////////////////////////////////////////////
 	// Builders
@@ -97,6 +104,9 @@ public class ChartJsBean implements Serializable {
 			labels.add(Convertidor.genero(c.getNombre()));
 			bgColors.add(this.colores.getColores().get(index));
 			index++;
+			if (index >= this.colores.getColores().size()) {
+				index = 0;
+			}
 		}
 
 		// ADD LIST
@@ -107,6 +117,149 @@ public class ChartJsBean implements Serializable {
 		// ADD
 		data.addChartDataSet(dataSet);
 		donut_vendedor_venta_genero.setData(data);
+	}
+
+	///////////////////////////////////////////////////////
+	// Method - BarChartModel
+	///////////////////////////////////////////////////////
+	/**
+	 * Metodo que permite conocer el numero de ventas realizas por los clientes.
+	 */
+	public void barClienteCantidadVenta() {
+		this.bar_cliente_cantidad_venta = new BarChartModel();
+		ChartData data = new ChartData();
+		int index = 0;
+		BarChartDataSet barDataSet = new BarChartDataSet();
+		barDataSet.setLabel("Cantidad Ventas");
+
+		// SQL
+		ClienteDao dao = new ClienteDao();
+		List<ChartJS> list = dao.ventasCliente();
+
+		// LIST
+		List<Number> values = new ArrayList<>();
+		List<String> labels = new ArrayList<>();
+		List<String> bgColors = new ArrayList<>();
+		List<String> bgBorders = new ArrayList<String>();
+
+		// ITERRAR
+		for (ChartJS c : list) {
+			values.add(c.getCantidad());
+			labels.add(c.getNombre());
+			bgColors.add(this.colores.getColores().get(index));
+			bgBorders.add(this.colores.getBordes().get(index));
+			index++;
+			if (index >= this.colores.getColores().size()) {
+				index = 0;
+			}
+		}
+
+		// ADD LIST
+		barDataSet.setData(values);
+		barDataSet.setBackgroundColor(bgColors);
+		barDataSet.setBorderColor(bgBorders);
+		barDataSet.setBorderWidth(1);
+		data.addChartDataSet(barDataSet);
+
+		data.setLabels(labels);
+		this.bar_cliente_cantidad_venta.setData(data);
+
+		// Options
+		BarChartOptions options = new BarChartOptions();
+		CartesianScales cScales = new CartesianScales();
+		CartesianLinearAxes linearAxes = new CartesianLinearAxes();
+		CartesianLinearTicks ticks = new CartesianLinearTicks();
+		ticks.setBeginAtZero(true);
+		linearAxes.setTicks(ticks);
+		cScales.addYAxesData(linearAxes);
+		options.setScales(cScales);
+
+		Title title = new Title();
+		title.setDisplay(true);
+		title.setText("Clientes");
+		options.setTitle(title);
+
+		Legend legend = new Legend();
+		legend.setDisplay(true);
+		legend.setPosition("top");
+		LegendLabel legendLabels = new LegendLabel();
+		legendLabels.setFontStyle("bold");
+		legendLabels.setFontColor("#2980B9");
+		legendLabels.setFontSize(24);
+		legend.setLabels(legendLabels);
+		options.setLegend(legend);
+
+		this.bar_cliente_cantidad_venta.setOptions(options);
+	}
+
+	/**
+	 * Metodo que permite conocer la plata que deja los clientes en la empresa.
+	 */
+	public void barClienteTotalVenta() {
+		this.bar_cliente_total_venta = new BarChartModel();
+		ChartData data = new ChartData();
+		int index = 0;
+		BarChartDataSet barDataSet = new BarChartDataSet();
+		barDataSet.setLabel("Dinero Ventas");
+
+		// SQL
+		ClienteDao dao = new ClienteDao();
+		List<ChartJS> list = dao.ventasCliente();
+
+		// LIST
+		List<Number> values = new ArrayList<>();
+		List<String> labels = new ArrayList<>();
+		List<String> bgColors = new ArrayList<>();
+		List<String> bgBorders = new ArrayList<String>();
+
+		// ITERRAR
+		for (ChartJS c : list) {
+			values.add(c.getTotal());
+			labels.add(c.getNombre());
+			bgColors.add(this.colores.getColores().get(index));
+			bgBorders.add(this.colores.getBordes().get(index));
+			index++;
+			if (index >= this.colores.getColores().size()) {
+				index = 0;
+			}
+		}
+
+		// ADD LIST
+		barDataSet.setData(values);
+		barDataSet.setBackgroundColor(bgColors);
+		barDataSet.setBorderColor(bgBorders);
+		barDataSet.setBorderWidth(1);
+		data.addChartDataSet(barDataSet);
+
+		data.setLabels(labels);
+		this.bar_cliente_total_venta.setData(data);
+
+		// Options
+		BarChartOptions options = new BarChartOptions();
+		CartesianScales cScales = new CartesianScales();
+		CartesianLinearAxes linearAxes = new CartesianLinearAxes();
+		CartesianLinearTicks ticks = new CartesianLinearTicks();
+		ticks.setBeginAtZero(true);
+		linearAxes.setTicks(ticks);
+		cScales.addYAxesData(linearAxes);
+		options.setScales(cScales);
+
+		Title title = new Title();
+		title.setDisplay(true);
+		title.setText("Clientes");
+		options.setTitle(title);
+
+		Legend legend = new Legend();
+		legend.setDisplay(true);
+		legend.setPosition("top");
+		LegendLabel legendLabels = new LegendLabel();
+		legendLabels.setFontStyle("bold");
+		legendLabels.setFontColor("#2980B9");
+		legendLabels.setFontSize(24);
+		legend.setLabels(legendLabels);
+		options.setLegend(legend);
+
+		this.bar_cliente_total_venta.setOptions(options);
 	}
 
 	///////////////////////////////////////////////////////
@@ -137,6 +290,9 @@ public class ChartJsBean implements Serializable {
 			labels.add(c.getNombre());
 			bgColors.add(this.colores.getColores().get(index));
 			index++;
+			if (index >= this.colores.getColores().size()) {
+				index = 0;
+			}
 		}
 
 		// ADD LIST
@@ -174,6 +330,9 @@ public class ChartJsBean implements Serializable {
 			labels.add(c.getNombre());
 			bgColors.add(this.colores.getColores().get(index));
 			index++;
+			if (index >= this.colores.getColores().size()) {
+				index = 0;
+			}
 		}
 
 		// ADD LIST
@@ -221,6 +380,9 @@ public class ChartJsBean implements Serializable {
 			bgColors.add(this.colores.getColores().get(index));
 			bgBorders.add(this.colores.getBordes().get(index));
 			index++;
+			if (index >= this.colores.getColores().size()) {
+				index = 0;
+			}
 		}
 
 		// ADD LIST
@@ -281,6 +443,9 @@ public class ChartJsBean implements Serializable {
 			bgColors.add(this.colores.getColores().get(index));
 			bgBorders.add(this.colores.getBordes().get(index));
 			index++;
+			if (index >= this.colores.getColores().size()) {
+				index = 0;
+			}
 		}
 
 		// ADD LIST
@@ -343,6 +508,9 @@ public class ChartJsBean implements Serializable {
 			bgColors.add(this.colores.getColores().get(index));
 			bgBorders.add(this.colores.getBordes().get(index));
 			index++;
+			if (index >= this.colores.getColores().size()) {
+				index = 0;
+			}
 		}
 
 		// ADD LIST
@@ -403,6 +571,9 @@ public class ChartJsBean implements Serializable {
 			bgColors.add(this.colores.getColores().get(index));
 			bgBorders.add(this.colores.getBordes().get(index));
 			index++;
+			if (index >= this.colores.getColores().size()) {
+				index = 0;
+			}
 		}
 
 		// ADD LIST
@@ -441,6 +612,19 @@ public class ChartJsBean implements Serializable {
 	public DonutChartModel getDonut_vendedor_venta_genero() {
 		this.donutVendedorVentaGenero();
 		return donut_vendedor_venta_genero;
+	}
+
+	///////////////////////////////////////////////////////
+	// Renderizar - BarChartModel
+	///////////////////////////////////////////////////////
+	public BarChartModel getBar_cliente_cantidad_venta() {
+		this.barClienteCantidadVenta();
+		return bar_cliente_cantidad_venta;
+	}
+
+	public BarChartModel getBar_cliente_total_venta() {
+		this.barClienteTotalVenta();
+		return bar_cliente_total_venta;
 	}
 
 	///////////////////////////////////////////////////////
@@ -526,5 +710,13 @@ public class ChartJsBean implements Serializable {
 	public void setHorizontal_chart_model_compras_anuales(
 			HorizontalBarChartModel horizontal_chart_model_compras_anuales) {
 		this.horizontal_chart_model_compras_anuales = horizontal_chart_model_compras_anuales;
+	}
+
+	public void setBar_cliente_cantidad_venta(BarChartModel bar_cliente_cantidad_venta) {
+		this.bar_cliente_cantidad_venta = bar_cliente_cantidad_venta;
+	}
+
+	public void setBar_cliente_total_venta(BarChartModel bar_cliente_total_venta) {
+		this.bar_cliente_total_venta = bar_cliente_total_venta;
 	}
 }

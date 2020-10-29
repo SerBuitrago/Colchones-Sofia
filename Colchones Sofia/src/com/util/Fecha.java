@@ -28,6 +28,7 @@ public class Fecha implements Serializable {
 	private long minutos;
 	
 	private String meses [] = {"January" , "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"};
+	private String meses_esp [] = {"Enero" , "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"};
 
 	///////////////////////////////////////////////////////
 	// Builder
@@ -171,6 +172,15 @@ public class Fecha implements Serializable {
 		int mes= mesActual();
 		return this.meses[mes];
 	}
+	
+	/**
+	 * Metodo que permite calcular el mes actual.
+	 * @return retorna el mes actual.
+	 */
+	public String mesActualCadenaESP() {
+		int mes= mesActual();
+		return this.meses_esp[mes];
+	}
 
 	///////////////////////////////////////////////////////
 	// Getter y Setters
@@ -225,5 +235,13 @@ public class Fecha implements Serializable {
 
 	public void setMeses(String[] meses) {
 		this.meses = meses;
+	}
+
+	public String[] getMeses_esp() {
+		return meses_esp;
+	}
+
+	public void setMeses_esp(String[] meses_esp) {
+		this.meses_esp = meses_esp;
 	}
 }

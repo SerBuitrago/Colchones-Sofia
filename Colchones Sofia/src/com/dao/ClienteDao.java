@@ -1,5 +1,6 @@
 package com.dao;
 
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -32,13 +33,14 @@ public class ClienteDao extends Conexion<Cliente> implements Interface<Cliente> 
 	///////////////////////////////////////////////////////
 
 	/**
+	 * Metodo que permite conocer cuales son los clientes que mas compran y la plata
+	 * que dejan.
 	 * 
-	 * @param documento
-	 * @return
+	 * @return la lista con el resultado
 	 */
 	public List<ChartJS> ventasCliente() {
-		String jpa = "SELECT COUNT(v.cliente), CONCAT(v.cliente.persona.nombre,v.cliente.persona.apellido)"
-				+ " FROM Venta v GROUP BY v.cliente ORDER BY COUNT(v.cliente)";
+		String jpa = "SELECT COUNT(v.cliente),CONCAT(v.cliente.persona.nombre,' ',v.cliente.persona.apellido)"
+				+ ", SUM(v.total)" + " FROM Venta v GROUP BY v.cliente ORDER BY COUNT(v.cliente) DESC";
 		Query query = getEm().createQuery(jpa);
 		@SuppressWarnings("rawtypes")
 		List result = query.getResultList();
@@ -50,16 +52,9 @@ public class ClienteDao extends Conexion<Cliente> implements Interface<Cliente> 
 			ChartJS cc = new ChartJS();
 			cc.setCantidad(Integer.parseInt((String.valueOf(tupla[0]))));
 			cc.setNombre(String.valueOf(tupla[1]));
+			cc.setTotal(new BigInteger(String.valueOf(tupla[2])));
 			c.add(cc);
 		}
 		return c;
 	}
-
-	public static void main(String p[]) {
-		ClienteDao dao = new ClienteDao();
-		for(ChartJS aux: dao.ventasCliente()) {
-			System.out.println(aux);
-		}
-	}
-
 }

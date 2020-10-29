@@ -8,6 +8,7 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 
 import com.entity.*;
+import com.util.Fecha;
 import com.dao.*;
 
 /**
@@ -25,6 +26,9 @@ public class AppBean implements Serializable {
 
 	private App app;
 
+	private String mes;
+	private int anio;
+
 	///////////////////////////////////////////////////////
 	// Builders
 	///////////////////////////////////////////////////////
@@ -37,6 +41,9 @@ public class AppBean implements Serializable {
 	@PostConstruct
 	public void init() {
 		this.app();
+		Fecha fecha = new Fecha();
+		this.mes = fecha.mesActualCadenaESP();
+		this.anio = fecha.anioActual();
 	}
 
 	///////////////////////////////////////////////////////
@@ -62,7 +69,7 @@ public class AppBean implements Serializable {
 		this.app = new App(email, telefonos, global);
 		this.app.setCarrousel(informacion);
 	}
-	
+
 	///////////////////////////////////////////////////////
 	// Getter y Setters
 	///////////////////////////////////////////////////////
@@ -76,5 +83,21 @@ public class AppBean implements Serializable {
 
 	public static long getSerialversionuid() {
 		return serialVersionUID;
+	}
+
+	public String getMes() {
+		return mes;
+	}
+
+	public void setMes(String mes) {
+		this.mes = mes;
+	}
+
+	public int getAnio() {
+		return anio;
+	}
+
+	public void setAnio(int anio) {
+		this.anio = anio;
 	}
 }

@@ -5,6 +5,7 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
@@ -16,8 +17,8 @@ import javax.faces.context.FacesContext;
 import org.primefaces.PrimeFaces;
 
 import com.entity.*;
-import com.util.Face;
-import com.util.Fecha;
+import com.entity.other.*;
+import com.util.*;
 import com.dao.*;
 
 /**
@@ -53,6 +54,11 @@ public class VentaBean implements Serializable {
 	private DetalleVenta detalle_venta;
 	private VentaDetalleProducto detalle_venta_producto;
 	private int cantidad_actualizar;
+
+	private List<Venta> tabla_all_venta;
+	private List<Venta> filter_all_venta;
+	private List<DetalleVenta> tabla_venta_filter_detalle_venta;
+	private boolean renderizar_all_venta;
 
 	///////////////////////////////////////////////////////
 	// Managed
@@ -132,6 +138,13 @@ public class VentaBean implements Serializable {
 	public void initRenderizarTablaProductos() {
 		this.renderizar_tabla_productos = true;
 		this.hidden_tabla_productos = false;
+	}
+
+	/**
+	 * Metodo que permite inicilizar la tabla de ventas.
+	 */
+	public void initRendedirzarAllTablaVenta() {
+		this.renderizar_all_venta = true;
 	}
 
 	/**
@@ -328,16 +341,18 @@ public class VentaBean implements Serializable {
 							if (this.message == null) {
 								registrarHistorialPresupuesto();
 								if (this.message == null) {
-									// AQUI VA CORREO
+									// CORREO
 									List<Telefono> telefonos = app.getApp().getTelefono();
-									String cadena= this.email.formatVenta(this.venta.getIdVenta(), this.tabla_venta.size(),
-											this.venta.getTotal(),
+									String cadena = this.email.formatVenta(this.venta.getIdVenta(),
+											this.tabla_venta.size(), this.venta.getTotal(),
 											((telefonos != null && telefonos.size() > 0)
 													? String.valueOf(telefonos.get(0).getTelefono())
 													: ""),
 											app.getApp().getGlobal().getDireccion());
-									this.email.send(this.venta.getCliente().getPersona().getEmail(), "Confirmación Venta", cadena);
+									this.email.send(this.venta.getCliente().getPersona().getEmail(),
+											"Confirmación Venta", cadena);
 
+									// MENSAGE
 									this.message = new FacesMessage(FacesMessage.SEVERITY_INFO, "succes",
 											"Se ha completado la venta sin errores.");
 									this.initVenta();
@@ -470,7 +485,7 @@ public class VentaBean implements Serializable {
 	 * Metodo que permite registrar la devolucion garantia
 	 */
 	@SuppressWarnings("deprecation")
-	public void registrarDevolucionGarantia() { 
+	public void registrarDevolucionGarantia() {
 		this.message = null;
 		if (this.venta != null) {
 			DevolucionGarantiaDao dao = new DevolucionGarantiaDao();
@@ -892,6 +907,18 @@ public class VentaBean implements Serializable {
 	// Validator
 	///////////////////////////////////////////////////////
 	/**
+	 * Metodo que permite validar los campos de int.
+	 * 
+	 * @param value  representa el valor.
+	 * @param filter representa tipo filtro.
+	 * @param locale representa dirección.
+	 * @return retorna si se muestra en el filtro o no.
+	 */
+	public boolean filterByInteger(Object value, Object filter, Locale locale) {
+		return Convertidor.filterByInteger(value, filter, locale);
+	}
+	
+	/**
 	 * Metodo que permite validar las cantidades de los productos seleccionados.
 	 * 
 	 * @param list representa la lista de productos.
@@ -1093,6 +1120,36 @@ public class VentaBean implements Serializable {
 		return tabla_productos;
 	}
 
+	/**
+	 * Metodo que consulta todas las ventas realizadas.
+	 * 
+	 * @return una lista con todas las ventas.
+	 */
+	public List<Venta> getTabla_all_venta() {
+		if (this.tabla_all_venta == null) {
+			this.renderizar_all_venta = true;
+		}
+		if (this.renderizar_all_venta) {
+			this.tabla_all_venta = new ArrayList<Venta>();
+			VentaDao dao = new VentaDao();
+			List<Venta> list = dao.list();
+			for (Venta venta : list) {
+				DetalleVentaDao dvDao = new DetalleVentaDao();
+				List<DetalleVenta> dList = dvDao.findByFieldList("venta", venta);
+				List<DetalleVenta> detalles = new ArrayList<DetalleVenta>();
+				for(DetalleVenta dv: dList) { 
+					detalles.add(dv);
+				}
+				venta.setDetalleVentas(detalles);
+				EstadoVentaDao evDao = new EstadoVentaDao();
+				venta.setEstadoVentas(evDao.findByFieldList("venta", venta));
+				this.tabla_all_venta.add(venta);
+			}
+			this.renderizar_all_venta = false;
+		}
+		return tabla_all_venta;
+	}
+
 	///////////////////////////////////////////////////////
 	// Getter and Setters
 	///////////////////////////////////////////////////////
@@ -1246,5 +1303,33 @@ public class VentaBean implements Serializable {
 
 	public void setApp(AppBean app) {
 		this.app = app;
+	}
+
+	public void setTabla_all_venta(List<Venta> tabla_all_venta) {
+		this.tabla_all_venta = tabla_all_venta;
+	}
+
+	public List<Venta> getFilter_all_venta() {
+		return filter_all_venta;
+	}
+
+	public void setFilter_all_venta(List<Venta> filter_all_venta) {
+		this.filter_all_venta = filter_all_venta;
+	}
+
+	public boolean isRenderizar_all_venta() {
+		return renderizar_all_venta;
+	}
+
+	public void setRenderizar_all_venta(boolean renderizar_all_venta) {
+		this.renderizar_all_venta = renderizar_all_venta;
+	}
+
+	public List<DetalleVenta> getTabla_venta_filter_detalle_venta() {
+		return tabla_venta_filter_detalle_venta;
+	}
+
+	public void setTabla_venta_filter_detalle_venta(List<DetalleVenta> tabla_venta_filter_detalle_venta) {
+		this.tabla_venta_filter_detalle_venta = tabla_venta_filter_detalle_venta;
 	}
 }
