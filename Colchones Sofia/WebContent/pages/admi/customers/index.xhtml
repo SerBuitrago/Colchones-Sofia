@@ -67,6 +67,20 @@
 						</p:fieldset>
 					</h:panelGroup>
 				</p:tab>
+
+				<!--         -->
+				<!-- REPORST -->
+				<!--         -->
+				<p:tab title="Cantidad">
+					<p:barChart model="#{chartjs.bar_cliente_cantidad_venta}"/>
+				</p:tab>
+				
+				<!--         -->
+				<!-- REPORST -->
+				<!--         -->
+				<p:tab title="Dinero">
+					<p:barChart model="#{chartjs.bar_cliente_total_venta}"/>
+				</p:tab>
 			</p:tabView>
 		</p:fieldset>
 	</ui:define>

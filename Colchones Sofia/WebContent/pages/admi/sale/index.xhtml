@@ -117,9 +117,16 @@
 						</h:panelGroup>
 					</h:panelGroup>
 				</p:tab>
+
+				<!--         -->
+				<!-- REPORST -->
+				<!--         -->
+				<p:tab title="Cliente">
+					<p:barChart model="#{chartjs.bar_cliente_total_venta}" />
+					<p:barChart model="#{chartjs.bar_cliente_cantidad_venta}" />
+				</p:tab>
 			</p:tabView>
 		</p:fieldset>
 	</ui:define>
-
 </ui:composition>
 </html>
