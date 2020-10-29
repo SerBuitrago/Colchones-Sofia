@@ -19,7 +19,6 @@ public class Usuario implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int documento;
 
 	private String clave;
@@ -400,4 +399,5 @@ public class Usuario implements Serializable {
 	public void setVentas(List<Venta> ventas) {
 		this.ventas = ventas;
 	}
+	
 }
