@@ -36,7 +36,7 @@
 						            sofia-view-login__panel-row-liquid">
 						<h4>
 							<i class="pi pi-shopping-cart"/>
-							#{app.app.getGlobal().getNombre()}
+							#{app.app.empresa.nombre}
 						</h4>
 						<!--           -->
 						<!-- CARROUSEL -->
@@ -45,15 +45,15 @@
 							class="owl-carousel owl-theme container-login__panel-row-col-carousel">
 							<ui:repeat var="c" value="#{app.app.carrousel}"
 								varStatus="status">
-								<p:graphicImage value="#{image.carrousel}"
+								<p:graphicImage value="#{image.informacion_empresa}"
 									styleClass="owl-carousel__img">
-									<f:param name="id" value="#{c.id}" />
+									<f:param name="id-informacion-empresa" value="#{c.id}" />
 								</p:graphicImage>
 							</ui:repeat>
 						</div>
 						<h:panelGroup layout="block"
 							styleClass="sofia-view-login__panel-row-liquid-descripcion">
-							<p>#{app.app.global.descripcion}</p>
+							<p>#{app.app.empresa.descripcion}</p>
 						</h:panelGroup>
 					</h:panelGroup>
 
@@ -113,7 +113,7 @@
 											<f:selectItems value="#{selection.roles}" styleClass="info" />
 										</p:selectOneMenu>
 									</h:panelGroup>
-									
+									 
 									<!--        -->
 									<!-- FORGOT -->
 									<!--        -->
@@ -124,7 +124,7 @@
 											styleClass="sofia-link sofia-link-forgot"
 											onclick="viewLoginForgot()" />
 									</h:panelGroup>	
-								</h:panelGroup>
+								</h:panelGroup> 
 								
 								<!--       -->
 								<!-- LOGIN -->

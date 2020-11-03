@@ -11,10 +11,15 @@
 	<!-- SECURITY -->
 	<!--          -->
 	<f:metadata>
-		<f:event type="preRenderView" listener="#{security.check('Admi')}" />
+		<f:event type="preRenderView"
+			listener="#{security.check('ADMINISTRADOR')}" />
 	</f:metadata>
-	<title>#{app.app.getGlobal().getNombre()} | Admi <ui:insert
-			name="title" /></title>
+
+	<!--       -->
+	<!-- TITLE -->
+	<!--       -->
+	<title>#{app.app.empresa.nombre} | Admi <ui:insert name="title" /></title>
+
 	<!--     -->
 	<!-- CSS -->
 	<!--     -->
@@ -73,6 +78,7 @@
 			</h:form>
 		</h:panelGroup>
 
+
 		<!--      -->
 		<!-- LEFT -->
 		<!--      -->
@@ -100,7 +106,7 @@
 							<!--     -->
 							<h:panelGroup layout="block" styleClass="sidebar-brand">
 								<p:commandLink action="/pages/admi/index?faces-redirect=true"
-									value="#{app.app.getGlobal().getNombre()}" />
+									value="#{app.app.empresa.nombre}" />
 
 								<h:panelGroup layout="block" styleClass="close-sidebar">
 									<i class="fas fa-times"></i>
@@ -116,16 +122,18 @@
 								<!-- IMAGE -->
 								<!--       -->
 								<h:panelGroup layout="block" styleClass="user-pic">
-									<p:commandLink actionListener="#{usuario.obtenerUsuario()}"
+									<p:commandLink title="Ver perfil"
 										action="/pages/admi/profile/profile?faces-redirect=true">
-										<h:graphicImage rendered="#{sesion.logeado.foto == null}"
+										<h:graphicImage
+											rendered="#{sesion.logeado.persona.foto == null}"
 											library="img" name="user.png"
 											styleClass="img-responsive img-rounded" />
-										<p:graphicImage rendered="#{sesion.logeado.foto != null}"
-											value="#{image.usuario}"
+										<p:graphicImage
+											rendered="#{sesion.logeado.persona.foto != null}"
+											value="#{image.persona}"
 											styleClass="img-responsive img-rounded">
-											<f:param name="documento-usuario"
-												value="#{sesion.logeado.documento}" />
+											<f:param name="documento-persona"
+												value="#{sesion.logeado.persona.documento}" />
 										</p:graphicImage>
 									</p:commandLink>
 								</h:panelGroup>
@@ -137,7 +145,7 @@
 									<h:outputLabel styleClass="user-name"
 										value="#{sesion.logeado.persona.nombre}" />
 									<h:outputLabel styleClass="user-role"
-										value="#{sesion.logeado.rol.nombre == 'Admi' ? 'Administrador' : 'Otro'}" />
+										value="#{sesion.logeado.rolBean.rol == 'ADMINISTRADOR' ? 'Administrador' : 'Otro'}" />
 									<span class="user-status"> <i class="fa fa-circle"></i>
 										<span>Online</span>
 									</span>
@@ -148,245 +156,32 @@
 							<!-- CENTER -->
 							<!--        -->
 							<h:panelGroup layout="block" styleClass="sidebar-menu">
-								<ul>
-									<li class="header-menu">
-										<span>Mantenimiento</span>
-									</li>
-									<li class="sidebar-dropdown">
-										<p:commandLink>
-											<i class="fas fa-user-friends"></i>
-											<span>Asistente</span>
-										</p:commandLink> 
-										<h:panelGroup layout="block" styleClass="sidebar-submenu">
-											<ul>
-												<li>
-													<p:commandLink
-														action="/pages/admi/asistent/index?faces-redirect=true">
-														<i class="far fa-chart-bar"></i>Estadisticas
-													</p:commandLink></li>
-												<li>
-													<p:commandLink
-														action="/pages/admi/asistent/all?faces-redirect=true">
-														<i class="fas fa-file"></i>Historial
-													</p:commandLink></li>
-												<li>
-													<p:commandLink
-														action="/pages/admi/asistent/register?faces-redirect=true">
-														<i class="fas fa-user-plus"></i>Registrar
-													</p:commandLink></li>
-											</ul>
-										</h:panelGroup>
-									</li>
-									
-									<!--           -->
-									<!-- CUSTOMERS -->
-									<!--           -->
-									<li class="sidebar-dropdown">
-										<p:commandLink>
-											<i class="fa fa-fw fa-male"></i>
-											<span>Cliente</span>
-										</p:commandLink> 
-										<h:panelGroup layout="block" styleClass="sidebar-submenu">
-											<ul>
-												<li>
-													<p:commandLink
-														action="/pages/admi/customers/index?faces-redirect=true">
-														<i class="far fa-chart-bar"></i>Estadisticas
-													</p:commandLink>
-												</li>
-												<li>
-													<p:commandLink
-														action="/pages/admi/customers/all?faces-redirect=true">
-														<i class="fa fa-fw fa-clipboard"></i>Historial
-													</p:commandLink>
-												</li>
-											</ul>
-										</h:panelGroup>
-									</li>
-									
-									<!--          -->
-									<!-- PROVIDER -->
-									<!--          -->
-									<li class="sidebar-dropdown">
-										<p:commandLink>
-											<i class="pi pi-users"></i>
-											<span>Proveedor</span>
-										</p:commandLink> 
-										<h:panelGroup layout="block" styleClass="sidebar-submenu">
-											<ul>
-												<li>
-													<p:commandLink
-														action="/pages/admi/provider/index?faces-redirect=true">
-														<i class="far fa-chart-bar"></i>Estadisticas
-													</p:commandLink>
-												</li>
-												<li>
-													<p:commandLink
-														action="/pages/admi/provider/all?faces-redirect=true">
-														<i class="fa fa-fw fa-clipboard"></i>Historial
-													</p:commandLink>
-												</li>
-												<li>
-													<p:commandLink
-														action="/pages/admi/provider/register?faces-redirect=true">
-														<i class="fas fa-user-plus"></i>Registrar
-													</p:commandLink>
-												</li>
-											</ul>
-										</h:panelGroup>
-									</li>
-									<li class="sidebar-dropdown">
-										<p:commandLink>
-											<i class="fa fa-fw fa-user-tag"></i>
-											<span>Vendedor</span>
-										</p:commandLink> 
-										<h:panelGroup layout="block" styleClass="sidebar-submenu">
-											<ul>
-												<li>
-													<p:commandLink
-														action="/pages/admi/seller/index?faces-redirect=true">
-														<i class="far fa-chart-bar"></i>Estadisticas
-													</p:commandLink>
-												</li>
-												<li>
-													<p:commandLink
-														action="/pages/admi/seller/all?faces-redirect=true">
-														<i class="fa fa-fw fa-clipboard"></i>Historial
-													</p:commandLink>
-												</li>
-												<li>
-													<p:commandLink
-														action="/pages/admi/seller/register?faces-redirect=true">
-														<i class="fas fa-user-plus"></i>Registrar
-													</p:commandLink>
-												</li>
-											</ul>
-										</h:panelGroup>
-									</li>
-									
-									<!--          -->
-									<!-- CATEGORY -->
-									<!--          -->
-									<li class="sidebar-dropdown">
-										<p:commandLink>
-											<i class="fa fa-fw fa-bar-chart-o"></i>
-											<span>Categoria</span>
-											<span class="badge badge-pill sofia-statu-succes sofia-statu">Pro</span>
-										</p:commandLink> <h:panelGroup layout="block" styleClass="sidebar-submenu">
-											<ul>
-												<li>
-													<p:commandLink
-														action="/pages/admi/category/index?faces-redirect=true">
-														<i class="far fa-chart-bar"></i>Estadisticas
-													</p:commandLink></li>
-												<li>
-													<p:commandLink
-														action="/pages/admi/category/all?faces-redirect=true">
-														<i class="fa fa-fw fa-clipboard"></i>Historial
-													</p:commandLink>
-												</li>
-											</ul>
-										</h:panelGroup>
-									</li>
-
-									<!--     -->
-									<!-- BUY -->
-									<!--     -->
-									<li class="header-menu">
-										<span>Compra</span>
-									</li>
-									<li>
-										<p:commandLink
-											action="/pages/admi/buy/index?faces-redirect=true">
-											<i class="fa fa-fw fa-bar-chart-o"></i>Estadisticas
-										</p:commandLink>
-									</li>
-									<li>
-										<p:commandLink
-											action="/pages/admi/buy/all?faces-redirect=true">
-											<i class="fa fa-fw fa-clipboard"></i>Historial
-										</p:commandLink>
-									</li>
-									<li>
-										<p:commandLink
-											action="/pages/admi/buy/register?faces-redirect=true">
-											<i class="fa fa-fw fa-plus-square"></i>Registrar
-										</p:commandLink>
-									</li>
-									
-									<!--      -->
-									<!-- SALE -->
-									<!--      -->
-									<li class="header-menu">
-										<span>Venta</span>
-									</li>
-									<li>
-										<p:commandLink
-											action="/pages/admi/sale/index?faces-redirect=true">
-											<i class="fa fa-fw fa-bar-chart-o"></i>Estadisticas
-										</p:commandLink>
-									</li>
-									<li>
-										<p:commandLink  action="/pages/admi/sale/all?faces-redirect=true">
-											<i class="fa fa-fw fa-clipboard"></i>Historial
-										</p:commandLink>
-									</li>
-									<li>
-										<p:commandLink
-											action="/pages/admi/sale/month?faces-redirect=true">
-											<i class="fa fa-fw fa-calendar-alt"></i>Venta #{app.mes}
-											<span class="badge badge-pill sofia-statu-succes sofia-statu">Pro</span>
-										</p:commandLink>
-									</li>
-									<li>
-										<p:commandLink
-											action="/pages/admi/sale/register?faces-redirect=true">
-											<i class="fa fa-fw fa-plus-square"></i>Registrar
-										</p:commandLink>
-									</li>
-									
-									
-									<!--         -->
-									<!-- COMPANY -->
-									<!--         -->
-									<li class="header-menu">
-										<span>#{app.app.getGlobal().getNombre()}</span>
-									</li>
-									<li>
-										<p:commandLink
-											action="/pages/admi/setting/setting?faces-redirect=true">
-											<i class="fa fa-fw fa-building"></i>Empresa
-											<span class="badge badge-pill sofia-statu-succes sofia-statu">Pro</span>
-										</p:commandLink>
-									</li>
-									<li>
-										<p:commandLink
-											action="/pages/admi/setting/all?faces-redirect=true">
-											<i class="fa fa-fw fa-dollar-sign"></i>Histotial Presupuesto
-											<span class="badge badge-pill sofia-statu-succes sofia-statu">Pro</span>
-										</p:commandLink>
-										
-									</li>
-								</ul>
+								<ui:repeat var="sb" value="#{menu.initMenu()}">
+									<ul>
+										<li class="header-menu"><span>#{sb.nombre}</span></li>
+										<ui:repeat var="isb" value="#{sb.submenus}">
+											<li class="sidebar-dropdown"><p:commandLink>
+													<i class="#{isb.icono}"></i>
+													<span>#{isb.nombre}</span>
+												</p:commandLink> <h:panelGroup layout="block" styleClass="sidebar-submenu">
+													<ul>
+														<ui:repeat var="sisb" value="#{isb.submenus}">
+															<li><p:commandLink action="#{sisb.accion}">
+																	<i class="#{sisb.icono}"></i>#{sisb.nombre}
+															</p:commandLink></li>
+														</ui:repeat>
+													</ul>
+												</h:panelGroup></li>
+										</ui:repeat>
+									</ul>
+								</ui:repeat>
 							</h:panelGroup>
-						</h:panelGroup>
-
-						<!--       -->
-						<!-- STATU -->
-						<!--       -->
-						<h:panelGroup layout="block" styleClass="sidebar-footer">
-							<h:commandLink action="/pages/admi/setting/setting?faces-redirect=true"> 
-								<i class="fa fa-cog"></i> 
-								<span class="badge-sonar"></span> 
-							</h:commandLink>
-							<h:commandLink action="#{security.close()}" title="Cerrar Sesión">
-								 <i class="fa fa-power-off"></i>
-							</h:commandLink>
 						</h:panelGroup>
 					</h:panelGroup>
 				</h:panelGroup>
 			</h:form>
 		</h:panelGroup>
+
 
 		<!--        -->
 		<!-- CENTER -->

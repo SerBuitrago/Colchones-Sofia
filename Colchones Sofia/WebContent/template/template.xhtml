@@ -12,8 +12,11 @@
 	<!-- SECURITY -->
 	<!--          -->
 	<f:event type="preRenderView" listener="#{security.login()}" />
-
-	<title>#{app.app.getGlobal().getNombre()} <ui:insert
+	
+	<!--       -->
+	<!-- TITLE -->
+	<!--       -->
+	<title>#{app.app.empresa.nombre} <ui:insert
 			name="title" /></title>
 
 	<ui:insert name="head" />
@@ -107,7 +110,7 @@
 			</p:menubar>
 		</h:form>
 	</h:panelGroup>
-
+	
 	<!--           -->
 	<!-- COMPONENT -->
 	<!--           -->
