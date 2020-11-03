@@ -20,7 +20,7 @@ import javax.persistence.criteria.Root;
  * @version 1.0.0.0.
  */
 public class Conexion<T> {
-	
+
 	private Class<T> c;
 	private static EntityManager em = null;
 
@@ -39,7 +39,7 @@ public class Conexion<T> {
 	}
 
 	///////////////////////////////////////////////////////
-	/// Getters and Setters 
+	/// Getters and Setters
 	///////////////////////////////////////////////////////
 
 	public void setC(Class<T> c) {
@@ -48,14 +48,14 @@ public class Conexion<T> {
 
 	public static EntityManager getEm() {
 		if (em == null) {
-			EntityManagerFactory emf = Persistence.createEntityManagerFactory("colchones");  
+			EntityManagerFactory emf = Persistence.createEntityManagerFactory("sofia");
 			em = emf.createEntityManager();
 		}
 		return em;
 	}
 
 	///////////////////////////////////////////////////////
-	/// Methods 
+	/// Methods
 	///////////////////////////////////////////////////////
 	/**
 	 * Metodo que trae el elemento mediante su PK.
@@ -93,7 +93,7 @@ public class Conexion<T> {
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
-			 //em.close();
+			// em.close();
 		}
 	}
 
@@ -110,7 +110,7 @@ public class Conexion<T> {
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
-			 //em.close();
+			// em.close();
 		}
 	}
 
@@ -127,7 +127,7 @@ public class Conexion<T> {
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
-			//em.close();
+			// em.close();
 		}
 	}
 

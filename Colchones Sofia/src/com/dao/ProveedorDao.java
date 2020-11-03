@@ -1,57 +1,39 @@
 package com.dao;
 
-import java.util.List;
-
 import javax.persistence.Query;
 
-import com.entity.*;
+import com.entity.Proveedor;
 import com.util.Conexion;
 
-/**
- * Implementation ProveedorDao.
- * 
- * @author DeveUp.
- * @phone 3118398189.
- * @email deveup@gmail.com.
- * @version 1.0.0.0.
- */
 public class ProveedorDao extends Conexion<Proveedor> implements Interface<Proveedor> {
-	
-	///////////////////////////////////////////////////////
-	// Builders
-	///////////////////////////////////////////////////////
+
 	public ProveedorDao() {
 		super(Proveedor.class);
 	}
-	
-	///////////////////////////////////////////////////////
-	// Method
-	///////////////////////////////////////////////////////
-	/**
-	 * Metodo que permite conocer el ultimo proveedor agregado.
-	 * @return representa el ultimo proveedor agregado.
-	 */
-	@SuppressWarnings("unchecked")
-	public Proveedor ultimoAdd() {
-		Query query = getEm().createQuery("FROM Proveedor ORDER BY idProveedor DESC");
-		List<Proveedor> list= query.getResultList();
-		if(list != null && list.size() > 0) {
-			return list.get(0);
-		}else {
-			return null;
-		}
-	}	
-	
+
 	/**
 	 * 
-	 * @param inicio
-	 * @param fin
+	 * @param proveedor
+	 * @param producto
 	 * @return
 	 */
-	@SuppressWarnings({"unchecked" })
-	public List<Proveedor> consultaProveedor(String inicio, String fin){
-		Query query = getEm().createQuery("FROM Proveedor WHERE fechaRegistro BETWEEN '"+inicio+"' AND '"+fin+"' ORDER BY fechaRegistro");
-		List<Proveedor> list= query.getResultList();
-		return list;
+	@SuppressWarnings("static-access")
+	public boolean insertProveedorProducto(String proveedor, String producto) {
+		boolean valid = false;
+		try {
+			this.getEm().getTransaction().begin();
+			String queryString2 = "INSERT INTO proveedor_producto(proveedor, producto) values (?,?)";
+			Query query2 = getEm().createNativeQuery(queryString2);
+			
+			query2.setParameter(1, proveedor);
+			query2.setParameter(2, producto);
+			query2.executeUpdate();
+			
+			getEm().getTransaction().commit();
+			getEm().close();
+			return true;
+		} catch (Exception e) {
+			return valid;
+		}
 	}
 }

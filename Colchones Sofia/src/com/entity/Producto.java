@@ -5,117 +5,52 @@ import javax.persistence.*;
 import java.util.Date;
 import java.util.List;
 
+
 /**
- * Implementation Producto.
+ * The persistent class for the producto database table.
  * 
- * @author DeveUp.
- * @phone 3118398189.
- * @email deveup@gmail.com.
- * @version 1.0.0.0.
  */
 @Entity
-@NamedQuery(name = "Producto.findAll", query = "SELECT p FROM Producto p")
+@NamedQuery(name="Producto.findAll", query="SELECT p FROM Producto p")
 public class Producto implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@Column(name = "id_producto")
-	private int idProducto;
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
+	private String id;
 
 	private String descripcion;
+
 	private boolean estado;
-	private boolean garantia;
+
+	@Temporal(TemporalType.TIMESTAMP)
+	@Column(name="fecha_creacion")
+	private Date fechaCreacion;
+
+	private byte garantia;
+
 	private String nombre;
+
 	private int stock;
 
-	@Lob
-	@Column(name = "codigo_barra")
-	private byte[] codigoBarra;
-
-	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name = "fecha_actualizacion")
-	private Date fechaActualizacion;
-
-	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name = "fecha_registro")
-	private Date fechaRegistro;
-
-	@Lob
-	private byte[] foto;
-
-	///////////////////////////////////////////////////////
-	// Map
-	///////////////////////////////////////////////////////
-	@OneToMany(mappedBy = "producto")
+	//bi-directional many-to-one association to DetalleProducto
+	@OneToMany(mappedBy="productoBean")
 	private List<DetalleProducto> detalleProductos;
 
+	//bi-directional many-to-one association to Categoria
 	@ManyToOne
-	@JoinColumn(name = "id_categoria")
-	private Categoria categoria;
+	@JoinColumn(name="categoria")
+	private Categoria categoriaBean;
 
-	@ManyToOne
-	@JoinColumn(name = "usuario")
-	private Usuario usuario;
-
-	@OneToMany(mappedBy = "producto")
-	private List<ProveedorProducto> proveedorProductos;
-
-	///////////////////////////////////////////////////////
-	// Builder
-	///////////////////////////////////////////////////////
 	public Producto() {
 	}
 
-	///////////////////////////////////////////////////////
-	// Method
-	///////////////////////////////////////////////////////
-	@Override
-	public String toString() {
-		return "Producto [idProducto=" + idProducto + ", estado=" + estado + ", garantia=" + garantia + ", nombre="
-				+ nombre + ", stock=" + stock + ", categoria=" + categoria + "]";
+	public String getId() {
+		return this.id;
 	}
 
-	public DetalleProducto addDetalleProducto(DetalleProducto detalleProducto) {
-		getDetalleProductos().add(detalleProducto);
-		detalleProducto.setProducto(this);
-		return detalleProducto;
-	}
-
-	public DetalleProducto removeDetalleProducto(DetalleProducto detalleProducto) {
-		getDetalleProductos().remove(detalleProducto);
-		detalleProducto.setProducto(null);
-		return detalleProducto;
-	}
-
-	public ProveedorProducto addProveedorProducto(ProveedorProducto proveedorProducto) {
-		getProveedorProductos().add(proveedorProducto);
-		proveedorProducto.setProducto(this);
-		return proveedorProducto;
-	}
-
-	public ProveedorProducto removeProveedorProducto(ProveedorProducto proveedorProducto) {
-		getProveedorProductos().remove(proveedorProducto);
-		proveedorProducto.setProducto(null);
-		return proveedorProducto;
-	}
-
-	///////////////////////////////////////////////////////
-	// Getter and Setters
-	///////////////////////////////////////////////////////
-	public int getIdProducto() {
-		return this.idProducto;
-	}
-
-	public void setIdProducto(int idProducto) {
-		this.idProducto = idProducto;
-	}
-
-	public byte[] getCodigoBarra() {
-		return this.codigoBarra;
-	}
-
-	public void setCodigoBarra(byte[] codigoBarra) {
-		this.codigoBarra = codigoBarra;
+	public void setId(String id) {
+		this.id = id;
 	}
 
 	public String getDescripcion() {
@@ -134,35 +69,19 @@ public class Producto implements Serializable {
 		this.estado = estado;
 	}
 
-	public Date getFechaActualizacion() {
-		return this.fechaActualizacion;
+	public Date getFechaCreacion() {
+		return this.fechaCreacion;
 	}
 
-	public void setFechaActualizacion(Date fechaActualizacion) {
-		this.fechaActualizacion = fechaActualizacion;
+	public void setFechaCreacion(Date fechaCreacion) {
+		this.fechaCreacion = fechaCreacion;
 	}
 
-	public Date getFechaRegistro() {
-		return this.fechaRegistro;
-	}
-
-	public void setFechaRegistro(Date fechaRegistro) {
-		this.fechaRegistro = fechaRegistro;
-	}
-
-	public byte[] getFoto() {
-		return this.foto;
-	}
-
-	public void setFoto(byte[] foto) {
-		this.foto = foto;
-	}
-
-	public boolean getGarantia() {
+	public byte getGarantia() {
 		return this.garantia;
 	}
 
-	public void setGarantia(boolean garantia) {
+	public void setGarantia(byte garantia) {
 		this.garantia = garantia;
 	}
 
@@ -190,27 +109,26 @@ public class Producto implements Serializable {
 		this.detalleProductos = detalleProductos;
 	}
 
-	public Categoria getCategoria() {
-		return this.categoria;
+	public DetalleProducto addDetalleProducto(DetalleProducto detalleProducto) {
+		getDetalleProductos().add(detalleProducto);
+		detalleProducto.setProductoBean(this);
+
+		return detalleProducto;
 	}
 
-	public void setCategoria(Categoria categoria) {
-		this.categoria = categoria;
+	public DetalleProducto removeDetalleProducto(DetalleProducto detalleProducto) {
+		getDetalleProductos().remove(detalleProducto);
+		detalleProducto.setProductoBean(null);
+
+		return detalleProducto;
 	}
 
-	public Usuario getUsuario() {
-		return this.usuario;
+	public Categoria getCategoriaBean() {
+		return this.categoriaBean;
 	}
 
-	public void setUsuario(Usuario usuario) {
-		this.usuario = usuario;
+	public void setCategoriaBean(Categoria categoriaBean) {
+		this.categoriaBean = categoriaBean;
 	}
 
-	public List<ProveedorProducto> getProveedorProductos() {
-		return this.proveedorProductos;
-	}
-
-	public void setProveedorProductos(List<ProveedorProducto> proveedorProductos) {
-		this.proveedorProductos = proveedorProductos;
-	}
 }

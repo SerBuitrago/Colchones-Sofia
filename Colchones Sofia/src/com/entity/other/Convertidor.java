@@ -77,7 +77,35 @@ public class Convertidor implements Serializable {
 		}
 		return ((Comparable) value).compareTo(Convertidor.getInteger(filterText)) >= 0;
 	}
-
+	
+	/**
+	 * 
+	 * @param cadena
+	 * @return
+	 */
+	public static boolean isCadena(String cadena) {
+		if(cadena!= null && cadena.length() > 0) {
+			return true;
+		}
+		return false;
+	}
+	
+	/**
+	 * 
+	 * @param <E>
+	 * @param vector
+	 * @return
+	 */
+	public static boolean isVector(byte [] vector){
+		if(vector!= null && vector.length > 0) {
+			return true;
+		}
+		return false;
+	}
+	
+	///////////////////////////////////////////////////////
+	// Method Private
+	///////////////////////////////////////////////////////
 	/**
 	 * 
 	 * @param string
@@ -92,7 +120,7 @@ public class Convertidor implements Serializable {
 	}
 
 	///////////////////////////////////////////////////////
-	// Getter y Setter
+	// Getter and Setter
 	///////////////////////////////////////////////////////
 	public static long getSerialversionuid() {
 		return serialVersionUID;

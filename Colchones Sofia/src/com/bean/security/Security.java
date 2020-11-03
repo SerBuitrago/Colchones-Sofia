@@ -28,12 +28,15 @@ import com.util.Fecha;
 public class Security implements Serializable {
 	private static final long serialVersionUID = 1L;
 
-	@ManagedProperty("#{sesion}")
-	private SessionBean session;
-
 	private FacesContext context;
 	private ExternalContext external;
 	private String url;
+	
+	///////////////////////////////////////////////////////
+	// ManagedBean
+	///////////////////////////////////////////////////////
+	@ManagedProperty("#{sesion}")
+	private SessionBean session;
 
 	///////////////////////////////////////////////////////
 	// Builders
@@ -78,9 +81,9 @@ public class Security implements Serializable {
 		if (permit != null && permit.length() > 0) { 
 			Usuario aux = this.session.getLogeado();
 			if (aux != null) {
-				Rol rol = aux.getRol();
+				Rol rol = aux.getRolBean();
 				if (rol != null) {
-					if (!permit.equals(rol.getNombre())) {
+					if (!permit.equals(rol.getRol())) {
 						direct();
 					}
 				}
@@ -128,8 +131,8 @@ public class Security implements Serializable {
 		if (aux != null) {
 			UsuarioDao dao = new UsuarioDao();
 			Fecha fecha = new Fecha();
-			aux.setSession(false);
-			aux.setUltimaSession(new Date(fecha.fecha()));
+			aux.setSesion(false);
+			aux.setFechaUltimaSesion(new Date(fecha.fecha())); 
 			dao.update(aux);
 			FacesContext.getCurrentInstance().getExternalContext().invalidateSession();
 			session = new SessionBean();

@@ -3,233 +3,77 @@ package com.entity;
 import java.io.Serializable;
 import javax.persistence.*;
 import java.util.Date;
+import java.math.BigInteger;
 import java.util.List;
 
+
 /**
- * Implementation Usuario.
+ * The persistent class for the usuario database table.
  * 
- * @author DeveUp.
- * @phone 3118398189.
- * @email deveup@gmail.com.
- * @version 1.0.0.0.
  */
 @Entity
-@NamedQuery(name = "Usuario.findAll", query = "SELECT u FROM Usuario u")
+@NamedQuery(name="Usuario.findAll", query="SELECT u FROM Usuario u")
 public class Usuario implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	private int documento;
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
+	private String id;
 
 	private String clave;
+
 	private boolean estado;
-	private boolean session;
-
-	@Column(name = "email_confirmacion")
-	private String emailConfirmacion;
 
 	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name = "fecha_registro")
-	private Date fechaRegistro;
+	@Column(name="fecha_creacion")
+	private Date fechaCreacion;
 
 	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name = "fecha_sesion")
+	@Column(name="fecha_sesion")
 	private Date fechaSesion;
 
-	@Lob
-	private byte[] foto;
+	@Temporal(TemporalType.TIMESTAMP)
+	@Column(name="fecha_ultima_sesion")
+	private Date fechaUltimaSesion;
 
-	@Column(name = "ultima_clave")
+	private BigInteger puntos;
+
+	private boolean sesion;
+
+	@Column(name="ultima_clave")
 	private String ultimaClave;
 
-	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name = "ultima_session")
-	private Date ultimaSession;
+	//bi-directional many-to-one association to ClienteCuenta
+	@OneToMany(mappedBy="usuario")
+	private List<ClienteCuenta> clienteCuentas;
 
-	///////////////////////////////////////////////////////
-	// Map
-	///////////////////////////////////////////////////////
-	@OneToMany(mappedBy = "usuario")
-	private List<Categoria> categorias;
-
-	@OneToMany(mappedBy = "usuario")
-	private List<Cliente> clientes;
-
-	@OneToMany(mappedBy = "usuario")
-	private List<Compra> compras;
-
-	@OneToMany(mappedBy = "usuario")
-	private List<DevolucionGarantia> devolucionGarantias;
-
-	@OneToMany(mappedBy = "usuario")
-	private List<EstadoVenta> estadoVentas;
-
-	@OneToMany(mappedBy = "usuario")
-	private List<Producto> productos;
-
-	@OneToMany(mappedBy = "usuario")
-	private List<Proveedor> proveedors;
-
-	@OneToMany(mappedBy = "usuario")
-	private List<ProveedorProducto> proveedorProductos;
-
-	@OneToOne
-	@JoinColumn(name = "documento")
+	//bi-directional many-to-one association to Persona
+	@ManyToOne
+	@JoinColumn(name="documento")
 	private Persona persona;
 
+	//bi-directional many-to-one association to Rol
 	@ManyToOne
-	@JoinColumn(name = "rol")
-	private Rol rol;
+	@JoinColumn(name="rol")
+	private Rol rolBean;
 
-	@OneToMany(mappedBy = "usuario")
-	private List<Vendedor> vendedors;
+	//bi-directional many-to-one association to Venta
+	@OneToMany(mappedBy="usuario1")
+	private List<Venta> ventas1;
 
-	@OneToMany(mappedBy = "usuario")
-	private List<Venta> ventas;
+	//bi-directional many-to-one association to Venta
+	@OneToMany(mappedBy="usuario2")
+	private List<Venta> ventas2;
 
-	///////////////////////////////////////////////////////
-	// Builder
-	///////////////////////////////////////////////////////
 	public Usuario() {
 	}
 
-	///////////////////////////////////////////////////////
-	// Method
-	///////////////////////////////////////////////////////
-	@Override
-	public String toString() {
-		return "Usuario [documento=" + documento + ", estado=" + estado + ", session=" + session + "]";
+	public String getId() {
+		return this.id;
 	}
 
-	public Categoria addCategoria(Categoria categoria) {
-		getCategorias().add(categoria);
-		categoria.setUsuario(this);
-		return categoria;
-	}
-
-	public Categoria removeCategoria(Categoria categoria) {
-		getCategorias().remove(categoria);
-		categoria.setUsuario(null);
-		return categoria;
-	}
-
-	public DevolucionGarantia addDevolucionGarantia(DevolucionGarantia devolucionGarantia) {
-		getDevolucionGarantias().add(devolucionGarantia);
-		devolucionGarantia.setUsuario(this);
-		return devolucionGarantia;
-	}
-
-	public DevolucionGarantia removeDevolucionGarantia(DevolucionGarantia devolucionGarantia) {
-		getDevolucionGarantias().remove(devolucionGarantia);
-		devolucionGarantia.setUsuario(null);
-		return devolucionGarantia;
-	}
-
-	public Cliente addCliente(Cliente cliente) {
-		getClientes().add(cliente);
-		cliente.setUsuario(this);
-		return cliente;
-	}
-
-	public Cliente removeCliente(Cliente cliente) {
-		getClientes().remove(cliente);
-		cliente.setUsuario(null);
-		return cliente;
-	}
-
-	public EstadoVenta addEstadoVenta(EstadoVenta estadoVenta) {
-		getEstadoVentas().add(estadoVenta);
-		estadoVenta.setUsuario(this);
-		return estadoVenta;
-	}
-
-	public EstadoVenta removeEstadoVenta(EstadoVenta estadoVenta) {
-		getEstadoVentas().remove(estadoVenta);
-		estadoVenta.setUsuario(null);
-		return estadoVenta;
-	}
-
-	public Compra addCompra(Compra compra) {
-		getCompras().add(compra);
-		compra.setUsuario(this);
-		return compra;
-	}
-
-	public Compra removeCompra(Compra compra) {
-		getCompras().remove(compra);
-		compra.setUsuario(null);
-		return compra;
-	}
-
-	public Producto addProducto(Producto producto) {
-		getProductos().add(producto);
-		producto.setUsuario(this);
-		return producto;
-	}
-
-	public Producto removeProducto(Producto producto) {
-		getProductos().remove(producto);
-		producto.setUsuario(null);
-		return producto;
-	}
-
-	public Proveedor addProveedor(Proveedor proveedor) {
-		getProveedors().add(proveedor);
-		proveedor.setUsuario(this);
-		return proveedor;
-	}
-
-	public Proveedor removeProveedor(Proveedor proveedor) {
-		getProveedors().remove(proveedor);
-		proveedor.setUsuario(null);
-		return proveedor;
-	}
-
-	public ProveedorProducto addProveedorProducto(ProveedorProducto proveedorProducto) {
-		getProveedorProductos().add(proveedorProducto);
-		proveedorProducto.setUsuario(this);
-		return proveedorProducto;
-	}
-
-	public ProveedorProducto removeProveedorProducto(ProveedorProducto proveedorProducto) {
-		getProveedorProductos().remove(proveedorProducto);
-		proveedorProducto.setUsuario(null);
-		return proveedorProducto;
-	}
-
-	public Vendedor addVendedor(Vendedor vendedor) {
-		getVendedors().add(vendedor);
-		vendedor.setUsuario(this);
-		return vendedor;
-	}
-
-	public Vendedor removeVendedor(Vendedor vendedor) {
-		getVendedors().remove(vendedor);
-		vendedor.setUsuario(null);
-		return vendedor;
-	}
-
-	public Venta addVenta(Venta venta) {
-		getVentas().add(venta);
-		venta.setUsuario(this);
-		return venta;
-	}
-
-	public Venta removeVenta(Venta venta) {
-		getVentas().remove(venta);
-		venta.setUsuario(null);
-		return venta;
-	}
-
-	///////////////////////////////////////////////////////
-	// Getter and Setters
-	///////////////////////////////////////////////////////
-	public int getDocumento() {
-		return this.documento;
-	}
-
-	public void setDocumento(int documento) {
-		this.documento = documento;
+	public void setId(String id) {
+		this.id = id;
 	}
 
 	public String getClave() {
@@ -240,14 +84,6 @@ public class Usuario implements Serializable {
 		this.clave = clave;
 	}
 
-	public String getEmailConfirmacion() {
-		return this.emailConfirmacion;
-	}
-
-	public void setEmailConfirmacion(String emailConfirmacion) {
-		this.emailConfirmacion = emailConfirmacion;
-	}
-
 	public boolean getEstado() {
 		return this.estado;
 	}
@@ -256,12 +92,12 @@ public class Usuario implements Serializable {
 		this.estado = estado;
 	}
 
-	public Date getFechaRegistro() {
-		return this.fechaRegistro;
+	public Date getFechaCreacion() {
+		return this.fechaCreacion;
 	}
 
-	public void setFechaRegistro(Date fechaRegistro) {
-		this.fechaRegistro = fechaRegistro;
+	public void setFechaCreacion(Date fechaCreacion) {
+		this.fechaCreacion = fechaCreacion;
 	}
 
 	public Date getFechaSesion() {
@@ -272,20 +108,28 @@ public class Usuario implements Serializable {
 		this.fechaSesion = fechaSesion;
 	}
 
-	public byte[] getFoto() {
-		return this.foto;
+	public Date getFechaUltimaSesion() {
+		return this.fechaUltimaSesion;
 	}
 
-	public void setFoto(byte[] foto) {
-		this.foto = foto;
+	public void setFechaUltimaSesion(Date fechaUltimaSesion) {
+		this.fechaUltimaSesion = fechaUltimaSesion;
 	}
 
-	public boolean getSession() {
-		return this.session;
+	public BigInteger getPuntos() {
+		return this.puntos;
 	}
 
-	public void setSession(boolean session) {
-		this.session = session;
+	public void setPuntos(BigInteger puntos) {
+		this.puntos = puntos;
+	}
+
+	public boolean getSesion() {
+		return this.sesion;
+	}
+
+	public void setSesion(boolean sesion) {
+		this.sesion = sesion;
 	}
 
 	public String getUltimaClave() {
@@ -296,76 +140,26 @@ public class Usuario implements Serializable {
 		this.ultimaClave = ultimaClave;
 	}
 
-	public Date getUltimaSession() {
-		return this.ultimaSession;
+	public List<ClienteCuenta> getClienteCuentas() {
+		return this.clienteCuentas;
 	}
 
-	public void setUltimaSession(Date ultimaSession) {
-		this.ultimaSession = ultimaSession;
+	public void setClienteCuentas(List<ClienteCuenta> clienteCuentas) {
+		this.clienteCuentas = clienteCuentas;
 	}
 
-	public List<Categoria> getCategorias() {
-		return this.categorias;
+	public ClienteCuenta addClienteCuenta(ClienteCuenta clienteCuenta) {
+		getClienteCuentas().add(clienteCuenta);
+		clienteCuenta.setUsuario(this);
+
+		return clienteCuenta;
 	}
 
-	public void setCategorias(List<Categoria> categorias) {
-		this.categorias = categorias;
-	}
+	public ClienteCuenta removeClienteCuenta(ClienteCuenta clienteCuenta) {
+		getClienteCuentas().remove(clienteCuenta);
+		clienteCuenta.setUsuario(null);
 
-	public List<Cliente> getClientes() {
-		return this.clientes;
-	}
-
-	public void setClientes(List<Cliente> clientes) {
-		this.clientes = clientes;
-	}
-
-	public List<Compra> getCompras() {
-		return this.compras;
-	}
-
-	public void setCompras(List<Compra> compras) {
-		this.compras = compras;
-	}
-
-	public List<DevolucionGarantia> getDevolucionGarantias() {
-		return this.devolucionGarantias;
-	}
-
-	public void setDevolucionGarantias(List<DevolucionGarantia> devolucionGarantias) {
-		this.devolucionGarantias = devolucionGarantias;
-	}
-
-	public List<EstadoVenta> getEstadoVentas() {
-		return this.estadoVentas;
-	}
-
-	public void setEstadoVentas(List<EstadoVenta> estadoVentas) {
-		this.estadoVentas = estadoVentas;
-	}
-
-	public List<Producto> getProductos() {
-		return this.productos;
-	}
-
-	public void setProductos(List<Producto> productos) {
-		this.productos = productos;
-	}
-
-	public List<Proveedor> getProveedors() {
-		return this.proveedors;
-	}
-
-	public void setProveedors(List<Proveedor> proveedors) {
-		this.proveedors = proveedors;
-	}
-
-	public List<ProveedorProducto> getProveedorProductos() {
-		return this.proveedorProductos;
-	}
-
-	public void setProveedorProductos(List<ProveedorProducto> proveedorProductos) {
-		this.proveedorProductos = proveedorProductos;
+		return clienteCuenta;
 	}
 
 	public Persona getPersona() {
@@ -376,28 +170,56 @@ public class Usuario implements Serializable {
 		this.persona = persona;
 	}
 
-	public Rol getRol() {
-		return this.rol;
+	public Rol getRolBean() {
+		return this.rolBean;
 	}
 
-	public void setRol(Rol rol) {
-		this.rol = rol;
+	public void setRolBean(Rol rolBean) {
+		this.rolBean = rolBean;
 	}
 
-	public List<Vendedor> getVendedors() {
-		return this.vendedors;
+	public List<Venta> getVentas1() {
+		return this.ventas1;
 	}
 
-	public void setVendedors(List<Vendedor> vendedors) {
-		this.vendedors = vendedors;
+	public void setVentas1(List<Venta> ventas1) {
+		this.ventas1 = ventas1;
 	}
 
-	public List<Venta> getVentas() {
-		return this.ventas;
+	public Venta addVentas1(Venta ventas1) {
+		getVentas1().add(ventas1);
+		ventas1.setUsuario1(this);
+
+		return ventas1;
 	}
 
-	public void setVentas(List<Venta> ventas) {
-		this.ventas = ventas;
+	public Venta removeVentas1(Venta ventas1) {
+		getVentas1().remove(ventas1);
+		ventas1.setUsuario1(null);
+
+		return ventas1;
 	}
-	
+
+	public List<Venta> getVentas2() {
+		return this.ventas2;
+	}
+
+	public void setVentas2(List<Venta> ventas2) {
+		this.ventas2 = ventas2;
+	}
+
+	public Venta addVentas2(Venta ventas2) {
+		getVentas2().add(ventas2);
+		ventas2.setUsuario2(this);
+
+		return ventas2;
+	}
+
+	public Venta removeVentas2(Venta ventas2) {
+		getVentas2().remove(ventas2);
+		ventas2.setUsuario2(null);
+
+		return ventas2;
+	}
+
 }

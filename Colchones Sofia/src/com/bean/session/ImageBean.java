@@ -5,7 +5,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
-import java.util.List;
 
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
@@ -22,7 +21,8 @@ import org.primefaces.model.file.UploadedFile;
 
 import com.dao.*;
 import com.entity.*;
-import com.util.Face;
+import com.entity.other.*;
+import com.util.*;
 
 /**
  * Implementation ImageBean.
@@ -39,19 +39,11 @@ public class ImageBean implements Serializable {
 
 	private FacesMessage mensaje;
 
-	private byte image[];
-
-	private StreamedContent stream;
 	private StreamedContent logo;
-	private StreamedContent carrousel;
-	private StreamedContent perfil;
-
-	private StreamedContent vendedor;
-	private StreamedContent proveedor;
-	private StreamedContent usuario;
+	private StreamedContent informacion_empresa;
 	private StreamedContent persona;
-	private StreamedContent detalle_producto;
 	
+	private byte image[];
 	private boolean error;
 
 	///////////////////////////////////////////////////////
@@ -76,53 +68,8 @@ public class ImageBean implements Serializable {
 	}
 
 	///////////////////////////////////////////////////////
-	// Method
+	// Generic
 	///////////////////////////////////////////////////////
-	/**
-	 * Metodo que obtiene el logo de la empresa.
-	 * 
-	 * @return retorna el logo de la empresa.
-	 * @throws IOException representa el logo de la empresa.
-	 */
-	public StreamedContent getLogo() throws IOException {
-		if (app != null && app.getApp() != null) {
-			Global e = null;
-			if (app.getApp().getGlobal() != null) {
-				e = app.getApp().getGlobal();
-				image(e.getLogo());
-			} else {
-				this.stream = null;
-			}
-		} else {
-			this.stream = null;
-		}
-		this.logo = this.stream;
-		return this.logo;
-	}
-
-	/**
-	 * Metodo que retorna las fotos del carrosusel.
-	 * 
-	 * @return representa la foto del carrosusel.
-	 */
-	@SuppressWarnings("deprecation")
-	public StreamedContent getCarrousel() {
-		FacesContext context = FacesContext.getCurrentInstance();
-		if (context.getCurrentPhaseId() == PhaseId.RENDER_RESPONSE)
-			this.carrousel = new DefaultStreamedContent();
-		else {
-			CarruselDao dao = new CarruselDao();
-			int id = Integer.parseInt(context.getExternalContext().getRequestParameterMap().get("id"));
-			Carrusel i = dao.find(id);
-			if (i != null) {
-				this.carrousel = new DefaultStreamedContent(new ByteArrayInputStream(i.getFoto()), "image/png");
-			} else {
-				this.carrousel = null;
-			}
-		}
-		return carrousel;
-	}
-
 	/**
 	 * Metodo que permite leer una image.
 	 * 
@@ -135,7 +82,7 @@ public class ImageBean implements Serializable {
 		InputStream is = input;
 		ByteArrayOutputStream buffer = new ByteArrayOutputStream();
 		int nRead;
-		byte[] data = new byte[1024];
+		byte[] data = new byte[1024];  
 		while ((nRead = is.read(data, 0, data.length)) != -1) {
 			buffer.write(data, 0, nRead);
 		}
@@ -143,7 +90,33 @@ public class ImageBean implements Serializable {
 		byteArray = buffer.toByteArray();
 		return byteArray;
 	}
+	
+	/**
+	 * Metodo que permite convertir un array byte en una foto.
+	 * 
+	 * @param image representa la foto en el array.
+	 * @return la imagen obtenida.
+	 * @throws IOException el error obtenido.
+	 */
+	@SuppressWarnings("deprecation")
+	public StreamedContent image(byte[] image) throws IOException {
+		StreamedContent stream = null;
+		FacesContext context = FacesContext.getCurrentInstance();
+		if (context.getCurrentPhaseId() == PhaseId.RENDER_RESPONSE)
+			stream = new DefaultStreamedContent();
+		else {
+			if (image != null) {
+				stream = new DefaultStreamedContent(new ByteArrayInputStream(image), "image/png");
+			} else {
+				stream = null;
+			}
+		}
+		return stream;
+	}
 
+	///////////////////////////////////////////////////////
+	// Upload
+	///////////////////////////////////////////////////////	
 	/**
 	 * Metodo que prepara la imagen.
 	 * 
@@ -152,7 +125,7 @@ public class ImageBean implements Serializable {
 	public void uploadImage(FileUploadEvent event) {
 		FacesContext.getCurrentInstance().addMessage(null, uploadImage(event.getFile()));
 	}
-
+	
 	/**
 	 * Metodo que prepara la imagen.
 	 * 
@@ -199,7 +172,7 @@ public class ImageBean implements Serializable {
 		}
 		return message;
 	}
-
+	
 	///////////////////////////////////////////////////////
 	// Validator
 	///////////////////////////////////////////////////////
@@ -232,140 +205,57 @@ public class ImageBean implements Serializable {
 	}
 
 	///////////////////////////////////////////////////////
-	// Generic
-	///////////////////////////////////////////////////////
-	@SuppressWarnings("deprecation")
-	public StreamedContent image(byte[] image) throws IOException {
-		FacesContext context = FacesContext.getCurrentInstance();
-		if (context.getCurrentPhaseId() == PhaseId.RENDER_RESPONSE)
-			this.stream = new DefaultStreamedContent();
-		else {
-			if (image != null) {
-				this.stream = new DefaultStreamedContent(new ByteArrayInputStream(image), "image/png");
-			} else {
-				this.stream = null;
-			}
-		}
-		return this.stream;
-	}
-
-	///////////////////////////////////////////////////////
 	// Renderizar
 	///////////////////////////////////////////////////////
 	/**
-	 * Metodo que permite traer la imagen del vendedor.
+	 * Metodo que obtiene el logo de la empresa.
 	 * 
-	 * @return representa la imagen del vendedor.
+	 * @return retorna el logo de la empresa.
+	 * @throws IOException representa el logo de la empresa.
 	 */
-	@SuppressWarnings({ "deprecation" })
-	public StreamedContent getVendedor() {
+	public StreamedContent getLogo() throws IOException {
+		if (this.app != null && this.app.getApp() != null) {
+			Empresa e = null;
+			if (this.app.getApp().getEmpresa() != null) {
+				e = this.app.getApp().getEmpresa();
+				this.logo = image(e.getLogo());
+			} else {
+				this.logo = null;
+			}
+		} else {
+			this.logo = null;
+		}
+		return this.logo;
+	}
+
+	/**
+	 * Metodo que retorna las fotos del carrosusel.
+	 * 
+	 * @return representa la foto del carrosusel.
+	 */
+	@SuppressWarnings("deprecation")
+	public StreamedContent getInformacion_empresa() {
 		FacesContext context = FacesContext.getCurrentInstance();
 		if (context.getCurrentPhaseId() == PhaseId.RENDER_RESPONSE)
-			this.vendedor = new DefaultStreamedContent();
+			this.informacion_empresa = new DefaultStreamedContent();
 		else {
-			int documento = Integer.parseInt(Face.get("documento-vendedor"));
-			String tipo = Face.get("tipo-documento-vendedor");
-			if (documento >= 0 && tipo != null && tipo.length() > 0) {
-				VendedorDao dao = new VendedorDao();
-				// SELLERS
-				List<Vendedor> v = dao.findByFieldList("documento", documento);
-				Vendedor vendedor = null;
-				// SEARCH
-				for (Vendedor ve : v) {
-					if (ve.getPersona().getTipoDocumento().getNombre().equals(tipo)) {
-						vendedor = ve;
-						break;
-					}
-				}
-				// RESULT
-				if (vendedor != null && vendedor.getPersona() != null) {
-					this.vendedor = new DefaultStreamedContent(
-							new ByteArrayInputStream(vendedor.getPersona().getFoto()), "image/png");
+			int index = Face.getInt("id-informacion-empresa");
+			if (index > 0) {
+				EmpresaInformacionDao dao = new EmpresaInformacionDao();
+				EmpresaInformacion i = dao.find(index);
+				if (i != null) {
+					this.informacion_empresa = new DefaultStreamedContent(new ByteArrayInputStream(i.getFoto()),
+							"image/png");
 				} else {
-					this.vendedor = null;
+					this.informacion_empresa = null;
 				}
 			} else {
-				this.vendedor = null;
+				this.informacion_empresa = null;
 			}
 		}
-		return vendedor;
+		return this.informacion_empresa;
 	}
 
-	/**
-	 * Metodo que permite traer la imagen del proveedor.
-	 * 
-	 * @return representa la imagen del proveedor.
-	 */
-	@SuppressWarnings("deprecation")
-	public StreamedContent getProveedor() {
-		FacesContext context = FacesContext.getCurrentInstance();
-		if (context.getCurrentPhaseId() == PhaseId.RENDER_RESPONSE)
-			this.proveedor = new DefaultStreamedContent();
-		else {
-			int id = Integer.parseInt(Face.get("id-proveedor"));
-			if (id >= 0) {
-				ProveedorDao dao = new ProveedorDao();
-				Proveedor p = dao.find(id);
-				if (p != null && p.getFoto() != null) {
-					this.proveedor = new DefaultStreamedContent(new ByteArrayInputStream(p.getFoto()), "image/png");
-				} else {
-					this.proveedor = null;
-				}
-			}
-		}
-		return proveedor;
-	}
-	
-	/**
-	 * Metodo que permite traer la imagen del Detalle Producto.
-	 * 
-	 * @return representa la imagen del detalle producto.
-	 */
-	@SuppressWarnings("deprecation")
-	public StreamedContent getDetalle_producto() {
-		FacesContext context = FacesContext.getCurrentInstance();
-		if (context.getCurrentPhaseId() == PhaseId.RENDER_RESPONSE)
-			this.detalle_producto = new DefaultStreamedContent();
-		else {
-			int id = Integer.parseInt(Face.get("id-detalle-producto"));
-			if (id >= 0) {
-				DetalleProductoDao dao= new DetalleProductoDao();
-				DetalleProducto detalle= dao.find(id);
-				if (detalle != null && detalle.getFoto() != null) {
-					this.detalle_producto = new DefaultStreamedContent(new ByteArrayInputStream(detalle.getFoto()), "image/png"); 
-				} else {
-					this.detalle_producto = null;
-				}
-			}
-		}
-		return detalle_producto;
-	}
-
-	/**
-	 * Metodo que permite traer la imagen del usuario.
-	 * 
-	 * @return representa la imagen del usuario.
-	 */
-	@SuppressWarnings("deprecation")
-	public StreamedContent getUsuario() {
-		FacesContext context = FacesContext.getCurrentInstance();
-		if (context.getCurrentPhaseId() == PhaseId.RENDER_RESPONSE)
-			this.usuario = new DefaultStreamedContent();
-		else {
-			int id = Integer.parseInt(Face.get("documento-usuario"));
-			if (id >= 0) {
-				UsuarioDao dao = new UsuarioDao();
-				Usuario u = dao.find(id);
-				if (u != null && u.getFoto() != null) {
-					this.usuario = new DefaultStreamedContent(new ByteArrayInputStream(u.getFoto()), "image/png");
-				} else {
-					this.usuario = null;
-				}
-			}
-		}
-		return usuario;
-	}
-	
 	/**
 	 * Metodo que permite traer la imagen de una persona.
 	 * 
@@ -377,8 +267,8 @@ public class ImageBean implements Serializable {
 		if (context.getCurrentPhaseId() == PhaseId.RENDER_RESPONSE)
 			this.persona = new DefaultStreamedContent();
 		else {
-			int id = Integer.parseInt(Face.get("documento-persona"));
-			if (id >= 0) {
+			String id = Face.get("documento-persona");
+			if (Convertidor.isCadena(id)) {
 				PersonaDao dao = new PersonaDao();
 				Persona p = dao.find(id);
 				if (p != null && p.getFoto() != null) {
@@ -398,16 +288,32 @@ public class ImageBean implements Serializable {
 		return mensaje;
 	}
 
-	public boolean isError() {
-		return error;
+	public void setMensaje(FacesMessage mensaje) {
+		this.mensaje = mensaje;
 	}
 
-	public void setError(boolean error) {
-		this.error = error;
+	public AppBean getApp() {
+		return app;
 	}
 
-	public void setVendedor(StreamedContent vendedor) {
-		this.vendedor = vendedor;
+	public void setApp(AppBean app) {
+		this.app = app;
+	}
+
+	public static long getSerialversionuid() {
+		return serialVersionUID;
+	}
+
+	public void setLogo(StreamedContent logo) {
+		this.logo = logo;
+	}
+
+	public void setInformacion_empresa(StreamedContent informacion_empresa) {
+		this.informacion_empresa = informacion_empresa;
+	}
+
+	public void setPersona(StreamedContent persona) {
+		this.persona = persona;
 	}
 
 	public byte[] getImage() {
@@ -418,59 +324,11 @@ public class ImageBean implements Serializable {
 		this.image = image;
 	}
 
-	public void setLogo(StreamedContent logo) {
-		this.logo = logo;
+	public boolean isError() {
+		return error;
 	}
 
-	public void setMensaje(FacesMessage mensaje) {
-		this.mensaje = mensaje;
-	}
-
-	public StreamedContent getStream() {
-		return stream;
-	}
-
-	public StreamedContent getPerfil() {
-		return perfil;
-	}
-
-	public void setPerfil(StreamedContent perfil) {
-		this.perfil = perfil;
-	}
-
-	public void setStream(StreamedContent stream) {
-		this.stream = stream;
-	}
-
-	public static long getSerialversionuid() {
-		return serialVersionUID;
-	}
-
-	public AppBean getApp() {
-		return app;
-	}
-
-	public void setProveedor(StreamedContent proveedor) {
-		this.proveedor = proveedor;
-	}
-
-	public void setApp(AppBean app) {
-		this.app = app;
-	}
-
-	public void setCarrousel(StreamedContent carrousel) {
-		this.carrousel = carrousel;
-	}
-
-	public void setUsuario(StreamedContent usuario) {
-		this.usuario = usuario;
-	}
-
-	public void setDetalle_producto(StreamedContent detalle_producto) {
-		this.detalle_producto = detalle_producto;
-	}
-
-	public void setPersona(StreamedContent persona) {
-		this.persona = persona;
+	public void setError(boolean error) {
+		this.error = error;
 	}
 }

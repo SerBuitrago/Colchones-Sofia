@@ -1,25 +1,25 @@
 package com.dao;
 
 import com.entity.*;
-import com.util.Conexion;
+import com.util.*;
 
 /**
- * Implementation PersonaDao.
+ * Implementation SubmenuDao.
  * 
  * @author DeveUp.
  * @phone 3118398189.
  * @email deveup@gmail.com.
  * @version 1.0.0.0.
  */
-public class PersonaDao extends Conexion<Persona> implements Interface<Persona> {
-	
+public class SubmenuDao extends Conexion<Submenu> implements Interface<Submenu> {
+
 	///////////////////////////////////////////////////////
-	// Builder
+	// Builders
 	///////////////////////////////////////////////////////
-	public PersonaDao() {
-		super(Persona.class);
+	public SubmenuDao() {
+		super(Submenu.class);
 	}
-	
+
 	///////////////////////////////////////////////////////
 	// Method
 	///////////////////////////////////////////////////////

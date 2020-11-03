@@ -3,84 +3,61 @@ package com.entity;
 import java.io.Serializable;
 import javax.persistence.*;
 import java.util.Date;
+import java.util.List;
+
 
 /**
- * Implementation Persona.
+ * The persistent class for the persona database table.
  * 
- * @author DeveUp.
- * @phone 3118398189.
- * @email deveup@gmail.com.
- * @version 1.0.0.0.
  */
 @Entity
-@NamedQuery(name = "Persona.findAll", query = "SELECT p FROM Persona p")
+@NamedQuery(name="Persona.findAll", query="SELECT p FROM Persona p")
 public class Persona implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	private int documento;
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
+	private String documento;
 
-	private String nombre;
 	private String apellido;
+
 	private String direccion;
-	private String genero;
+
 	private String email;
-	private String telefono;
 
 	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name = "fecha_actualizada")
-	private Date fechaActualizada;
+	@Column(name="fecha_nacimiento")
+	private Date fechaNacimiento;
 
-	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name = "fecha_registro")
-	private Date fechaRegistro;
-
-	@Lob
 	private byte[] foto;
 
-	@Temporal(TemporalType.DATE)
-	private Date nacimiento;
+	private String genero;
 
-	///////////////////////////////////////////////////////
-	// Map
-	///////////////////////////////////////////////////////
-	@OneToOne(mappedBy = "persona")
-	private Cliente cliente;
+	private String nombre;
 
+	private String telefono;
+
+	//bi-directional many-to-one association to TipoDocumento
 	@ManyToOne
-	@JoinColumn(name = "tipo_documento")
-	private TipoDocumento tipoDocumento;
+	@JoinColumn(name="tipo_documento")
+	private TipoDocumento tipoDocumentoBean;
 
-	@OneToOne(mappedBy = "persona")
-	private Usuario usuario;
+	//bi-directional one-to-one association to Proveedor
+	@OneToOne(mappedBy="persona")
+	private Proveedor proveedor;
 
-	@OneToOne(mappedBy = "persona")
-	private Vendedor vendedor;
+	//bi-directional many-to-one association to Usuario
+	@OneToMany(mappedBy="persona")
+	private List<Usuario> usuarios;
 
-	///////////////////////////////////////////////////////
-	// Builder
-	///////////////////////////////////////////////////////
 	public Persona() {
 	}
 
-	///////////////////////////////////////////////////////
-	// Method
-	///////////////////////////////////////////////////////
-
-	@Override
-	public String toString() {
-		return "Persona [documento=" + documento + ", nombre=" + nombre + ", apellido=" + apellido + ", genero="
-				+ genero + ", email=" + email + ", telefono=" + telefono + "]";
-	}
-
-	///////////////////////////////////////////////////////
-	// Getter and Setters
-	///////////////////////////////////////////////////////
-	public int getDocumento() {
+	public String getDocumento() {
 		return this.documento;
 	}
 
-	public void setDocumento(int documento) {
+	public void setDocumento(String documento) {
 		this.documento = documento;
 	}
 
@@ -108,20 +85,12 @@ public class Persona implements Serializable {
 		this.email = email;
 	}
 
-	public Date getFechaActualizada() {
-		return this.fechaActualizada;
+	public Date getFechaNacimiento() {
+		return this.fechaNacimiento;
 	}
 
-	public void setFechaActualizada(Date fechaActualizada) {
-		this.fechaActualizada = fechaActualizada;
-	}
-
-	public Date getFechaRegistro() {
-		return this.fechaRegistro;
-	}
-
-	public void setFechaRegistro(Date fechaRegistro) {
-		this.fechaRegistro = fechaRegistro;
+	public void setFechaNacimiento(Date fechaNacimiento) {
+		this.fechaNacimiento = fechaNacimiento;
 	}
 
 	public byte[] getFoto() {
@@ -140,14 +109,6 @@ public class Persona implements Serializable {
 		this.genero = genero;
 	}
 
-	public Date getNacimiento() {
-		return this.nacimiento;
-	}
-
-	public void setNacimiento(Date nacimiento) {
-		this.nacimiento = nacimiento;
-	}
-
 	public String getNombre() {
 		return this.nombre;
 	}
@@ -164,35 +125,42 @@ public class Persona implements Serializable {
 		this.telefono = telefono;
 	}
 
-	public Cliente getCliente() {
-		return this.cliente;
+	public TipoDocumento getTipoDocumentoBean() {
+		return this.tipoDocumentoBean;
 	}
 
-	public void setCliente(Cliente cliente) {
-		this.cliente = cliente;
+	public void setTipoDocumentoBean(TipoDocumento tipoDocumentoBean) {
+		this.tipoDocumentoBean = tipoDocumentoBean;
 	}
 
-	public TipoDocumento getTipoDocumento() {
-		return this.tipoDocumento;
+	public Proveedor getProveedor() {
+		return this.proveedor;
 	}
 
-	public void setTipoDocumento(TipoDocumento tipoDocumento) {
-		this.tipoDocumento = tipoDocumento;
+	public void setProveedor(Proveedor proveedor) {
+		this.proveedor = proveedor;
 	}
 
-	public Usuario getUsuario() {
-		return this.usuario;
+	public List<Usuario> getUsuarios() {
+		return this.usuarios;
 	}
 
-	public void setUsuario(Usuario usuario) {
-		this.usuario = usuario;
+	public void setUsuarios(List<Usuario> usuarios) {
+		this.usuarios = usuarios;
 	}
 
-	public Vendedor getVendedor() {
-		return this.vendedor;
+	public Usuario addUsuario(Usuario usuario) {
+		getUsuarios().add(usuario);
+		usuario.setPersona(this);
+
+		return usuario;
 	}
 
-	public void setVendedor(Vendedor vendedor) {
-		this.vendedor = vendedor;
+	public Usuario removeUsuario(Usuario usuario) {
+		getUsuarios().remove(usuario);
+		usuario.setPersona(null);
+
+		return usuario;
 	}
+
 }

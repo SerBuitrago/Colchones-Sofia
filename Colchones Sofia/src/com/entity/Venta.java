@@ -1,19 +1,15 @@
 package com.entity;
 
 import java.io.Serializable;
-import java.math.BigInteger;
-
 import javax.persistence.*;
 import java.util.Date;
+import java.math.BigInteger;
 import java.util.List;
 
 
 /**
- * Implementation Venta. 
- * @author DeveUp.
- * @phone 3118398189.
- * @email deveup@gmail.com.
- * @version 1.0.0.0.
+ * The persistent class for the venta database table.
+ * 
  */
 @Entity
 @NamedQuery(name="Venta.findAll", query="SELECT v FROM Venta v")
@@ -21,12 +17,13 @@ public class Venta implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@Column(name="id_venta")
-	private int idVenta;
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
+	private int id;
 
-	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name="fecha_actualizacion")
-	private Date fechaActualizacion;
+	@Column(name="costo_envio")
+	private BigInteger costoEnvio;
+
+	private boolean estado;
 
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name="fecha_registro")
@@ -34,118 +31,59 @@ public class Venta implements Serializable {
 
 	private BigInteger total;
 
-	///////////////////////////////////////////////////////
-	// Map
-	///////////////////////////////////////////////////////
-	@OneToMany(mappedBy="venta")
-	private List<DetalleVenta> detalleVentas;
+	//bi-directional many-to-one association to DetalleCompraVenta
+	@OneToMany(mappedBy="ventaBean")
+	private List<DetalleCompraVenta> detalleCompraVentas;
 
-	@OneToMany(mappedBy="venta")
-	private List<DevolucionGarantia> devolucionGarantias;
+	//bi-directional many-to-one association to Garantia
+	@OneToMany(mappedBy="ventaBean")
+	private List<Garantia> garantias;
 
-	@OneToMany(mappedBy="venta")
-	private List<EstadoVenta> estadoVentas;
-
-	@OneToMany(mappedBy="venta")
-	private List<HistorialPresupuesto> historialPresupuestos;
-
+	//bi-directional many-to-one association to ClienteCuenta
 	@ManyToOne
-	@JoinColumn(name="id_cliente")
-	private Cliente cliente;
+	@JoinColumn(name="cuenta_cliente")
+	private ClienteCuenta clienteCuenta;
 
+	//bi-directional many-to-one association to MetodoPago
 	@ManyToOne
-	@JoinColumn(name="id_pago")
-	private TipoPago tipoPago;
+	@JoinColumn(name="metodo_pago")
+	private MetodoPago metodoPagoBean;
 
+	//bi-directional many-to-one association to Usuario
 	@ManyToOne
-	@JoinColumn(name="id_vendedor")
-	private Vendedor vendedor;
+	@JoinColumn(name="cliente")
+	private Usuario usuario1;
 
+	//bi-directional many-to-one association to Usuario
 	@ManyToOne
-	@JoinColumn(name="usuario")
-	private Usuario usuario;
+	@JoinColumn(name="vendedor")
+	private Usuario usuario2;
 
-	
-	///////////////////////////////////////////////////////
-	// Builder
-	///////////////////////////////////////////////////////
 	public Venta() {
 	}
-	
-	///////////////////////////////////////////////////////
-	// Method
-	///////////////////////////////////////////////////////
-	@Override
-	public String toString() {
-		return "Venta [idVenta=" + idVenta + ", total=" + total + ", cliente=" + cliente + ", vendedor=" + vendedor
-				+ "]";
-	}
-	
-	public DetalleVenta addDetalleVenta(DetalleVenta detalleVenta) {
-		getDetalleVentas().add(detalleVenta);
-		detalleVenta.setVenta(this);
-		return detalleVenta;
+
+	public int getId() {
+		return this.id;
 	}
 
-	public DetalleVenta removeDetalleVenta(DetalleVenta detalleVenta) {
-		getDetalleVentas().remove(detalleVenta);
-		detalleVenta.setVenta(null);
-		return detalleVenta;
-	}
-	
-	public DevolucionGarantia addDevolucionGarantia(DevolucionGarantia devolucionGarantia) {
-		getDevolucionGarantias().add(devolucionGarantia);
-		devolucionGarantia.setVenta(this);
-		return devolucionGarantia;
+	public void setId(int id) {
+		this.id = id;
 	}
 
-	public DevolucionGarantia removeDevolucionGarantia(DevolucionGarantia devolucionGarantia) {
-		getDevolucionGarantias().remove(devolucionGarantia);
-		devolucionGarantia.setVenta(null);
-		return devolucionGarantia;
-	}
-	
-	public HistorialPresupuesto addHistorialPresupuesto(HistorialPresupuesto historialPresupuesto) {
-		getHistorialPresupuestos().add(historialPresupuesto);
-		historialPresupuesto.setVenta(this);
-		return historialPresupuesto;
+	public BigInteger getCostoEnvio() {
+		return this.costoEnvio;
 	}
 
-	public HistorialPresupuesto removeHistorialPresupuesto(HistorialPresupuesto historialPresupuesto) {
-		getHistorialPresupuestos().remove(historialPresupuesto);
-		historialPresupuesto.setVenta(null);
-		return historialPresupuesto;
-	}
-	
-	public EstadoVenta addEstadoVenta(EstadoVenta estadoVenta) {
-		getEstadoVentas().add(estadoVenta);
-		estadoVenta.setVenta(this);
-		return estadoVenta;
+	public void setCostoEnvio(BigInteger costoEnvio) {
+		this.costoEnvio = costoEnvio;
 	}
 
-	public EstadoVenta removeEstadoVenta(EstadoVenta estadoVenta) {
-		getEstadoVentas().remove(estadoVenta);
-		estadoVenta.setVenta(null);
-		return estadoVenta;
+	public boolean getEstado() {
+		return this.estado;
 	}
 
-	///////////////////////////////////////////////////////
-	// Getter and Setters
-	///////////////////////////////////////////////////////
-	public int getIdVenta() {
-		return this.idVenta;
-	}
-
-	public void setIdVenta(int idVenta) {
-		this.idVenta = idVenta;
-	}
-
-	public Date getFechaActualizacion() {
-		return this.fechaActualizacion;
-	}
-
-	public void setFechaActualizacion(Date fechaActualizacion) {
-		this.fechaActualizacion = fechaActualizacion;
+	public void setEstado(boolean estado) {
+		this.estado = estado;
 	}
 
 	public Date getFechaRegistro() {
@@ -164,67 +102,80 @@ public class Venta implements Serializable {
 		this.total = total;
 	}
 
-	public List<DetalleVenta> getDetalleVentas() {
-		return this.detalleVentas;
+	public List<DetalleCompraVenta> getDetalleCompraVentas() {
+		return this.detalleCompraVentas;
 	}
 
-	public void setDetalleVentas(List<DetalleVenta> detalleVentas) {
-		this.detalleVentas = detalleVentas;
+	public void setDetalleCompraVentas(List<DetalleCompraVenta> detalleCompraVentas) {
+		this.detalleCompraVentas = detalleCompraVentas;
 	}
 
-	public List<DevolucionGarantia> getDevolucionGarantias() {
-		return this.devolucionGarantias;
+	public DetalleCompraVenta addDetalleCompraVenta(DetalleCompraVenta detalleCompraVenta) {
+		getDetalleCompraVentas().add(detalleCompraVenta);
+		detalleCompraVenta.setVentaBean(this);
+
+		return detalleCompraVenta;
 	}
 
-	public void setDevolucionGarantias(List<DevolucionGarantia> devolucionGarantias) {
-		this.devolucionGarantias = devolucionGarantias;
+	public DetalleCompraVenta removeDetalleCompraVenta(DetalleCompraVenta detalleCompraVenta) {
+		getDetalleCompraVentas().remove(detalleCompraVenta);
+		detalleCompraVenta.setVentaBean(null);
+
+		return detalleCompraVenta;
 	}
 
-	public List<EstadoVenta> getEstadoVentas() {
-		return this.estadoVentas;
+	public List<Garantia> getGarantias() {
+		return this.garantias;
 	}
 
-	public void setEstadoVentas(List<EstadoVenta> estadoVentas) {
-		this.estadoVentas = estadoVentas;
+	public void setGarantias(List<Garantia> garantias) {
+		this.garantias = garantias;
 	}
 
-	public List<HistorialPresupuesto> getHistorialPresupuestos() {
-		return this.historialPresupuestos;
+	public Garantia addGarantia(Garantia garantia) {
+		getGarantias().add(garantia);
+		garantia.setVentaBean(this);
+
+		return garantia;
 	}
 
-	public void setHistorialPresupuestos(List<HistorialPresupuesto> historialPresupuestos) {
-		this.historialPresupuestos = historialPresupuestos;
+	public Garantia removeGarantia(Garantia garantia) {
+		getGarantias().remove(garantia);
+		garantia.setVentaBean(null);
+
+		return garantia;
 	}
 
-	public Cliente getCliente() {
-		return this.cliente;
+	public ClienteCuenta getClienteCuenta() {
+		return this.clienteCuenta;
 	}
 
-	public void setCliente(Cliente cliente) {
-		this.cliente = cliente;
+	public void setClienteCuenta(ClienteCuenta clienteCuenta) {
+		this.clienteCuenta = clienteCuenta;
 	}
 
-	public TipoPago getTipoPago() {
-		return this.tipoPago;
+	public MetodoPago getMetodoPagoBean() {
+		return this.metodoPagoBean;
 	}
 
-	public void setTipoPago(TipoPago tipoPago) {
-		this.tipoPago = tipoPago;
+	public void setMetodoPagoBean(MetodoPago metodoPagoBean) {
+		this.metodoPagoBean = metodoPagoBean;
 	}
 
-	public Vendedor getVendedor() {
-		return this.vendedor;
+	public Usuario getUsuario1() {
+		return this.usuario1;
 	}
 
-	public void setVendedor(Vendedor vendedor) {
-		this.vendedor = vendedor;
+	public void setUsuario1(Usuario usuario1) {
+		this.usuario1 = usuario1;
 	}
 
-	public Usuario getUsuario() {
-		return this.usuario;
+	public Usuario getUsuario2() {
+		return this.usuario2;
 	}
 
-	public void setUsuario(Usuario usuario) {
-		this.usuario = usuario;
+	public void setUsuario2(Usuario usuario2) {
+		this.usuario2 = usuario2;
 	}
+
 }

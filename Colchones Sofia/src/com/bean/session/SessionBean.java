@@ -14,10 +14,10 @@ import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
 
+import com.dao.*;
 import com.entity.*;
 import com.entity.other.*;
-import com.dao.*;
-import com.util.Fecha;
+import com.util.*;
 
 /**
  * Implementation SesionBean.
@@ -74,6 +74,7 @@ public class SessionBean implements Serializable {
 	///////////////////////////////////////////////////////
 	// Method
 	///////////////////////////////////////////////////////
+
 	/**
 	 * Metodo que permite verificar los datos del usuario a logear.
 	 * 
@@ -85,60 +86,39 @@ public class SessionBean implements Serializable {
 		Fecha fecha = new Fecha();
 		if (this.logeado == null) {
 			if (this.intentos > 0) {
-				PersonaDao dao = new PersonaDao();
-				Persona persona = dao.findByField("email", this.usuario.getEmail());
-				if (persona != null) {
-					UsuarioDao uDao = new UsuarioDao();
-					Usuario usuario = uDao.findByField("documento", persona.getDocumento());
-					if (usuario != null) {
-						if (usuario.getRol().getNombre().contentEquals(this.usuario.getTipo())) {
-							if (usuario.getEstado()) {
-								String clave = usuario.getClave();
-								if (clave.contentEquals(this.usuario.getClave())) {
-									this.logeado = usuario;
-									fecha = new Fecha();
-									logeado.setSession(true);
-									logeado.setFechaSesion(new Date(fecha.fecha()));
-									uDao.update(logeado);
-									this.mensaje = new FacesMessage(FacesMessage.SEVERITY_INFO, "Success",
-											"Usuario Logeado.");
-									this.usuario = new Validar();
-									return rol(this.logeado.getRol().getNombre());
+				UsuarioDao dao = new UsuarioDao();
+				Usuario auxUsuario = dao.ingresar(this.usuario.getEmail(), this.usuario.getClave(),
+						this.usuario.getTipo());
+				if (auxUsuario != null) {
+					this.logeado = auxUsuario;
+					fecha = new Fecha();
+					logeado.setSesion(true);
+					logeado.setFechaSesion(new Date(fecha.fecha()));
+					dao.update(logeado);
+					this.mensaje = new FacesMessage(FacesMessage.SEVERITY_INFO, "Success", "Usuario Logeado.");
+					this.usuario = new Validar();
+					return rol(this.logeado.getRolBean().getRol());
 
-								} else {
-									this.mensaje = new FacesMessage(FacesMessage.SEVERITY_WARN, "",
-											"Contraseña Incorrecta.");
-								}
-							} else {
-								this.mensaje = new FacesMessage(FacesMessage.SEVERITY_WARN, "Warn",
-										"El usuario ha sido dehabilitado.");
-							}
-						} else {
-							this.mensaje = new FacesMessage(FacesMessage.SEVERITY_WARN, "Warn", "Datos Incorrectos.");
-						}
-						if (this.intentos == 3) {
-							fecha = new Fecha();
-							fecha.setFormat(new SimpleDateFormat("yyyy-MM-dd h:mm", Locale.US));
-							this.inicio = fecha.fecha();
-							this.fin = null;
-							Date aux;
-							try {
-								aux = fecha.fecha("yyyy-MM-dd h:mm", inicio);
-								fecha.setFormat(new SimpleDateFormat("yyyy-MM-dd h:mm", Locale.US));
-								this.fin = fecha.getFormat().format(fecha.sumarMinutos(aux, this.esperar));
-							} catch (ParseException e) {
-								e.printStackTrace();
-							}
-						}
-						this.intentos--;
-						FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN,
-								"Warn", "Tiene " + intentos + " intentos."));
-					} else {
-						this.mensaje = new FacesMessage(FacesMessage.SEVERITY_ERROR, "REGISTRASE",
-								"Usuario No existe.");
-					}
 				} else {
-					this.mensaje = new FacesMessage(FacesMessage.SEVERITY_FATAL, "Fatal", "Usuario No existe.");
+					if (this.intentos == 3) {
+						fecha = new Fecha();
+						fecha.setFormat(new SimpleDateFormat("yyyy-MM-dd h:mm", Locale.US));
+						this.inicio = fecha.fecha();
+						this.fin = null;
+						Date aux;
+						try {
+							aux = fecha.fecha("yyyy-MM-dd h:mm", inicio);
+							fecha.setFormat(new SimpleDateFormat("yyyy-MM-dd h:mm", Locale.US));
+							this.fin = fecha.getFormat().format(fecha.sumarMinutos(aux, this.esperar));
+						} catch (ParseException e) {
+							e.printStackTrace();
+						}
+					}
+					this.intentos--;
+					FacesContext.getCurrentInstance().addMessage(null,
+							new FacesMessage(FacesMessage.SEVERITY_WARN, "Warn", "Tiene " + intentos + " intentos."));
+					this.mensaje = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error",
+							"Las credenciales no son validas.");
 				}
 			} else {
 				fecha = new Fecha();
@@ -168,7 +148,7 @@ public class SessionBean implements Serializable {
 		} else {
 			this.intentos = 3;
 			this.usuario = new Validar();
-			return rol(this.logeado.getRol().getNombre());
+			return rol(this.logeado.getRolBean().getRol());
 		}
 		FacesContext.getCurrentInstance().addMessage(null, this.mensaje);
 		return "login";
@@ -180,30 +160,22 @@ public class SessionBean implements Serializable {
 	public String recuperar() {
 		FacesMessage message = null;
 		if (logeado == null) {
-			PersonaDao pDao = new PersonaDao();
-			Persona persona = pDao.findByField("email", this.usuario.getEmail());
-			if (persona != null) {
-				UsuarioDao dao = new UsuarioDao();
-				Usuario usuario = dao.findByField("documento", persona.getDocumento());
-				if (usuario != null) {
-					List<Telefono> telefonos = app.getApp().getTelefono();
-					String mensaje = mail.formatRecuperar(usuario.getClave(),
-							((telefonos != null && telefonos.size() > 0)
-									? String.valueOf(telefonos.get(0).getTelefono())
-									: ""),
-							app.getApp().getGlobal().getDireccion());
-					mail.send(usuario.getPersona().getEmail(), "Recuperación Contraseña", mensaje);
-					message = new FacesMessage(FacesMessage.SEVERITY_INFO, "",
-							"Se te ha enviado un correo con la clave.");
-				} else {
-					message = new FacesMessage(FacesMessage.SEVERITY_WARN, "", "El usuario no esta registrado.");
-				}
+			UsuarioDao dao = new UsuarioDao();
+			Usuario usuario = dao.usuario(this.usuario.getEmail());
+			if (usuario != null) {
+				List<EmpresaInformacion> telefonos = app.getApp().getTelefono();
+				String mensaje = mail.formatRecuperar(usuario.getClave(),
+						((telefonos != null && telefonos.size() > 0) ? String.valueOf(telefonos.get(0).getTelefono())
+								: ""),
+						app.getApp().getEmpresa().getDireccion());
+				mail.send(usuario.getPersona().getEmail(), "Recuperación Contraseña", mensaje);
+				message = new FacesMessage(FacesMessage.SEVERITY_INFO, "", "Se te ha enviado un correo con la clave.");
 			} else {
 				message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "REGISTRASE", "Usuario No existe.");
 			}
 		} else {
 			this.usuario = new Validar();
-			return rol(this.logeado.getRol().getNombre());
+			return rol(this.logeado.getRolBean().getRol());
 		}
 		FacesContext.getCurrentInstance().addMessage(null, message);
 		return "login";
@@ -235,12 +207,20 @@ public class SessionBean implements Serializable {
 		this.mensaje = mensaje;
 	}
 
-	public Validar getUsuario() {
-		return usuario;
+	public int getIntentos() {
+		return intentos;
 	}
 
-	public void setUsuario(Validar usuario) {
-		this.usuario = usuario;
+	public void setIntentos(int intentos) {
+		this.intentos = intentos;
+	}
+
+	public String getPath() {
+		return path;
+	}
+
+	public void setPath(String path) {
+		this.path = path;
 	}
 
 	public String getInicio() {
@@ -259,12 +239,16 @@ public class SessionBean implements Serializable {
 		this.fin = fin;
 	}
 
-	public int getEsperar() {
-		return esperar;
+	public static long getSerialversionuid() {
+		return serialVersionUID;
 	}
 
-	public void setEsperar(int esperar) {
-		this.esperar = esperar;
+	public Validar getUsuario() {
+		return usuario;
+	}
+
+	public void setUsuario(Validar usuario) {
+		this.usuario = usuario;
 	}
 
 	public Usuario getLogeado() {
@@ -275,24 +259,12 @@ public class SessionBean implements Serializable {
 		this.logeado = logeado;
 	}
 
-	public int getIntentos() {
-		return intentos;
+	public int getEsperar() {
+		return esperar;
 	}
 
-	public void setIntentos(int intentos) {
-		this.intentos = intentos;
-	}
-
-	public String getPath() {
-		return path;
-	}
-
-	public void setPath(String path) {
-		this.path = path;
-	}
-
-	public static long getSerialversionuid() {
-		return serialVersionUID;
+	public void setEsperar(int esperar) {
+		this.esperar = esperar;
 	}
 
 	public EmailBean getMail() {

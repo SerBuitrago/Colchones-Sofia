@@ -3,42 +3,39 @@
 	xmlns="http://xmlns.jcp.org/xml/ns/persistence"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence http://xmlns.jcp.org/xml/ns/persistence/persistence_2_1.xsd">
-        
-	<persistence-unit name="colchones">
-		<class>com.entity.Carrusel</class>
+
+	<persistence-unit name="sofia">
 		<class>com.entity.Categoria</class>
-		<class>com.entity.Cliente</class>
+		<class>com.entity.ClienteCuenta</class>
 		<class>com.entity.Compra</class>
-		<class>com.entity.DetalleCompra</class>
+		<class>com.entity.DetalleCompraVenta</class>
 		<class>com.entity.DetalleProducto</class>
-		<class>com.entity.DetalleVenta</class>
-		<class>com.entity.DevolucionGarantia</class>
-		<class>com.entity.Email</class>
-		<class>com.entity.EstadoVenta</class>
-		<class>com.entity.Global</class>
-		<class>com.entity.HistorialPresupuesto</class>
+		<class>com.entity.EmpresaInformacion</class>
+		<class>com.entity.Garantia</class>
+		<class>com.entity.Menu</class>
+		<class>com.entity.MetodoPago</class>
 		<class>com.entity.Persona</class>
 		<class>com.entity.Producto</class>
 		<class>com.entity.Proveedor</class>
-		<class>com.entity.ProveedorProducto</class>
 		<class>com.entity.Rol</class>
-		<class>com.entity.Telefono</class>
-		<class>com.entity.TipoBanco</class>
+		<class>com.entity.Submenu</class>
 		<class>com.entity.TipoDocumento</class>
 		<class>com.entity.TipoPago</class>
 		<class>com.entity.Usuario</class>
-		<class>com.entity.Vendedor</class>
 		<class>com.entity.Venta</class>
-		<!--        --> 
+		<class>com.entity.Empresa</class>
+		<class>com.entity.UsuarioPK</class>
+	
+		<!-- -->
 		<!-- Tables -->
-		<!--        -->
-		
-		<!--            -->
+		<!-- -->
+
+		<!-- -->
 		<!-- Properties -->
-		<!--            -->
+		<!-- -->
 		<properties>
 			<property name="javax.persistence.jdbc.url"
-				value="jdbc:mysql://localhost:3306/colchones?zeroDateTimeBehavior=convertToNull" />
+				value="jdbc:mysql://localhost:3306/sofia?zeroDateTimeBehavior=convertToNull" />
 
 			<property name="javax.persistence.jdbc.user" value="root" />
 
@@ -48,19 +45,19 @@
 			<property name="hibernate.dialect"
 				value="org.hibernate.dialect.MariaDB53Dialect" />
 
-			<!--            -->
+			<!-- -->
 			<!-- DB Dialect -->
-			<!--            -->
+			<!-- -->
 			<property name="hibernate.show_sql" value="true" />
 
-			<!--                     -->
+			<!-- -->
 			<!-- Show SQL in console -->
-			<!--                     -->
+			<!-- -->
 			<property name="hibernate.format_sql" value="true" />
 			<property
 				name="javax.persistence.schema-generation.database.action"
 				value="none" />
 		</properties>
-		
 	</persistence-unit>
+
 </persistence>

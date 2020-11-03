@@ -59,7 +59,7 @@ public class Validator {
 			message = new FacesMessage(FacesMessage.SEVERITY_WARN, "Warning", "Ingrese el campo del email.");
 			throw new ValidatorException(message);
 		}
-	} 
+	}  
 	
 	/**
 	 * Metodo que verifica la clave.

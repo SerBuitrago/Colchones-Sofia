@@ -2,14 +2,13 @@ package com.entity;
 
 import java.io.Serializable;
 import javax.persistence.*;
+import java.util.Date;
 import java.util.List;
 
+
 /**
- * Implementation TipoDocumento. 
- * @author DeveUp.
- * @phone 3118398189.
- * @email deveup@gmail.com.
- * @version 1.0.0.0.
+ * The persistent class for the tipo_documento database table.
+ * 
  */
 @Entity
 @Table(name="tipo_documento")
@@ -19,51 +18,28 @@ public class TipoDocumento implements Serializable {
 
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
-	private String nombre;
+	@Column(name="tipo_documento")
+	private String tipoDocumento;
 
 	private boolean estado;
 
-	///////////////////////////////////////////////////////
-	// Map
-	///////////////////////////////////////////////////////
-	@OneToMany(mappedBy="tipoDocumento")
+	@Temporal(TemporalType.TIMESTAMP)
+	@Column(name="fecha_creacion")
+	private Date fechaCreacion;
+
+	//bi-directional many-to-one association to Persona
+	@OneToMany(mappedBy="tipoDocumentoBean")
 	private List<Persona> personas;
-	
-	///////////////////////////////////////////////////////
-	// Builder
-	///////////////////////////////////////////////////////
+
 	public TipoDocumento() {
 	}
-	
-	///////////////////////////////////////////////////////
-	// Method
-	///////////////////////////////////////////////////////
-	@Override
-	public String toString() {
-		return "TipoDocumento [nombre=" + nombre + ", estado=" + estado + "]";
-	}
-	
-	public Persona addPersona(Persona persona) {
-		getPersonas().add(persona);
-		persona.setTipoDocumento(this);
-		return persona;
+
+	public String getTipoDocumento() {
+		return this.tipoDocumento;
 	}
 
-	public Persona removePersona(Persona persona) {
-		getPersonas().remove(persona);
-		persona.setTipoDocumento(null);
-		return persona;
-	}
-
-	///////////////////////////////////////////////////////
-	// Getter and Setters
-	///////////////////////////////////////////////////////
-	public String getNombre() {
-		return this.nombre;
-	}
-
-	public void setNombre(String nombre) {
-		this.nombre = nombre;
+	public void setTipoDocumento(String tipoDocumento) {
+		this.tipoDocumento = tipoDocumento;
 	}
 
 	public boolean getEstado() {
@@ -74,6 +50,14 @@ public class TipoDocumento implements Serializable {
 		this.estado = estado;
 	}
 
+	public Date getFechaCreacion() {
+		return this.fechaCreacion;
+	}
+
+	public void setFechaCreacion(Date fechaCreacion) {
+		this.fechaCreacion = fechaCreacion;
+	}
+
 	public List<Persona> getPersonas() {
 		return this.personas;
 	}
@@ -81,4 +65,19 @@ public class TipoDocumento implements Serializable {
 	public void setPersonas(List<Persona> personas) {
 		this.personas = personas;
 	}
+
+	public Persona addPersona(Persona persona) {
+		getPersonas().add(persona);
+		persona.setTipoDocumentoBean(this);
+
+		return persona;
+	}
+
+	public Persona removePersona(Persona persona) {
+		getPersonas().remove(persona);
+		persona.setTipoDocumentoBean(null);
+
+		return persona;
+	}
+
 }

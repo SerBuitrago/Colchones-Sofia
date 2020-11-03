@@ -2,67 +2,57 @@ package com.entity;
 
 import java.io.Serializable;
 import javax.persistence.*;
+import java.util.Date;
 import java.util.List;
 
+
 /**
- * Implementation Rol.
+ * The persistent class for the rol database table.
  * 
- * @author DeveUp.
- * @phone 3118398189.
- * @email deveup@gmail.com.
- * @version 1.0.0.0.
  */
 @Entity
-@NamedQuery(name = "Rol.findAll", query = "SELECT r FROM Rol r")
+@NamedQuery(name="Rol.findAll", query="SELECT r FROM Rol r")
 public class Rol implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	private String nombre;
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
+	private String rol;
 
 	private boolean estado;
 
-	///////////////////////////////////////////////////////
-	// Map
-	///////////////////////////////////////////////////////
-	@OneToMany(mappedBy = "rol")
+	@Temporal(TemporalType.TIMESTAMP)
+	@Column(name="fecha_creacion")
+	private Date fechaCreacion;
+
+	private boolean sistema;
+
+
+	@ManyToMany
+	@JoinTable(
+		name="rol_submenu"
+		, joinColumns={
+			@JoinColumn(name="rol")
+			}
+		, inverseJoinColumns={
+			@JoinColumn(name="submenu")
+			}
+		)
+	private List<Submenu> submenus;
+
+	//bi-directional many-to-one association to Usuario
+	@OneToMany(mappedBy="rolBean")
 	private List<Usuario> usuarios;
-	
-	///////////////////////////////////////////////////////
-	// Builder
-	///////////////////////////////////////////////////////
+
 	public Rol() {
 	}
 
-	///////////////////////////////////////////////////////
-	// Method
-	///////////////////////////////////////////////////////
-	@Override
-	public String toString() {
-		return "Rol [nombre=" + nombre + ", estado=" + estado + "]";
+	public String getRol() {
+		return this.rol;
 	}
 
-	public Usuario addUsuario(Usuario usuario) {
-		getUsuarios().add(usuario);
-		usuario.setRol(this);
-		return usuario;
-	}
-
-	public Usuario removeUsuario(Usuario usuario) {
-		getUsuarios().remove(usuario);
-		usuario.setRol(null);
-		return usuario;
-	}
-
-	///////////////////////////////////////////////////////
-	// Getter and Setters
-	///////////////////////////////////////////////////////
-	public String getNombre() {
-		return this.nombre;
-	}
-
-	public void setNombre(String nombre) {
-		this.nombre = nombre;
+	public void setRol(String rol) {
+		this.rol = rol;
 	}
 
 	public boolean getEstado() {
@@ -73,6 +63,30 @@ public class Rol implements Serializable {
 		this.estado = estado;
 	}
 
+	public Date getFechaCreacion() {
+		return this.fechaCreacion;
+	}
+
+	public void setFechaCreacion(Date fechaCreacion) {
+		this.fechaCreacion = fechaCreacion;
+	}
+
+	public boolean getSistema() {
+		return this.sistema;
+	}
+
+	public void setSistema(boolean sistema) {
+		this.sistema = sistema;
+	}
+
+	public List<Submenu> getSubmenus() {
+		return this.submenus;
+	}
+
+	public void setSubmenus(List<Submenu> submenus) {
+		this.submenus = submenus;
+	}
+
 	public List<Usuario> getUsuarios() {
 		return this.usuarios;
 	}
@@ -80,4 +94,19 @@ public class Rol implements Serializable {
 	public void setUsuarios(List<Usuario> usuarios) {
 		this.usuarios = usuarios;
 	}
+
+	public Usuario addUsuario(Usuario usuario) {
+		getUsuarios().add(usuario);
+		usuario.setRolBean(this);
+
+		return usuario;
+	}
+
+	public Usuario removeUsuario(Usuario usuario) {
+		getUsuarios().remove(usuario);
+		usuario.setRolBean(null);
+
+		return usuario;
+	}
+
 }

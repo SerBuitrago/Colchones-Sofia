@@ -5,6 +5,7 @@ import java.math.BigInteger;
 
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
+import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.SessionScoped;
 
 import com.entity.other.Email;
@@ -29,6 +30,12 @@ public class EmailBean implements Serializable {
 	private String clave;
 
 	///////////////////////////////////////////////////////
+	// Managed Bean
+	///////////////////////////////////////////////////////
+	@ManagedProperty("#{app}")
+	private AppBean app;
+
+	///////////////////////////////////////////////////////
 	// Builder
 	///////////////////////////////////////////////////////
 	public EmailBean() {
@@ -40,8 +47,8 @@ public class EmailBean implements Serializable {
 	@PostConstruct
 	public void ini() {
 		mail = new Email();
-		de = "abisaidgc@ufps.edu.co";
-		clave = "niky.jam";
+		de = app.getApp().getEmpresa().getEmail();
+		clave = app.getApp().getEmpresa().getClave();
 	}
 
 	///////////////////////////////////////////////////////
@@ -67,11 +74,11 @@ public class EmailBean implements Serializable {
 	// Format
 	///////////////////////////////////////////////////////
 	/**
-	 * 
-	 * @param clave
-	 * @param telefono
-	 * @param direccion
-	 * @return
+	 * Metodo que permite hacer el formato del recuperar clave.
+	 * @param clave representa la clave.
+	 * @param telefono representa el telefono.
+	 * @param direccion representa la direccion.
+	 * @return cadena con el formato con email.
 	 */
 	public String formatRecuperar(String clave, String telefono, String direccion) {
 		String rta;
@@ -90,7 +97,7 @@ public class EmailBean implements Serializable {
 				+ "<div dir='ltr'><div dir='ltr'>\r\n" + formatPiePagina(telefono, direccion);
 		return rta;
 	}
-	
+
 	/**
 	 * 
 	 * @param id
@@ -99,8 +106,8 @@ public class EmailBean implements Serializable {
 	 * @param direccion
 	 * @return
 	 */
-	public String formatVenta(int id, int cantidad, BigInteger total,String telefono, String direccion) {
-		String aux= ""+formatPiePagina(telefono, direccion);
+	public String formatVenta(int id, int cantidad, BigInteger total, String telefono, String direccion) {
+		String aux = "" + formatPiePagina(telefono, direccion);
 		return aux;
 	}
 
@@ -149,5 +156,13 @@ public class EmailBean implements Serializable {
 
 	public static long getSerialversionuid() {
 		return serialVersionUID;
+	}
+
+	public AppBean getApp() {
+		return app;
+	}
+
+	public void setApp(AppBean app) {
+		this.app = app;
 	}
 }

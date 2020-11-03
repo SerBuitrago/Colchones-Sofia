@@ -1,25 +1,25 @@
 package com.dao;
 
 import com.entity.*;
-import com.util.Conexion;
+import com.util.*;
 
 /**
- * Implementation PersonaDao.
+ * Implementation EmpresaDao.
  * 
  * @author DeveUp.
  * @phone 3118398189.
  * @email deveup@gmail.com.
  * @version 1.0.0.0.
  */
-public class PersonaDao extends Conexion<Persona> implements Interface<Persona> {
-	
+public class EmpresaDao extends Conexion<Empresa> implements Interface<Empresa> {
+
 	///////////////////////////////////////////////////////
-	// Builder
+	// Builders
 	///////////////////////////////////////////////////////
-	public PersonaDao() {
-		super(Persona.class);
+	public EmpresaDao() {
+		super(Empresa.class);
 	}
-	
+
 	///////////////////////////////////////////////////////
 	// Method
 	///////////////////////////////////////////////////////

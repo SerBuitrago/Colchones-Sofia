@@ -4,65 +4,32 @@ import java.io.Serializable;
 import javax.persistence.*;
 import java.util.List;
 
+
 /**
- * Implementation Carrusel.
+ * The persistent class for the tipo_pago database table.
  * 
- * @author DeveUp.
- * @phone 3118398189.
- * @email deveup@gmail.com.
- * @version 1.0.0.0.
  */
 @Entity
-@Table(name = "tipo_pago")
-@NamedQuery(name = "TipoPago.findAll", query = "SELECT t FROM TipoPago t")
+@Table(name="tipo_pago")
+@NamedQuery(name="TipoPago.findAll", query="SELECT t FROM TipoPago t")
 public class TipoPago implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private String nombre;
 
 	private boolean estado;
 
-	///////////////////////////////////////////////////////
-	// Map
-	///////////////////////////////////////////////////////
-	@ManyToOne
-	@JoinColumn(name = "tipo_banco")
-	private TipoBanco tipoBanco;
+	private String foto;
 
-	@OneToMany(mappedBy = "tipoPago")
-	private List<Venta> ventas;
+	//bi-directional many-to-one association to MetodoPago
+	@OneToMany(mappedBy="tipoPagoBean")
+	private List<MetodoPago> metodoPagos;
 
-	///////////////////////////////////////////////////////
-	// Builder
-	///////////////////////////////////////////////////////
 	public TipoPago() {
 	}
 
-	///////////////////////////////////////////////////////
-	// Method
-	///////////////////////////////////////////////////////
-	@Override
-	public String toString() {
-		return "TipoPago [nombre=" + nombre + ", estado=" + estado + ", tipoBanco=" + tipoBanco + "]";
-	}
-
-	public Venta addVenta(Venta venta) {
-		getVentas().add(venta);
-		venta.setTipoPago(this);
-		return venta;
-	}
-
-	public Venta removeVenta(Venta venta) {
-		getVentas().remove(venta);
-		venta.setTipoPago(null);
-		return venta;
-	}
-	
-	///////////////////////////////////////////////////////
-	// Getter and Setters 
-	///////////////////////////////////////////////////////
 	public String getNombre() {
 		return this.nombre;
 	}
@@ -79,19 +46,34 @@ public class TipoPago implements Serializable {
 		this.estado = estado;
 	}
 
-	public TipoBanco getTipoBanco() {
-		return this.tipoBanco;
+	public String getFoto() {
+		return this.foto;
 	}
 
-	public void setTipoBanco(TipoBanco tipoBanco) {
-		this.tipoBanco = tipoBanco;
+	public void setFoto(String foto) {
+		this.foto = foto;
 	}
 
-	public List<Venta> getVentas() {
-		return this.ventas;
+	public List<MetodoPago> getMetodoPagos() {
+		return this.metodoPagos;
 	}
 
-	public void setVentas(List<Venta> ventas) {
-		this.ventas = ventas;
+	public void setMetodoPagos(List<MetodoPago> metodoPagos) {
+		this.metodoPagos = metodoPagos;
 	}
+
+	public MetodoPago addMetodoPago(MetodoPago metodoPago) {
+		getMetodoPagos().add(metodoPago);
+		metodoPago.setTipoPagoBean(this);
+
+		return metodoPago;
+	}
+
+	public MetodoPago removeMetodoPago(MetodoPago metodoPago) {
+		getMetodoPagos().remove(metodoPago);
+		metodoPago.setTipoPagoBean(null);
+
+		return metodoPago;
+	}
+
 }

@@ -1,15 +1,17 @@
 package com.bean.session;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 
-import com.entity.*;
-import com.util.Fecha;
 import com.dao.*;
+import com.entity.*;
+import com.entity.other.*;
+import com.util.*;
 
 /**
  * Implementation AppBean.
@@ -20,12 +22,13 @@ import com.dao.*;
  * @version 1.0.0.0.
  */
 @ManagedBean(name = "app")
-@SessionScoped
+@SessionScoped 
 public class AppBean implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	private App app;
 
+	private final String NIT = "1090492502-4"; 
 	private String mes;
 	private int anio;
 
@@ -44,6 +47,7 @@ public class AppBean implements Serializable {
 		Fecha fecha = new Fecha();
 		this.mes = fecha.mesActualCadenaESP();
 		this.anio = fecha.anioActual();
+
 	}
 
 	///////////////////////////////////////////////////////
@@ -53,21 +57,60 @@ public class AppBean implements Serializable {
 	 * Metodo que trae la información de la empresa.
 	 */
 	public void app() {
-		GlobalDao gDao = new GlobalDao();
-		TelefonoDao tDao = new TelefonoDao();
-		EmailDao eDao = new EmailDao();
-		CarruselDao dao = new CarruselDao();
-		// Information
-		List<Global> list = gDao.list();
-		Global global = new Global();
-		if (list.size() > 0) {
-			global = gDao.list().get(0);
+		EmpresaDao eDao = new EmpresaDao();
+		EmpresaInformacionDao iDao = new EmpresaInformacionDao();
+		
+		Empresa empresa = eDao.find(this.NIT);
+		System.out.println(empresa.getNombre());  
+		if(empresa != null) {
+			List<EmpresaInformacion> list = iDao.findByFieldList("empresaBean", empresa);
+			this.app = new App(emails(list), telefonos(list), empresa, carrusel(list)); 
 		}
-		List<Telefono> telefonos = tDao.list();
-		List<Email> email = eDao.list();
-		List<Carrusel> informacion = dao.list();
-		this.app = new App(email, telefonos, global);
-		this.app.setCarrousel(informacion);
+	}
+	
+	/**
+	 * 
+	 * @param list
+	 * @return
+	 */
+	public List<EmpresaInformacion> telefonos(List<EmpresaInformacion> list) {
+		List<EmpresaInformacion> telefonos = new ArrayList<EmpresaInformacion>();
+		for (EmpresaInformacion i : list) {
+			if (Convertidor.isCadena(i.getTelefono())) {
+				telefonos.add(i);
+			}
+		}
+		return telefonos;
+	}
+
+	/**
+	 * 
+	 * @param list
+	 * @return
+	 */
+	public List<EmpresaInformacion> emails(List<EmpresaInformacion> list) {
+		List<EmpresaInformacion> telefonos = new ArrayList<EmpresaInformacion>();
+		for (EmpresaInformacion i : list) {
+			if (Convertidor.isCadena(i.getEmail())) {
+				telefonos.add(i);
+			}
+		}
+		return telefonos;
+	}
+
+	/**
+	 * 
+	 * @param list
+	 * @return
+	 */
+	public List<EmpresaInformacion> carrusel(List<EmpresaInformacion> list) {
+		List<EmpresaInformacion> telefonos = new ArrayList<EmpresaInformacion>();
+		for (EmpresaInformacion i : list) {
+			if (Convertidor.isVector(i.getFoto())) {
+				telefonos.add(i);
+			}
+		}
+		return telefonos;
 	}
 
 	///////////////////////////////////////////////////////
@@ -79,10 +122,6 @@ public class AppBean implements Serializable {
 
 	public void setApp(App app) {
 		this.app = app;
-	}
-
-	public static long getSerialversionuid() {
-		return serialVersionUID;
 	}
 
 	public String getMes() {
@@ -99,5 +138,13 @@ public class AppBean implements Serializable {
 
 	public void setAnio(int anio) {
 		this.anio = anio;
+	}
+
+	public static long getSerialversionuid() {
+		return serialVersionUID;
+	}
+
+	public String getNIT() {
+		return NIT;
 	}
 }

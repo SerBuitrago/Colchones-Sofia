@@ -5,100 +5,58 @@ import javax.persistence.*;
 import java.math.BigInteger;
 import java.util.List;
 
+
 /**
- * Implementation DetalleProducto.
+ * The persistent class for the detalle_producto database table.
  * 
- * @author DeveUp.
- * @phone 3118398189.
- * @email deveup@gmail.com.
- * @version 1.0.0.0.
  */
 @Entity
-@Table(name = "detalle_producto")
-@NamedQuery(name = "DetalleProducto.findAll", query = "SELECT d FROM DetalleProducto d")
+@Table(name="detalle_producto")
+@NamedQuery(name="DetalleProducto.findAll", query="SELECT d FROM DetalleProducto d")
 public class DetalleProducto implements Serializable {
-
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private int id;
 
 	private String color;
-	private String descripcion;
-	private BigInteger descuento;
-	private String dimension;
-	private int stock;
 
-	@Lob
+	private String descripcion;
+
+	private BigInteger descuento;
+
+	private String dimension;
+
 	private byte[] foto;
 
-	@Column(name = "precio_costo")
-	private BigInteger precioCosto;
+	@Column(name="precio_compra")
+	private BigInteger precioCompra;
 
-	@Column(name = "precio_venta")
+	@Column(name="precio_venta")
 	private BigInteger precioVenta;
 
-	///////////////////////////////////////////////////////
-	// Map
-	///////////////////////////////////////////////////////
-	@OneToMany(mappedBy = "detalleProducto")
-	private List<DetalleCompra> detalleCompras;
+	private int stock;
 
+	@Column(name="stock_minimo")
+	private int stockMinimo;
+
+	//bi-directional many-to-one association to DetalleCompraVenta
+	@OneToMany(mappedBy="detalleProducto")
+	private List<DetalleCompraVenta> detalleCompraVentas;
+
+	//bi-directional many-to-one association to Producto
 	@ManyToOne
-	@JoinColumn(name = "id_producto")
-	private Producto producto;
+	@JoinColumn(name="producto")
+	private Producto productoBean;
 
-	@OneToMany(mappedBy = "detalleProducto")
-	private List<DetalleVenta> detalleVentas;
+	//bi-directional many-to-many association to Proveedor
+	@ManyToMany(mappedBy="detalleProductos")
+	private List<Proveedor> proveedors;
 
-	///////////////////////////////////////////////////////
-	// Builder
-	///////////////////////////////////////////////////////
 	public DetalleProducto() {
 	}
 
-	///////////////////////////////////////////////////////
-	// Method
-	///////////////////////////////////////////////////////
-	@Override
-	public String toString() {
-		return "DetalleProducto [id=" + id + ", color=" + color + ", descripcion=" + descripcion + ", descuento="
-				+ descuento + ", dimension=" + dimension + ", stock=" + stock + ", precioCosto=" + precioCosto
-				+ ", precioVenta=" + precioVenta + "]";
-	}
-
-	public DetalleCompra addDetalleCompra(DetalleCompra detalleCompra) {
-		getDetalleCompras().add(detalleCompra);
-		detalleCompra.setDetalleProducto(this);
-
-		return detalleCompra;
-	}
-
-	public DetalleCompra removeDetalleCompra(DetalleCompra detalleCompra) {
-		getDetalleCompras().remove(detalleCompra);
-		detalleCompra.setDetalleProducto(null);
-
-		return detalleCompra;
-	}
-
-	public DetalleVenta addDetalleVenta(DetalleVenta detalleVenta) {
-		getDetalleVentas().add(detalleVenta);
-		detalleVenta.setDetalleProducto(this);
-
-		return detalleVenta;
-	}
-
-	public DetalleVenta removeDetalleVenta(DetalleVenta detalleVenta) {
-		getDetalleVentas().remove(detalleVenta);
-		detalleVenta.setDetalleProducto(null);
-
-		return detalleVenta;
-	}
-
-	///////////////////////////////////////////////////////
-	// Getter and Setters
-	///////////////////////////////////////////////////////
 	public int getId() {
 		return this.id;
 	}
@@ -147,12 +105,12 @@ public class DetalleProducto implements Serializable {
 		this.foto = foto;
 	}
 
-	public BigInteger getPrecioCosto() {
-		return this.precioCosto;
+	public BigInteger getPrecioCompra() {
+		return this.precioCompra;
 	}
 
-	public void setPrecioCosto(BigInteger precioCosto) {
-		this.precioCosto = precioCosto;
+	public void setPrecioCompra(BigInteger precioCompra) {
+		this.precioCompra = precioCompra;
 	}
 
 	public BigInteger getPrecioVenta() {
@@ -171,27 +129,50 @@ public class DetalleProducto implements Serializable {
 		this.stock = stock;
 	}
 
-	public List<DetalleCompra> getDetalleCompras() {
-		return this.detalleCompras;
+	public int getStockMinimo() {
+		return this.stockMinimo;
 	}
 
-	public void setDetalleCompras(List<DetalleCompra> detalleCompras) {
-		this.detalleCompras = detalleCompras;
+	public void setStockMinimo(int stockMinimo) {
+		this.stockMinimo = stockMinimo;
 	}
 
-	public Producto getProducto() {
-		return this.producto;
+	public List<DetalleCompraVenta> getDetalleCompraVentas() {
+		return this.detalleCompraVentas;
 	}
 
-	public void setProducto(Producto producto) {
-		this.producto = producto;
+	public void setDetalleCompraVentas(List<DetalleCompraVenta> detalleCompraVentas) {
+		this.detalleCompraVentas = detalleCompraVentas;
 	}
 
-	public List<DetalleVenta> getDetalleVentas() {
-		return this.detalleVentas;
+	public DetalleCompraVenta addDetalleCompraVenta(DetalleCompraVenta detalleCompraVenta) {
+		getDetalleCompraVentas().add(detalleCompraVenta);
+		detalleCompraVenta.setDetalleProducto(this);
+
+		return detalleCompraVenta;
 	}
 
-	public void setDetalleVentas(List<DetalleVenta> detalleVentas) {
-		this.detalleVentas = detalleVentas;
+	public DetalleCompraVenta removeDetalleCompraVenta(DetalleCompraVenta detalleCompraVenta) {
+		getDetalleCompraVentas().remove(detalleCompraVenta);
+		detalleCompraVenta.setDetalleProducto(null);
+
+		return detalleCompraVenta;
 	}
+
+	public Producto getProductoBean() {
+		return this.productoBean;
+	}
+
+	public void setProductoBean(Producto productoBean) {
+		this.productoBean = productoBean;
+	}
+
+	public List<Proveedor> getProveedors() {
+		return this.proveedors;
+	}
+
+	public void setProveedors(List<Proveedor> proveedors) {
+		this.proveedors = proveedors;
+	}
+
 }

@@ -6,12 +6,10 @@ import java.util.Date;
 import java.math.BigInteger;
 import java.util.List;
 
+
 /**
- * Implementation Cliente. 
- * @author DeveUp.
- * @phone 3118398189.
- * @email deveup@gmail.com.
- * @version 1.0.0.0.
+ * The persistent class for the compra database table.
+ * 
  */
 @Entity
 @NamedQuery(name="Compra.findAll", query="SELECT c FROM Compra c")
@@ -20,94 +18,36 @@ public class Compra implements Serializable {
 
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
-	@Column(name="id_compra")
-	private int idCompra;
+	private int id;
 
 	private String descripcion;
-	private BigInteger descuento;
+
+	private boolean estado;
+
+	@Temporal(TemporalType.TIMESTAMP)
+	@Column(name="fecha_creacion")
+	private Date fechaCreacion;
+
 	private BigInteger total;
-	
-	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name="fecha_actualizacion")
-	private Date fechaActualizacion;
 
-	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name="fecha_registro")
-	private Date fechaRegistro;
-
-	///////////////////////////////////////////////////////
-	// Map
-	///////////////////////////////////////////////////////
+	//bi-directional many-to-one association to Proveedor
 	@ManyToOne
-	@JoinColumn(name="usuario")
-	private Usuario usuario;
+	@JoinColumn(name="proveedor")
+	private Proveedor proveedorBean;
 
-	@OneToMany(mappedBy="compra")
-	private List<DetalleCompra> detalleCompras;
+	//bi-directional many-to-one association to DetalleCompraVenta
+	@OneToMany(mappedBy="compraBean")
+	private List<DetalleCompraVenta> detalleCompraVentas;
 
-	@OneToMany(mappedBy="compra")
-	private List<HistorialPresupuesto> historial;
-	
-	///////////////////////////////////////////////////////
-	// Builder
-	///////////////////////////////////////////////////////
 	public Compra() {
 	}
-	
-	///////////////////////////////////////////////////////
-	// Method
-	///////////////////////////////////////////////////////
-	
-	@Override
-	public String toString() {
-		return "Compra [idCompra=" + idCompra + ", descripcion=" + descripcion + ", descuento=" + descuento + ", total="
-				+ total + "]";
-	}
-	
-	public DetalleCompra addDetalleCompra(DetalleCompra detalleCompra) {
-		getDetalleCompras().add(detalleCompra);
-		detalleCompra.setCompra(this);
 
-		return detalleCompra;
+	public int getId() {
+		return this.id;
 	}
 
-	public DetalleCompra removeDetalleCompra(DetalleCompra detalleCompra) {
-		getDetalleCompras().remove(detalleCompra);
-		detalleCompra.setCompra(null);
-
-		return detalleCompra;
-	}
-	
-	public HistorialPresupuesto addHistorialPresupuesto(HistorialPresupuesto historialPresupuesto) {
-		getHistorial().add(historialPresupuesto);
-		historialPresupuesto.setCompra(this);
-
-		return historialPresupuesto;
-	}
-
-	public HistorialPresupuesto removeHistorial(HistorialPresupuesto historial) {
-		getHistorial().remove(historial);
-		historial.setCompra(null);
-		return historial;
-	}
-	
-	///////////////////////////////////////////////////////
-	// Getter and Setters
-	///////////////////////////////////////////////////////
-	public List<HistorialPresupuesto> getHistorial() {
-		return this.historial;
-	}
-
-	public void setHistorial(List<HistorialPresupuesto> historial) {
-		this.historial= historial;
-	}
-	
-	public int getIdCompra() {
-		return this.idCompra;
-	}
-
-	public void setIdCompra(int idCompra) {
-		this.idCompra = idCompra;
+	public void setId(int id) {
+		this.id = id;
 	}
 
 	public String getDescripcion() {
@@ -118,28 +58,20 @@ public class Compra implements Serializable {
 		this.descripcion = descripcion;
 	}
 
-	public BigInteger getDescuento() {
-		return this.descuento;
+	public boolean getEstado() {
+		return this.estado;
 	}
 
-	public void setDescuento(BigInteger descuento) {
-		this.descuento = descuento;
+	public void setEstado(boolean estado) {
+		this.estado = estado;
 	}
 
-	public Date getFechaActualizacion() {
-		return this.fechaActualizacion;
+	public Date getFechaCreacion() {
+		return this.fechaCreacion;
 	}
 
-	public void setFechaActualizacion(Date fechaActualizacion) {
-		this.fechaActualizacion = fechaActualizacion;
-	}
-
-	public Date getFechaRegistro() {
-		return this.fechaRegistro;
-	}
-
-	public void setFechaRegistro(Date fechaRegistro) {
-		this.fechaRegistro = fechaRegistro;
+	public void setFechaCreacion(Date fechaCreacion) {
+		this.fechaCreacion = fechaCreacion;
 	}
 
 	public BigInteger getTotal() {
@@ -150,19 +82,34 @@ public class Compra implements Serializable {
 		this.total = total;
 	}
 
-	public Usuario getUsuario() {
-		return this.usuario;
+	public Proveedor getProveedorBean() {
+		return this.proveedorBean;
 	}
 
-	public void setUsuario(Usuario usuario) {
-		this.usuario = usuario;
+	public void setProveedorBean(Proveedor proveedorBean) {
+		this.proveedorBean = proveedorBean;
 	}
 
-	public List<DetalleCompra> getDetalleCompras() {
-		return this.detalleCompras;
+	public List<DetalleCompraVenta> getDetalleCompraVentas() {
+		return this.detalleCompraVentas;
 	}
 
-	public void setDetalleCompras(List<DetalleCompra> detalleCompras) {
-		this.detalleCompras = detalleCompras;
+	public void setDetalleCompraVentas(List<DetalleCompraVenta> detalleCompraVentas) {
+		this.detalleCompraVentas = detalleCompraVentas;
 	}
+
+	public DetalleCompraVenta addDetalleCompraVenta(DetalleCompraVenta detalleCompraVenta) {
+		getDetalleCompraVentas().add(detalleCompraVenta);
+		detalleCompraVenta.setCompraBean(this);
+
+		return detalleCompraVenta;
+	}
+
+	public DetalleCompraVenta removeDetalleCompraVenta(DetalleCompraVenta detalleCompraVenta) {
+		getDetalleCompraVentas().remove(detalleCompraVenta);
+		detalleCompraVenta.setCompraBean(null);
+
+		return detalleCompraVenta;
+	}
+
 }
