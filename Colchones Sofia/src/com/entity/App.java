@@ -18,7 +18,7 @@ public class App implements Serializable {
 	private List<Email> email;
 	private List<Telefono> telefono;
 	private Global global;
-
+	private String aaa;
 	private List<Carrusel> carrousel;
 
 	///////////////////////////////////////////////////////
