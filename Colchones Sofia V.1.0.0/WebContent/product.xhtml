@@ -1,0 +1,262 @@
+
+<!--          -->
+<!-- TEMPLATE -->
+<!--          -->
+<ui:composition template="template/template.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui">
+
+	<!--          -->
+	<!-- SECURITY -->
+	<!--          -->
+	<ui:define name="event">
+		<f:event type="preRenderView" listener="#{inicio.verificarProducto()}" />
+	</ui:define>
+
+	<!--      -->
+	<!-- HEAD -->
+	<!--      -->
+	<ui:define name="title"> | #{inicio.producto.nombre}</ui:define>
+
+	<!--        -->
+	<!-- NAVBAR -->
+	<!--        -->
+	<ui:define name="menu-top">
+		<p:commandLink value="Inicio"
+			action="/faces/index?faces-redirect=true" />
+	</ui:define>
+
+	<!--         -->
+	<!-- SECTION -->
+	<!--         -->
+	<ui:define name="component">
+		<h:form>
+			<p:growl showDetail="true" />
+			<h:panelGroup layout="block" rendered="#{inicio.producto != null}"
+				styleClass="sofia-page-product-structure">
+
+				<!--          -->
+				<!-- GALLERIA -->
+				<!--          -->
+				<h:panelGroup layout="block"
+					styleClass="sofia-page-product-structure-one">
+					<h:panelGroup layout="block"
+						styleClass="p-d-flex p-jc-center p-ac-center">
+						<p:galleria value="#{inicio.producto.detalleProductos}"
+							var="galleria" panelHeight="400" showCaption="true"
+							panelWidth="800">
+							<p:graphicImage value="#{image.detalle_producto}"
+								rendered="#{galleria.foto != null}"
+								title="ID. #{galleria.id} - #{galleria.color} - #{galleria.dimension}"
+								width="100%" height="100%" cache="false">
+								<f:param name="id-detalle-producto" value="#{galleria.id}"></f:param>
+							</p:graphicImage>
+							<p:graphicImage library="img" name="product.png"
+								rendered="#{galleria.foto == null}"
+								title="ID. #{galleria.id} - #{galleria.color} - #{galleria.dimension}"
+								width="100%" height="100%" style="object-fit: contain;" />
+						</p:galleria>
+					</h:panelGroup>
+				</h:panelGroup>
+
+				<h:panelGroup layout="block"
+					styleClass="sofia-page-product-structure-two">
+					<h:outputLabel value="#{inicio.producto.nombre}" />
+
+					<h:panelGroup layout="block" style="width:100%">
+						<p:selectOneButton value="#{inicio.producto_seleccionar}" id="dp">
+							<f:selectItems value="#{inicio.producto_detalle_producto}"
+								var="c" itemLabel="#{dp}" itemValue="#{dp}" />
+						</p:selectOneButton>
+					</h:panelGroup>
+
+				</h:panelGroup>
+
+				<!--             -->
+				<!-- DESCRIPTION -->
+				<!--             -->
+				<h:panelGroup layout="block"
+					styleClass="sofia-page-product-structure-three p-p-3">
+					<p:separator styleClass="p-mt-3 p-mb-1" />
+					<h:outputLabel styleClass="sofia-subtitle" value="Descripción:"
+						style="font-weight: bold;" />
+					<p:separator styleClass="p-mt-1 p-mb-3" />
+					<h:outputText value="#{inicio.producto.descripcion}" />
+				</h:panelGroup>
+
+				<!--            -->
+				<!-- DATA SHEET -->
+				<!--            -->
+				<h:panelGroup layout="block"
+					styleClass="sofia-page-product-structure-four p-p-3">
+					<p:separator styleClass="p-mt-3 p-mb-1" />
+					<h:outputLabel styleClass="sofia-subtitle" value="Ficha Tecnica:"
+						style="font-weight: bold;" />
+					<p:separator styleClass="p-mt-1 p-mb-3" />
+
+					<!--            -->
+					<!-- DATA SHEET -->
+					<!--            -->
+					<h:panelGroup layout="block"
+						styleClass="sofia-container-data-sheet">
+
+						<h:panelGroup layout="block"
+							styleClass="p-d-flex p-ac-center p-jc-center sofia-container-data-sheet-row">
+							<h:panelGroup layout="block"
+								styleClass="sofia-container-data-sheet-column">
+								<h:outputLabel value="Categoria:" />
+							</h:panelGroup>
+							<h:panelGroup layout="block"
+								styleClass="sofia-container-data-sheet-column">
+								<h:outputLabel value="#{inicio.producto.categoriaBean.nombre}" />
+							</h:panelGroup>
+						</h:panelGroup>
+
+						<h:panelGroup layout="block"
+							styleClass="p-d-flex p-ac-center p-jc-center sofia-container-data-sheet-row">
+							<h:panelGroup layout="block"
+								styleClass="sofia-container-data-sheet-column">
+								<h:outputLabel value="Garantia:" />
+							</h:panelGroup>
+							<h:panelGroup layout="block"
+								styleClass="sofia-container-data-sheet-column">
+								<h:outputLabel value="#{inicio.producto.garantia} Año" />
+							</h:panelGroup>
+						</h:panelGroup>
+
+						<h:panelGroup layout="block"
+							styleClass="p-d-flex p-ac-center 
+						p-jc-center sofia-container-data-sheet-row">
+							<h:panelGroup layout="block">
+								<h:outputLabel value="Detalles:" />
+							</h:panelGroup>
+
+							<!--         -->
+							<!-- DETAIL  -->
+							<!--         -->
+							<h:panelGroup layout="block">
+								<h:panelGroup layout="block"
+									styleClass="sofia-container-data-sheet p-d-flex p-jc-between p-ac-center">
+									<ui:repeat var="dp" value="#{inicio.producto.detalleProductos}">
+
+										<h:panelGroup layout="block"
+											styleClass="sofia-container-data-sheet-children">
+											<h:panelGroup layout="block"
+												styleClass="p-d-flex p-ac-center p-jc-center sofia-container-data-sheet-row">
+												<h:panelGroup layout="block"
+													styleClass="sofia-container-data-sheet-column">
+													<h:outputLabel value="ID:" />
+												</h:panelGroup>
+												<h:panelGroup layout="block"
+													styleClass="sofia-container-data-sheet-column">
+													<h:outputLabel value="#{dp.id}"
+														styleClass="sofia-statu sofia-statu-primary" />
+												</h:panelGroup>
+											</h:panelGroup>
+
+											<h:panelGroup layout="block"
+												styleClass="p-d-flex p-ac-center p-jc-center sofia-container-data-sheet-row">
+												<h:panelGroup layout="block">
+													<h:outputLabel value="Color:"
+														styleClass="sofia-container-data-sheet-column" />
+												</h:panelGroup>
+												<h:panelGroup layout="block"
+													styleClass="sofia-container-data-sheet-column">
+													<h:outputLabel value="#{dp.color}" />
+												</h:panelGroup>
+											</h:panelGroup>
+
+											<h:panelGroup layout="block"
+												styleClass="p-d-flex p-ac-center p-jc-center sofia-container-data-sheet-row">
+												<h:panelGroup layout="block"
+													styleClass="sofia-container-data-sheet-column">
+													<h:outputLabel value="Dimensión:" />
+												</h:panelGroup>
+												<h:panelGroup layout="block"
+													styleClass="sofia-container-data-sheet-column">
+													<h:outputLabel value="#{dp.dimension}" />
+												</h:panelGroup>
+											</h:panelGroup>
+
+											<h:panelGroup layout="block"
+												styleClass="p-d-flex p-ac-center p-jc-center sofia-container-data-sheet-row">
+												<h:panelGroup layout="block"
+													styleClass="sofia-container-data-sheet-column">
+													<h:outputLabel value="Descripción:" />
+												</h:panelGroup>
+												<h:panelGroup layout="block"
+													styleClass="sofia-container-data-sheet-column">
+													<h:outputLabel
+														value="#{fn:length(dp.descripcion) == 0 ? '---' : dp.descripcion}"
+														styleClass="#{fn:length(dp.descripcion) == 0 ? 'sofia-statu sofia-statu-warn' : 'null'}" />
+												</h:panelGroup>
+											</h:panelGroup>
+
+											<h:panelGroup layout="block"
+												styleClass="p-d-flex p-ac-center p-jc-center sofia-container-data-sheet-row">
+												<h:panelGroup layout="block"
+													styleClass="sofia-container-data-sheet-column">
+													<h:outputLabel value="Precio:" />
+												</h:panelGroup>
+												<h:panelGroup layout="block"
+													styleClass="sofia-container-data-sheet-column">
+													<h:outputLabel value="#{dp.precioVenta}"
+														styleClass="sofia-statu
+											 #{dp.precioVenta == 0 ? 'sofia-statu-warn' : 'sofia-statu-succes'}">
+														<f:convertNumber currencySymbol="$" type="currency" />
+													</h:outputLabel>
+												</h:panelGroup>
+											</h:panelGroup>
+
+											<h:panelGroup layout="block"
+												styleClass="p-d-flex p-ac-center p-jc-center sofia-container-data-sheet-row">
+												<h:panelGroup layout="block">
+													<h:outputLabel value="Descuento:"
+														styleClass="sofia-container-data-sheet-column" />
+												</h:panelGroup>
+												<h:panelGroup layout="block"
+													styleClass="sofia-container-data-sheet-column">
+													<h:outputLabel value="#{dp.descuento}"
+														styleClass="sofia-statu 
+											 #{dp.descuento == 0 ? 'sofia-statu-warn' : 'sofia-statu-succes'}">
+														<f:convertNumber currencySymbol="$" type="currency" />
+													</h:outputLabel>
+												</h:panelGroup>
+											</h:panelGroup>
+
+											<!--         -->
+											<!-- BUTTON  -->
+											<!--         -->
+
+											<h:panelGroup style="width:100%"
+												styleClass="p-p-2 p-d-flex p-jc-end p-ac-center">
+
+												<a href="detail-product.xhtml?detalle-producto=#{dp.id}"
+													class="sofia-button-icon sofia-button-primary sofia-button-icon-small p-p-1 p-mr-3"
+													style="border-radius: .5em"> <i class="fa fa-fw fa-eye" />
+												</a>
+
+												<p:commandButton icon="fa fa-fw fa-cart-plus"
+													action="#{venta_online.addProductosCliente()}"
+													styleClass="sofia-button-icon sofia-button-succes sofia-button-icon-small"
+													update="@(.sofia-container-main-template)">
+													<f:param name="id-detalle-producto" value="#{dp.id}"></f:param>
+													<f:param name="producto" value="#{inicio.producto.id}"></f:param>
+												</p:commandButton>
+											</h:panelGroup>
+
+										</h:panelGroup>
+									</ui:repeat>
+								</h:panelGroup>
+							</h:panelGroup>
+						</h:panelGroup>
+					</h:panelGroup>
+				</h:panelGroup>
+			</h:panelGroup>
+		</h:form>
+	</ui:define>
+</ui:composition>

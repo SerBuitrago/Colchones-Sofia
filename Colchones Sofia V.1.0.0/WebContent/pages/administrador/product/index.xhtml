@@ -1,0 +1,302 @@
+
+<!--          -->
+<!-- TEMPLATE -->
+<!--          -->
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	template="../../../template/advanced/template-advaced-admi.xhtml">
+
+	<!--       -->
+	<!-- TITLE -->
+	<!--       -->
+	<ui:define name="title-advaced">
+			| Producto 
+	</ui:define>
+
+	<!--       -->
+	<!-- STATU -->
+	<!--       -->
+	<ui:define name="component-statu-advaced">
+		<p:menuitem value="Home" url="../index.xhtml" />
+		<p:menuitem value="Producto" url="index.xhtml" disabled="none" />
+	</ui:define>
+
+	<!--       -->
+	<!-- IMAGE -->
+	<!--       -->
+	<ui:define name="component-title-img-advaced">
+		<h:graphicImage library="img" name="all/product.jpg"
+			styleClass="sofia-image-80 sofia-image-dark" />
+	</ui:define>
+	<ui:define name="component-title-h1-advaced">Producto</ui:define>
+	<ui:define name="component-title-h2-advaced">Inicio</ui:define>
+
+	<!--         -->
+	<!-- SECTION -->
+	<!--         -->
+	<ui:define name="component-other-advaced">
+		<p:fieldset legend="Estadistica" toggleable="true" toggleSpeed="500">
+			<p:tabView>
+				<!--         -->
+				<!-- REPORST -->
+				<!--         -->
+				<p:tab title="Reportes">
+					<h:panelGroup layout="block">
+
+						<!--      -->
+						<!-- DATE -->
+						<!--      -->
+						<p:fieldset legend="Fechas" toggleable="true" toggleSpeed="500">
+
+							<h:panelGroup layout="block"
+								styleClass="ui-fluid p-formgrid p-d-flex p-jc-between p-ac-center">
+								<!--           -->
+								<!-- DATE STAR -->
+								<!--           -->
+								<h:panelGroup layout="block" styleClass="p-field p-col p-md-4">
+									<p:outputLabel for="fecha-inicio" value="Fecha Inicio:" />
+									<p:datePicker id="fecha-inicio" required="true"
+										requiredMessage="El campo fecha inicio no puede estar vacia."
+										value="#{reporte.fecha_inicio}">
+									</p:datePicker>
+								</h:panelGroup>
+
+								<!--          -->
+								<!-- DATE END -->
+								<!--          -->
+								<h:panelGroup layout="block" styleClass="p-field p-col p-md-4">
+									<p:outputLabel for="fecha-fin" value="Fecha Fin:" />
+									<p:datePicker id="fecha-fin" required="true"
+										requiredMessage="El campo fecha fin no puede estar vacia."
+										value="#{reporte.fecha_fin}">
+									</p:datePicker>
+								</h:panelGroup>
+							</h:panelGroup>
+
+							<!--        -->
+							<!-- BUTTON -->
+							<!--        -->
+							<p:separator styleClass="p-mt-3 p-mb-3" />
+							<h:panelGroup layout="block"
+								styleClass="p-d-flex p-jc-between p-ac-center p-mb-3">
+
+								<p:commandButton update="@(.sofia-container-main-update)"
+									styleClass="sofia-button-succes" icon="fa fa-fw fa-search"
+									action="#{reporte.consultarProducto()}" value="Consultar" />
+
+								<p:commandButton update="@(.sofia-container-main-update)"
+									styleClass="sofia-button-warn" icon="fa fa-fw fa-brush"
+									disabled="#{fn:length(reporte.productos) gt 0 ? 'false' : 'true'}"
+									action="#{reporte.limpirarFiltroProducto()}" value="Limpiar" />
+
+							</h:panelGroup>
+							<p:separator styleClass="p-mt-3 p-mb-3" />
+						</p:fieldset>
+					</h:panelGroup>
+
+					<!-- 	       -->
+					<!-- DATA VIEW -->
+					<!-- 		   -->
+					<p:dataTable rendered="#{reporte.productos.size() > 0}" var="ve"
+						value="#{reporte.productos}" widgetVar="sofia-table-update"
+						id="sofia-table-update"
+						emptyMessage="No se encontro ninguna venta."
+						filteredValue="#{reporte.producto_filter}"
+						paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} 
+										   {PreviousPageLink}   {CurrentPageReport} 
+										   {NextPageLink} {LastPageLink}"
+						paginator="true" rows="20" rowIndexVar="index"
+						rowsPerPageTemplate="5,10,15,20,50,100" reflow="true"
+						scrollable="true" styleClass="p-mt-4">
+
+						<f:facet name="header">
+							<p:outputPanel layout="block"
+								styleClass="p-d-flex p-jc-end p-ac-center">
+								<h:outputText value="Buscar:" styleClass="p-mt-1 p-mr-2" />
+								<p:inputText id="globalFilter"
+									onkeyup="PF('sofia-table-update').filter()" />
+							</p:outputPanel>
+							<p:outputPanel layout="block"
+								styleClass="p-d-flex p-jc-center p-ac-center p-p-3">
+								<h2>Productos</h2>
+								<h4 class="p-as-end">(#{reporte.productos.size()}
+									resultados)</h4>
+							</p:outputPanel>
+						</f:facet>
+
+						<!-- COLUMN -->
+						<p:column style="width:50px">
+							<p:rowToggler />
+							<h:panelGroup layout="block"
+								styleClass="p-d-flex p-jc-center p-ac-center">
+								<h:outputLabel value="#{index + 1}" />
+							</h:panelGroup>
+						</p:column>
+
+						<!-- ID -->
+						<p:column footerText="ID" sortBy="${ve.id}">
+							<f:facet name="header">
+								<h:outputText value="ID" />
+							</f:facet>
+							<h:panelGroup layout="block"
+								styleClass="p-d-flex p-jc-center p-ac-center">
+								<h:outputText value="#{ve.id}" />
+							</h:panelGroup>
+						</p:column>
+
+						<!-- NOMBRE -->
+						<p:column footerText="Nombre" sortBy="#{ve.nombre}"
+							filterBy="#{ve.nombre}">
+							<f:facet name="header">
+								<h:outputText value="Nombre" />
+							</f:facet>
+							<h:panelGroup layout="block"
+								styleClass="p-d-flex p-jc-center p-ac-center">
+								<h:outputText value="#{ve.nombre}" />
+							</h:panelGroup>
+						</p:column>
+
+						<!-- CATEGORIA -->
+						<p:column footerText="Categoria"
+							sortBy="#{ve.categoriaBean.nombre}">
+							<f:facet name="header">
+								<h:outputText value="Categoria" />
+							</f:facet>
+							<h:panelGroup layout="block"
+								styleClass="p-d-flex p-jc-center p-ac-center">
+								<h:outputText value="#{ve.categoriaBean.nombre}" />
+							</h:panelGroup>
+						</p:column>
+
+						<!-- STOCK -->
+						<p:column footerText="Stock" sortBy="${ve.stock}">
+							<f:facet name="header">
+								<h:outputText value="Stock" />
+							</f:facet>
+							<h:panelGroup layout="block"
+								styleClass="p-d-flex p-jc-center p-ac-center">
+								<h:outputText value="#{ve.stock}"
+									styleClass="sofia-statu #{ve.stock gt ve.stockMinimo ? 'sofia-statu-succes' : 'sofia-statu-warn'}" />
+							</h:panelGroup>
+						</p:column>
+
+						<!-- GARANTIA -->
+						<p:column footerText="Garantia (años)" sortBy="${ve.garantia}"
+							filterBy="#{ve.garantia}">
+							<f:facet name="header">
+								<h:outputText value="Garantia (años)" />
+							</f:facet>
+							<h:panelGroup layout="block"
+								styleClass="p-d-flex p-jc-center p-ac-center">
+								<h:outputText value="#{ve.garantia}" />
+							</h:panelGroup>
+						</p:column>
+
+						<!-- FECHA REGISTRO -->
+						<p:column footerText="Fecha Creación" sortBy="${ve.fechaCreacion}"
+							headerText="Fecha Creación">
+							<h:panelGroup layout="block"
+								styleClass="p-d-flex p-jc-center p-ac-center">
+								<h:outputText value="#{ve.fechaCreacion}">
+									<f:convertDateTime pattern="dd/MM/yyyy HH:mm:ss" />
+								</h:outputText>
+							</h:panelGroup>
+						</p:column>
+
+						<p:rowExpansion>
+							<h:panelGroup layout="block" styleClass="p-p-4">
+								<h4>Descripción:</h4>
+								<p:inputTextarea value="${ve.descripcion}" disabled="true"
+									style="width:100%" />
+							</h:panelGroup>
+						</p:rowExpansion>
+					</p:dataTable>
+
+					<!--        -->
+					<!-- BUTTON -->
+					<!--        -->
+					<h:panelGroup layout="block"
+						rendered="#{fn:length(reporte.productos) gt 0}">
+						<p:separator styleClass="p-mt-3 p-mb-3" />
+						<h:panelGroup layout="block"
+							styleClass="p-d-flex p-jc-center p-ac-center p-mb-3 p-mt-4">
+							<p:commandButton update="@(.sofia-container-main-update)"
+								ajax="false" icon="fa fa-fw fa-download"
+								styleClass="sofia-button-succes" value="Descargar"
+								actionListener="#{reporte.exportarPDFProductos}" />
+							<p:commandButton update="@(.sofia-container-main-update)"
+								ajax="false" icon="fa fa-fw fa-eye"
+								styleClass="sofia-button-primary" value="Ver en PDF"
+								actionListener="#{reporte.verPDFProductos}" />
+						</h:panelGroup>
+						<p:separator styleClass="p-mt-3 p-mb-3" />
+					</h:panelGroup>
+				</p:tab>
+
+				<!--             -->
+				<!-- REPORST BUY -->
+				<!--             -->
+				<p:tab title="Compra">
+					<h:panelGroup layout="block">
+						<h:panelGroup layout="block" styleClass="p-mt-4 p-pt-4"
+							rendered="#{chartjs.pie_compra_unidad_producto.data.labels.size() > 0}">
+							<h:outputLabel styleClass="sofia-subtitle"
+								value="Producto Comprado:" />
+							<h:panelGroup layout="block">
+								<p:pieChart model="#{chartjs.pie_compra_unidad_producto}"
+									style="width: 100%; height: 500px;" />
+							</h:panelGroup>
+							<h:panelGroup layout="block"
+								styleClass="p-as-center p-mt-4 p-pt-4 p-text-center p-pb-4">
+								<h:outputLabel
+									value="Representa el la cantidad de unidades compradas por un producto." />
+							</h:panelGroup>
+						</h:panelGroup>
+
+						<h:panelGroup layout="block"
+							styleClass="p-mt-4 p-pt-4 p-text-center"
+							rendered="#{chartjs.pie_compra_unidad_producto.data.labels.size() == 0}">
+							<h:outputLabel styleClass="sofia-subtitle p-d-block"
+								value="No se ha encontrado ninguna compra producto." />
+							<h:graphicImage library="img" name="product.png" />
+						</h:panelGroup>
+					</h:panelGroup>
+				</p:tab>
+
+				<!--              -->
+				<!-- REPORST SALE -->
+				<!--              -->
+				<p:tab title="Venta">
+					<h:panelGroup layout="block">
+						<h:panelGroup layout="block" styleClass="p-mt-4 p-pt-4"
+							rendered="#{chartjs.pie_venta_unidad_producto.data.labels.size() > 0}">
+							<h:outputLabel styleClass="sofia-subtitle"
+								value="Producto Vendidos:" />
+							<h:panelGroup layout="block">
+								<p:pieChart model="#{chartjs.pie_venta_unidad_producto}"
+									style="width: 100%; height: 500px;" />
+							</h:panelGroup>
+							<h:panelGroup layout="block"
+								styleClass="p-as-center p-mt-4 p-pt-4 p-text-center p-pb-4">
+								<h:outputLabel
+									value="Representa el la cantidad de unidades compradas por un producto." />
+							</h:panelGroup>
+						</h:panelGroup>
+
+						<h:panelGroup layout="block"
+							styleClass="p-mt-4 p-pt-4 p-text-center"
+							rendered="#{chartjs.pie_venta_unidad_producto.data.labels.size() == 0}">
+							<h:outputLabel styleClass="sofia-subtitle p-d-block"
+								value="No se ha encontrado ninguna venta producto." />
+							<h:graphicImage library="img" name="product.png" />
+						</h:panelGroup>
+					</h:panelGroup>
+				</p:tab>
+			</p:tabView>
+		</p:fieldset>
+	</ui:define>
+</ui:composition>

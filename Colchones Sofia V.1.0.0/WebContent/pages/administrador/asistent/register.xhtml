@@ -1,0 +1,334 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui">
+<!--          -->
+<!-- TEMPLATE -->
+<!--          -->
+<ui:composition
+	template="../../../template/advanced/template-advaced-admi.xhtml">
+
+	<!--       -->
+	<!-- TITLE -->
+	<!--       -->
+	<ui:define name="title-advaced">
+			| Asistente Administrativo | Registrar
+	</ui:define>
+
+	<!--       -->
+	<!-- STATU -->
+	<!--       -->
+	<ui:define name="component-statu-advaced">
+		<p:menuitem value="Home" url="../index.xhtml" />
+		<p:menuitem value="Asistente Administrativo" url="index.xhtml"
+			disabled="none" />
+		<p:menuitem value="Registrar" url="register.xhtml" disabled="none" />
+	</ui:define>
+
+	<!--       -->
+	<!-- TITLE -->
+	<!--       -->
+	<ui:define name="component-title-img-advaced">
+		<h:graphicImage library="img" name="all/asistent.jpg"
+			styleClass="sofia-image-80 sofia-image-dark" />
+	</ui:define>
+	<ui:define name="component-title-h1-advaced">Asistente</ui:define>
+	<ui:define name="component-title-h2-advaced">Registrar</ui:define>
+
+	<!--         -->
+	<!-- SECTION -->
+	<!--         -->
+	<ui:define name="component-other-one-advaced">
+		<h:form>
+			<p:outputPanel id="sofia-container-one-main-update"
+				styleClass="sofia-container-one-main-update">
+				<!--        -->
+				<!-- FILTER -->
+				<!--        -->
+				<p:fieldset legend="Filtrar" toggleable="true" toggleSpeed="500"
+					styleClass="p-mb-5">
+					<!-- TITLE -->
+					<h1 class="sofia-title p-my-4 p-mb-6">Filtrar Asistente</h1>
+
+					<h:panelGroup layout="block"
+						styleClass="ui-fluid p-formgrid p-d-flex p-jc-between p-ac-center">
+
+						<!--      -->
+						<!-- TYPE -->
+						<!--      -->
+						<h:panelGroup layout="block" styleClass="p-field p-col p-md-3">
+							<p:outputLabel for="add-tipo-documento-asistente"
+								value="Tipo Documento:" />
+							<p:selectOneMenu id="add-tipo-documento-asistente"
+								disabled="#{asistente.hidden}"
+								value="#{asistente.usuario.persona.tipoDocumentoBean.tipoDocumento}">
+								<f:selectItems value="#{selection.documentos}" styleClass="info" />
+							</p:selectOneMenu>
+						</h:panelGroup>
+
+						<!--    -->
+						<!-- ID -->
+						<!--    -->
+						<h:panelGroup layout="block" styleClass="p-field p-col p-md-3">
+							<p:outputLabel for="documento-asistente" value="Documento:" />
+							<p:inputText id="documento-asistente"
+								disabled="#{asistente.search}" required="true"
+								requiredMessage="El campo documento no puede estar vacio."
+								value="#{asistente.usuario.persona.documento}" />
+						</h:panelGroup>
+					</h:panelGroup>
+
+					<!--        -->
+					<!-- ACTION -->
+					<!--        -->
+					<p:separator styleClass="p-mt-4 p-mb-4" />
+					<h:panelGroup layout="block"
+						styleClass="p-d-flex p-jc-center p-ac-center">
+
+						<!--     -->
+						<!-- ADD -->
+						<!--     -->
+						<p:commandButton icon="fa fa-fw fa-spinner"
+							disabled="#{asistente.search}"
+							update="@(.sofia-container-main-update), @(.sofia-container-one-main-update)"
+							title="Filtrar usuario por documento"
+							action="#{asistente.filtrar()}"
+							styleClass="sofia-button-icon sofia-button-warn p-mr-4 sofia-button-icon-small" />
+
+						<!--      -->
+						<!-- EDIT -->
+						<!--      -->
+						<p:commandButton icon="fa fa-fw fa-edit"
+							disabled="#{asistente.search ? 'false' : 'true'}"
+							action="#{asistente.desactivar()}"
+							update="@(.sofia-container-main-update), @(.sofia-container-one-main-update)"
+							styleClass="sofia-button-icon sofia-button-info sofia-button-icon-small" />
+
+					</h:panelGroup>
+					<p:separator styleClass="p-mt-4 p-mb-4" />
+				</p:fieldset>
+			</p:outputPanel>
+		</h:form>
+
+		<!--       -->
+		<!-- ARROW -->
+		<!--       -->
+		<h:form styleClass="sofia-container-main-update p-m-3">
+			<h:panelGroup layout="block"
+				styleClass="p-d-flex p-jc-center p-ac-center">
+				<p:commandButton
+					icon="fa fa-fw #{asistente.active ? 'fa-arrow-up' : 'fa-arrow-down'}"
+					styleClass="p-mr-4 sofia-button-icon sofia-button-icon-small
+					 #{asistente.active ? 'sofia-button-warn' : 'sofia-button-succes'}"
+					action="#{asistente.activar()}"
+					update="@(.sofia-container-main-update), @(.sofia-container-one-main-update)" />
+			</h:panelGroup>
+		</h:form>
+	</ui:define>
+
+
+	<!--         -->
+	<!-- SECTION -->
+	<!--         -->
+	<ui:define name="component-other-advaced">
+
+		<p:fieldset legend="Registrar" toggleable="true" toggleSpeed="500"
+			rendered="#{asistente.active == true}">
+			<!-- TITLE -->
+			<h1 class="sofia-title p-my-4 p-mb-6">Registrar Asistente</h1>
+
+			<h:panelGroup layout="block">
+
+				<!--        -->
+				<!-- SELECT -->
+				<!--        -->
+				<h:panelGroup layout="block"
+					styleClass="ui-fluid p-formgrid p-d-flex p-jc-between p-ac-center">
+					<!--      -->
+					<!-- TYPE -->
+					<!--      -->
+					<h:panelGroup layout="block" styleClass="p-field p-col p-md-3">
+						<p:outputLabel for="tipo-documento-2-asistente"
+							value="Tipo Documento:" />
+						<p:selectOneMenu id="tipo-documento-2-asistente"
+							disabled="#{asistente.search}"
+							value="#{asistente.usuario.persona.tipoDocumentoBean.tipoDocumento}">
+							<f:selectItems value="#{selection.documentos}" styleClass="info" />
+						</p:selectOneMenu>
+					</h:panelGroup>
+
+					<!--    -->
+					<!-- ID -->
+					<!--    -->
+					<h:panelGroup layout="block" styleClass="p-field p-col p-md-3">
+						<p:outputLabel for="documento-2-asistente" value="Documento:" />
+						<p:inputText id="documento-2-asistente"
+							disabled="#{asistente.search}" required="true"
+							requiredMessage="El campo documento no puede estar vacio."
+							value="#{asistente.usuario.persona.documento}" />
+
+					</h:panelGroup>
+				</h:panelGroup>
+
+
+				<h:panelGroup layout="block"
+					styleClass="p-d-flex p-jc-between p-ac-center p-mb-3">
+
+					<h:panelGroup layout="block"
+						styleClass="sofia-container-image-profile-square">
+						<h:graphicImage
+							styleClass="sofia-container-image-profile-square__img"
+							rendered="#{asistente.usuario.persona.foto == null}"
+							library="img" name="user.png" />
+
+						<p:graphicImage
+							styleClass="sofia-container-image-profile-square__img"
+							rendered="#{asistente.usuario.persona.foto != null}"
+							value="#{image.persona}">
+							<f:param name="documento-persona"
+								value="#{asistente.usuario.persona.documento}"></f:param>
+						</p:graphicImage>
+					</h:panelGroup>
+
+					<!--        -->
+					<!-- UPLOAD -->
+					<!--        -->
+					<h:panelGroup layout="block" style="max-width:50%"
+						styleClass="p-d-flex p-jc-center p-ac-center p-flex-column p-ai-center">
+
+						<h:panelGroup layout="block" styleClass="p-mt-4 p-mb-4">
+							<p:staticMessage severity="warn" summary="" styleClass="p-p-3"
+								detail="Antes de ingresar los datos personales del asistente administrativo
+								 se recomienda agregar la foto, al momento de agregarla debes subirla para que nuestro sistema valide y procese la imagen." />
+						</h:panelGroup>
+
+						<p:fileUpload listener="#{image.uploadImage}" mode="advanced"
+							dragDropSupport="false" label="Agregar" uploadLabel="Subir"
+							cancelLabel="Cancelar" style="width: 500px"
+							disabled="#{compra.hidden_proveedor}"
+							update="@(.sofia-container-main-update)" sizeLimit="100000"
+							fileLimit="1" allowTypes="/(\.|\/)(jpe?g|png)$/" />
+					</h:panelGroup>
+				</h:panelGroup>
+
+				<!--      -->
+				<!-- INFO -->
+				<!--      -->
+				<h:panelGroup layout="block" styleClass="ui-fluid p-formgrid p-grid">
+
+					<!--      -->
+					<!-- NAME -->
+					<!--      -->
+					<div class="p-field p-col">
+						<p:outputLabel for="add-nombre-asistente" value="Nombre:" />
+						<p:inputText id="add-nombre-asistente" required="true"
+							requiredMessage="El campo nombre no puede estar vacio."
+							value="#{asistente.usuario.persona.nombre}" />
+					</div>
+
+					<!--          -->
+					<!-- LASTNAME -->
+					<!--          -->
+					<div class="p-field p-col">
+						<p:outputLabel for="add-apellido-asistente" value="Apellido:" />
+						<p:inputText id="add-apellido-asistente" required="true"
+							requiredMessage="El campo apellido no puede estar vacio."
+							value="#{asistente.usuario.persona.apellido}" />
+					</div>
+				</h:panelGroup>
+
+				<h:panelGroup layout="block" styleClass="ui-fluid p-formgrid p-grid">
+
+					<!--       -->
+					<!-- PHONE -->
+					<!--       -->
+					<div class="p-field p-col p-col-12 p-md-4">
+						<p:outputLabel for="add-telefono-asistente" value="Telefono:" />
+						<p:inputText id="add-telefono-asistente" required="true"
+							requiredMessage="El campo telefono no puede estar vacio."
+							value="#{asistente.usuario.persona.telefono}" />
+					</div>
+
+					<!--           -->
+					<!-- DIRECTION -->
+					<!--           -->
+					<div class="p-field p-col">
+						<p:outputLabel for="add-direccion-asistente" value="Dirección:" />
+						<p:inputText id="add-direccion-asistente" required="true"
+							requiredMessage="El campo dirección no puede estar vacio."
+							value="#{asistente.usuario.persona.direccion}" />
+					</div>
+				</h:panelGroup>
+
+				<h:panelGroup layout="block"
+					styleClass="ui-fluid p-formgrid p-grid p-jc-center">
+					<!--       -->
+					<!-- BIRTH -->
+					<!--       -->
+					<div class="p-field p-col p-col-12 p-md-4">
+						<p:outputLabel for="add-fecha-nacimiento-asistente"
+							value="Fecha Nacimiento:" />
+						<p:datePicker id="add-fecha-nacimiento-asistente" required="true"
+							requiredMessage="El campo fecha nacimiento no puede estar vacio."
+							value="#{asistente.usuario.persona.fechaNacimiento}" />
+					</div>
+
+
+					<!--       -->
+					<!-- GENER -->
+					<!--       -->
+					<div class="p-field p-col-12 p-md-4">
+						<p:outputLabel for="add-sexo-asistente" value="Genero:" />
+						<p:selectOneMenu id="add-sexo-asistente"
+							value="#{asistente.usuario.persona.genero}">
+							<f:selectItem itemLabel="Masculino" itemValue="M" />
+							<f:selectItem itemLabel="Femenino" itemValue="F" />
+							<f:selectItem itemLabel="Otro" itemValue="O" />
+						</p:selectOneMenu>
+					</div>
+				</h:panelGroup>
+
+				<h:panelGroup layout="block"
+					styleClass="ui-fluid p-formgrid p-grid p-jc-center">
+					<!--       -->
+					<!-- EMAIL -->
+					<!--       -->
+					<div class="p-field p-col">
+						<p:outputLabel for="email-asistente" value="Email:" />
+						<p:inputText id="email-asistente" validator="#{validator.isEmail}"
+							requiredMessage="El campo email no puede estar vacio."
+							value="#{asistente.usuario.persona.email}" required="true" />
+					</div>
+
+
+					<!--       -->
+					<!-- PASSWORD -->
+					<!--       -->
+					<h:panelGrid columns="2" cellpadding="5" />
+					<div class="p-field p-col">
+						<p:outputLabel for="clave-asistente" value="Clave:" />
+						<p:password id="clave-asistente"
+							requiredMessage="El campo clave no puede estar vacio."
+							value="#{asistente.usuario.clave}" feedback="true"
+							required="true" />
+					</div>
+				</h:panelGroup>
+
+				<!--     -->
+				<!-- ADD -->
+				<!--     -->
+				<h:panelGroup layout="block" rendered="#{asistente.active == true}"
+					styleClass="p-m-4 p-d-flex p-jc-center p-ac-center">
+					<p:commandButton value="Agregar" icon="fa fa-fw fa-plus"
+						action="#{asistente.registrar()}" styleClass="sofia-button-succes"
+						update="@(.sofia-container-main-update), @(.sofia-container-one-main-update)" />
+				</h:panelGroup>
+
+			</h:panelGroup>
+		</p:fieldset>
+
+	</ui:define>
+</ui:composition>
+</html>

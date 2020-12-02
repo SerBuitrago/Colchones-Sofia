@@ -1,0 +1,69 @@
+
+<!--          -->
+<!-- TEMPLATE -->
+<!--          -->
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	template="../../../template/advanced/template-advaced-admi.xhtml">
+
+	<!--       -->
+	<!-- TITLE -->
+	<!--       -->
+	<ui:define name="title-advaced">
+			| Categoria 
+	</ui:define>
+
+	<!--       -->
+	<!-- STATU -->
+	<!--       -->
+	<ui:define name="component-statu-advaced">
+		<p:menuitem value="Home" url="../index.xhtml" />
+		<p:menuitem value="Categoria" url="index.xhtml" disabled="none" />
+	</ui:define>
+
+	<!--       -->
+	<!-- IMAGE -->
+	<!--       -->
+	<ui:define name="component-title-img-advaced">
+		<h:graphicImage library="img" name="all/category.jpg"
+			styleClass="sofia-image-80 sofia-image-dark" />
+	</ui:define>
+	<ui:define name="component-title-h1-advaced">Categoria</ui:define>
+	<ui:define name="component-title-h2-advaced">Inicio</ui:define>
+
+	<!--         -->
+	<!-- SECTION -->
+	<!--         -->
+	<ui:define name="component-other-advaced">
+		<p:fieldset legend="Categoria" toggleable="true" toggleSpeed="500">
+			<p:tabView>
+				<!--         -->
+				<!-- REPORST -->
+				<!--         -->
+				<p:tab title="Productos">
+					<h:panelGroup layout="block"
+						rendered="#{chartjs.horizontal_chart_model_categoria_cantidad_productos.data.labels.size() > 0}">
+						<h:panelGroup layout="block" styleClass="p-p-3 p-text-center">
+							<h:outputLabel
+								value="Representa la cantidad de productos que tiene cada una de la categorias." />
+						</h:panelGroup>
+						<p:barChart
+							model="#{chartjs.horizontal_chart_model_categoria_cantidad_productos}" />
+					</h:panelGroup>
+					
+					<h:panelGroup layout="block"
+						styleClass="p-mt-4 p-pt-4 p-text-center"
+						rendered="#{chartjs.horizontal_chart_model_categoria_cantidad_productos.data.labels.size() == 0}">
+						<h:outputLabel styleClass="sofia-subtitle p-d-block"
+							value="No se ha encontrado ninguna categoria." />
+						<h:graphicImage library="img" name="product.png"
+							style="width:30%;heigth:30%" />
+					</h:panelGroup>
+				</p:tab>
+			</p:tabView>
+		</p:fieldset>
+	</ui:define>
+</ui:composition>

@@ -1,0 +1,322 @@
+<!--          -->
+<!-- TEMPLATE -->
+<!--          -->
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	template="../../../template/advanced/template-advaced-admi.xhtml">
+
+	<ui:define name="title-advaced">
+			| vendedores | Registrar
+	</ui:define>
+
+	<!--       -->
+	<!-- STATU -->
+	<!--       -->
+	<ui:define name="component-statu-advaced">
+		<p:menuitem value="Home" url="../index.xhtml" />
+		<p:menuitem value="vendedores" url="index.xhtml" disabled="none" />
+		<p:menuitem value="Registrar" url="register.xhtml" disabled="none" />
+	</ui:define>
+
+	<!--       -->
+	<!-- TITLE -->
+	<!--       -->
+	<ui:define name="component-title-img-advaced">
+		<h:graphicImage library="img" name="all/seller.jpg"
+			styleClass="sofia-image-80 sofia-image-dark" />
+	</ui:define>
+	<ui:define name="component-title-h1-advaced">vendedores</ui:define>
+	<ui:define name="component-title-h2-advaced">Registrar</ui:define>
+
+	<!--         -->
+	<!-- SECTION -->
+	<!--         -->
+	<ui:define name="component-other-one-advaced">
+
+		<h:form>
+			<p:outputPanel id="sofia-container-one-main-update"
+				styleClass="sofia-container-one-main-update">
+				
+				<!--        -->
+				<!-- FILTER -->
+				<!--        -->
+				<p:fieldset legend="Filtrar" toggleable="true" toggleSpeed="500"
+					styleClass="p-mb-5">
+					<!-- TITLE -->
+					<h1 class="sofia-title p-my-4 p-mb-6">Filtrar</h1>
+
+					<h:panelGroup layout="block"
+						styleClass="ui-fluid p-formgrid p-d-flex p-jc-between p-ac-center">
+
+						<!--      -->
+						<!-- TYPE -->
+						<!--      -->
+						<h:panelGroup layout="block" styleClass="p-field p-col p-md-3">
+							<p:outputLabel for="tipo-documento-vendedores"
+								value="Tipo Documento:" />
+							<p:selectOneMenu id="tipo-documento-vendedores"
+								disabled="#{vendedores.search}"
+								value="#{vendedores.usuario.persona.tipoDocumentoBean.tipoDocumento}">
+								<f:selectItems value="#{selection.documentos}" styleClass="info" />
+							</p:selectOneMenu>
+						</h:panelGroup>
+
+						<!--    -->
+						<!-- ID -->
+						<!--    -->
+						<h:panelGroup layout="block" styleClass="p-field p-col p-md-3">
+							<p:outputLabel for="documento-vendedores" value="Documento:" />
+							<p:inputText id="documento-vendedores"
+								disabled="#{vendedores.search}" required="true"
+								requiredMessage="El campo documento no puede estar vacio."
+								value="#{vendedores.usuario.persona.documento}" />
+						</h:panelGroup>
+					</h:panelGroup>
+
+					<!--        -->
+					<!-- ACTION -->
+					<!--        -->
+					<p:separator styleClass="p-mt-4 p-mb-4" />
+					<h:panelGroup layout="block"
+						styleClass="p-d-flex p-jc-center p-ac-center">
+
+						<!--     -->
+						<!-- ADD -->
+						<!--     -->
+						<p:commandButton icon="fa fa-fw fa-spinner"
+							disabled="#{vendedores.search}"
+							update="@(.sofia-container-main-update), @(.sofia-container-one-main-update)"
+							title="Filtrar usuario por documento"
+							action="#{vendedores.filtrar()}"
+							styleClass="sofia-button-icon sofia-button-warn p-mr-4" />
+
+						<!--      -->
+						<!-- EDIT -->
+						<!--      -->
+						<p:commandButton icon="fa fa-fw fa-edit"
+							disabled="#{vendedores.search ? 'false' : 'true'}"
+							action="#{vendedores.desactivar()}"
+							update="@(.sofia-container-main-update), @(.sofia-container-one-main-update)"
+							styleClass="sofia-button-icon sofia-button-info">
+							<p:confirm header="Limpiar Información"
+									icon="pi pi-exclamation-triangle"
+									message="¿Desea limpiar la información?" />
+						</p:commandButton>
+
+					</h:panelGroup>
+					<p:separator styleClass="p-mt-4 p-mb-4" />
+				</p:fieldset>
+			</p:outputPanel>
+		</h:form>
+
+		<!--       -->
+		<!-- ARROW -->
+		<!--       -->
+		<h:form styleClass="sofia-container-main-update p-m-3">
+			<h:panelGroup layout="block"
+				styleClass="p-d-flex p-jc-center p-ac-center">
+				<p:commandButton
+					icon="fa fa-fw #{vendedores.active ? 'fa-arrow-up' : 'fa-arrow-down'}"
+					styleClass="p-mr-4 sofia-button-icon #{vendedores.active ? 'sofia-button-warn' : 'sofia-button-succes'}"
+					action="#{vendedores.activar()}"
+					update="@(.sofia-container-main-update), @(.sofia-container-one-main-update)" />
+			</h:panelGroup>
+		</h:form>
+	</ui:define>
+
+
+	<!--         -->
+	<!-- SECTION -->
+	<!--         -->
+	<ui:define name="component-other-advaced">
+
+		<p:fieldset legend="Registrar" toggleable="true" toggleSpeed="500"
+			rendered="#{vendedores.active == true}">
+
+			<!-- TITLE -->
+			<h1 class="sofia-title p-my-4 p-mb-6">Registrar vendedor</h1>
+
+			<h:panelGroup layout="block">
+				<h:panelGroup layout="block"
+					styleClass="p-d-flex p-ac-center p-mb-3 #{vendedores.filtro_persona ? 'p-jc-between' : 'p-jc-center'}">
+
+					<h:panelGroup layout="block"
+						styleClass="sofia-container-image-profile-square" rendered="#{vendedores.filtro_persona}">
+						<h:graphicImage
+							styleClass="sofia-container-image-profile-square__img"
+							rendered="#{vendedores.usuario.persona.foto == null}"
+							library="img" name="user.png" />
+
+						<p:graphicImage cache="false"
+							styleClass="sofia-container-image-profile-square__img"
+							rendered="#{vendedores.usuario.persona.foto != null}"
+							value="#{image.persona}">
+							<f:param name="documento-persona"
+								value="#{vendedores.usuario.persona.documento}"></f:param>
+						</p:graphicImage>
+					</h:panelGroup>
+
+					<!--        -->
+					<!-- UPLOAD -->
+					<!--        -->
+					<h:panelGroup layout="block" style="max-width:50%"
+						styleClass="p-d-flex p-jc-center p-ac-center p-flex-column p-ai-center">
+
+						<h:panelGroup layout="block" styleClass="p-mt-4 p-mb-4">
+							<p:staticMessage severity="warn" summary="" styleClass="p-p-3"
+								detail="Antes de ingresar los datos personales del vendedor se recomienda agregar la foto, al momento de agregarla debes subirla para que nuestro sistema valide y procese la imagen." />
+						</h:panelGroup>
+						<p:fileUpload listener="#{image.uploadImage}" mode="advanced"
+							dragDropSupport="false" label="Agregar" uploadLabel="Subir"
+							cancelLabel="Cancelar" style="width: 500px"
+							disabled="#{compra.hidden_proveedor}"
+							update="@(.sofia-container-main-update)" sizeLimit="100000"
+							fileLimit="1" allowTypes="/(\.|\/)(jpe?g|png)$/" />
+					</h:panelGroup>
+				</h:panelGroup>
+
+
+				<!--        -->
+				<!-- SELECT -->
+				<!--        -->
+				<h:panelGroup layout="block"
+					styleClass="ui-fluid p-formgrid p-d-flex p-jc-between p-ac-center">
+					<!--      -->
+					<!-- TYPE -->
+					<!--      -->
+					<h:panelGroup layout="block" styleClass="p-field p-col p-md-3">
+						<p:outputLabel for="tipo-documento-2-vendedores"
+							value="Tipo Documento:" />
+						<p:selectOneMenu id="tipo-documento-2-vendedores"
+							disabled="#{vendedores.search}"
+							value="#{vendedores.usuario.persona.tipoDocumentoBean.tipoDocumento}">
+
+							<f:selectItems value="#{selection.documentos}" styleClass="info" />
+						</p:selectOneMenu>
+					</h:panelGroup>
+
+					<!--    -->
+					<!-- ID -->
+					<!--    -->
+					<h:panelGroup layout="block" styleClass="p-field p-col p-md-3">
+						<p:outputLabel for="documento-2-vendedores" value="Documento:" />
+						<p:inputText id="documento-2-vendedores"
+							disabled="#{vendedores.search}" required="true" maxlength="10"
+							requiredMessage="El campo documento no puede estar vacio."
+							value="#{vendedores.usuario.persona.documento}" />
+
+					</h:panelGroup>
+				</h:panelGroup>
+
+				<!--      -->
+				<!-- INFO -->
+				<!--      -->
+				<h:panelGroup layout="block" styleClass="ui-fluid p-formgrid p-grid">
+					<!--      -->
+					<!-- NAME -->
+					<!--      -->
+					<h:panelGroup layout="block" styleClass="p-field p-col">
+						<p:outputLabel for="nombre-vendedores" value="Nombre:" />
+						<p:inputText id="nombre-vendedores" required="true"
+							requiredMessage="El campo nombre no puede estar vacio."
+							value="#{vendedores.usuario.persona.nombre}" />
+					</h:panelGroup>
+
+					<!--          -->
+					<!-- LASTNAME -->
+					<!--          -->
+					<h:panelGroup layout="block" styleClass="p-field p-col">
+						<p:outputLabel for="apellido-vendedores" value="Apellido:" />
+						<p:inputText id="apellido-vendedores" required="true"
+							requiredMessage="El campo apellido no puede estar vacio."
+							value="#{vendedores.usuario.persona.apellido}" />
+					</h:panelGroup>
+				</h:panelGroup>
+
+				<!--      -->
+				<!-- INFO -->
+				<!--      -->
+				<h:panelGroup layout="block" styleClass="ui-fluid p-formgrid p-grid">
+					<!--       -->
+					<!-- EMAIL -->
+					<!--       -->
+					<div class="p-field p-col">
+						<p:outputLabel for="email-vendedores" value="Email:" />
+						<p:inputText id="email-vendedores"
+							validator="#{validator.isEmail}"
+							requiredMessage="El campo email no puede estar vacio."
+							value="#{vendedores.usuario.persona.email}" required="true" />
+					</div>
+					<!--       -->
+					<!-- PHONE -->
+					<!--       -->
+					<div class="p-field p-col p-col-12 p-md-4">
+						<p:outputLabel for="telefono-vendedores" value="Telefono:" />
+						<p:inputMask id="telefono-vendedores" required="true"
+							mask="999-9999-999"
+							requiredMessage="El campo telefono no puede estar vacio."
+							value="#{vendedores.usuario.persona.telefono}" />
+					</div>
+				</h:panelGroup>
+
+				<!--      -->
+				<!-- INFO -->
+				<!--      -->
+				<h:panelGroup layout="block" styleClass="ui-fluid p-formgrid p-grid">
+					<!--           -->
+					<!-- DIRECTION -->
+					<!--           -->
+					<div class="p-field p-col">
+						<p:outputLabel for="direccion-vendedores" value="Dirección:" />
+						<p:inputText id="direccion-vendedores" required="true"
+							requiredMessage="El campo dirección no puede estar vacio."
+							value="#{vendedores.usuario.persona.direccion}" />
+					</div>
+					<!--       -->
+					<!-- BIRTH -->
+					<!--       -->
+					<div class="p-field p-col p-col-12 p-md-4">
+						<p:outputLabel for="fecha-nacimiento-vendedores"
+							value="Fecha Nacimiento:" />
+						<p:calendar id="fecha-nacimiento-vendedores" required="true"  yearRange="c-100:c"
+							 navigator="true" pattern="MMM/dd/yyyy"  locale="de" value="#{vendedores.usuario.persona.fechaNacimiento}"
+							requiredMessage="El campo fecha nacimiento no puede estar vacio." />
+					</div>
+				</h:panelGroup>
+
+				<!--       -->
+				<!-- GENER -->
+				<!--       -->
+				<h:panelGroup layout="block"
+					rendered="#{vendedores.search == false}"
+					styleClass="ui-fluid p-formgrid p-grid p-jc-center">
+					<div class="p-field p-col-12 p-md-4">
+						<p:outputLabel for="sexo-vendedores" value="Genero:" />
+						<p:selectOneMenu id="sexo-vendedores"
+							value="#{vendedores.usuario.persona.genero}">
+							<f:selectItem itemLabel="Masculino" itemValue="M" />
+							<f:selectItem itemLabel="Femenino" itemValue="F" />
+							<f:selectItem itemLabel="Otro" itemValue="O" />
+						</p:selectOneMenu>
+					</div>
+				</h:panelGroup>
+
+				<!--     -->
+				<!-- ADD -->
+				<!--     -->
+				<h:panelGroup layout="block" rendered="#{vendedores.active == true}"
+					styleClass="p-m-4 p-d-flex p-jc-center p-ac-center">
+					<p:commandButton value="Agregar" icon="fa fa-fw fa-plus"
+						action="#{vendedores.registrar()}"
+						styleClass="sofia-button-succes"
+						update="@(.sofia-container-main-update), @(.sofia-container-one-main-update)" />
+				</h:panelGroup>
+
+			</h:panelGroup>
+		</p:fieldset>
+	</ui:define>
+</ui:composition>
+

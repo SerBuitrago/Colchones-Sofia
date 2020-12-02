@@ -1,0 +1,169 @@
+
+<!--          -->
+<!-- TEMPLATE -->
+<!--          -->
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	template="../../../template/advanced/template-advaced-admi.xhtml">
+
+	<!--       -->
+	<!-- TITLE -->
+	<!--       -->
+	<ui:define name="title-advaced">
+			| Proveedor | Registrar
+	</ui:define>
+
+	<!--       -->
+	<!-- STATU -->
+	<!--       -->
+	<ui:define name="component-statu-advaced">
+		<p:menuitem value="Home" url="../index.xhtml" />
+		<p:menuitem value="Proveedor" url="index.xhtml" disabled="none" />
+		<p:menuitem value="Registrar" url="register.xhtml" disabled="none" />
+	</ui:define>
+
+	<!--       -->
+	<!-- IMAGE -->
+	<!--       -->
+	<ui:define name="component-title-img-advaced">
+		<h:graphicImage library="img" name="all/provider.jpg"
+			styleClass="sofia-image-80 sofia-image-dark" />
+	</ui:define>
+	<ui:define name="component-title-h1-advaced">Proveedor</ui:define>
+	<ui:define name="component-title-h2-advaced">Registrar</ui:define>
+
+	<!--         -->
+	<!-- SECTION -->
+	<!--         -->
+	<ui:define name="component-other-advaced">
+		<p:fieldset legend="Registrar" toggleable="true" toggleSpeed="500">
+
+			<!--      -->
+			<!-- FORM -->
+			<!--      -->
+			<h:panelGroup layout="block">
+
+				<!--          -->
+				<!-- DOCUMENT -->
+				<!--          -->
+				<h:panelGroup layout="block"
+					styleClass="ui-fluid p-formgrid p-d-flex p-jc-end">
+					<h:panelGroup layout="block" styleClass="p-field p-col p-md-3">
+						<p:outputLabel for="documento-proveedor" value="Documento:" />
+						<p:inputText id="documento-proveedor" title="Generado"
+							required="true"
+							requiredMessage="El campo id no puede estar vacio."
+							value="#{proveedor.id}" />
+					</h:panelGroup>
+				</h:panelGroup>
+
+				<!--        -->
+				<!-- UPLOAD -->
+				<!--        -->
+				<h:panelGroup layout="block">
+					<h:panelGroup layout="block" styleClass="p-mt-4 p-mb-4">
+						<p:staticMessage severity="warn" summary="" styleClass="p-p-3"
+							detail="Antes de ingresar los datos personales del proveedor se recomienda agregar la foto, 
+							al momento de agregarla debes subirla para que nuestro sistema valide y procese la imagen." />
+					</h:panelGroup>
+					<h:panelGroup layout="block"
+						styleClass="p-d-flex p-jc-center pac-center p-m-5">
+						<p:fileUpload listener="#{image.uploadImage}" mode="advanced"
+							label="Agregar" uploadLabel="Subir" cancelLabel="Cancelar"
+							dragDropSupport="false" update="@(.sofia-container-main-update)"
+							fileLimitMessage="No se puede incluir mas archivos."
+							invalidFileMessage="El archivo seleccionado no es permitido, solo se permite: (jpe,jpg,jpeg,png)."
+							invalidSizeMessage="El archivo es muy pesado lo maximo es 200000."
+							sizeLimit="200000" fileLimit="1"
+							allowTypes="/(\.|\/)(jpe?g|png)$/" />
+					</h:panelGroup>
+				</h:panelGroup>
+
+
+				<!--      -->
+				<!-- DATA -->
+				<!--      -->
+				<h:panelGroup layout="block" styleClass="ui-fluid p-formgrid p-grid">
+
+					<!--      -->
+					<!-- NAME -->
+					<!--      -->
+					<h:panelGroup layout="block" styleClass="p-field p-col">
+						<p:outputLabel for="nombre-proveedor" value="Nombre:" />
+						<p:inputText id="nombre-proveedor" required="true"
+							requiredMessage="El campo nombre no puede estar vacio."
+							value="#{proveedor.proveedor.persona.nombre}" />
+					</h:panelGroup>
+
+					<!--       -->
+					<!-- PHONE -->
+					<!--       -->
+					<h:panelGroup layout="block"
+						styleClass="ui-fluid p-formgrid p-grid p-justify-center">
+						<h:panelGroup layout="block" styleClass="p-field p-col-12 p-md-4">
+							<p:outputLabel for="telefono-proveedor" value="Telefono:" />
+							<p:inputMask id="telefono-proveedor" required="true"
+								requiredMessage="El campo telefono no puede estar vacio."
+								value="#{proveedor.proveedor.persona.telefono}"
+								mask="999-9999-999" />
+						</h:panelGroup>
+
+						<!--           -->
+						<!-- DIRECTION -->
+						<!--           -->
+						<h:panelGroup layout="block" styleClass="p-field p-col-12 p-md-4">
+							<p:outputLabel for="direccion-proveedor" value="Dirección" />
+							<p:inputText id="direccion-proveedor" required="true"
+								requiredMessage="El campo dirección no puede estar vacio."
+								value="#{proveedor.proveedor.persona.direccion}" />
+						</h:panelGroup>
+					</h:panelGroup>
+				</h:panelGroup>
+
+				<h:panelGroup layout="block" styleClass="ui-fluid p-formgrid p-grid">
+					<!--       -->
+					<!-- EMAIL -->
+					<!--       -->
+					<h:panelGroup layout="block" styleClass="p-field p-col-12 p-md">
+						<p:outputLabel for="email-proveedor" value="Email" />
+						<p:inputText id="email-proveedor" required="true"
+							validator="#{validator.isEmail}"
+							requiredMessage="El campo Email no puede estar vacio."
+							value="#{proveedor.proveedor.persona.email}" />
+					</h:panelGroup>
+				</h:panelGroup>
+
+				<!--           -->
+				<!-- PRODUCTOS -->
+				<!--           -->
+				<h:panelGroup layout="block"
+					styleClass="ui-fluid p-formgrid p-grid p-justify-center p-m-4">
+					<h:panelGroup layout="block" styleClass="p-field p-col-12 p-md-4">
+						<h:outputLabel for="productos-proveedor" value="Productos: " />
+						<p:selectCheckboxMenu id="productos-proveedor"
+							value="#{proveedor.select}" multiple="true" filter="true"
+							filterMatchMode="startsWith">
+							<f:selectItems value="#{selection.detalles_productos}" />
+						</p:selectCheckboxMenu>
+					</h:panelGroup>
+				</h:panelGroup>
+
+				<!--     -->
+				<!-- ADD -->
+				<!--     -->
+				<h:panelGroup layout="block"
+					styleClass="p-d-flex p-jc-center p-mb-lg-6 p-mt-lg-6">
+					<p:commandButton value="Registrar" title="Registrar proveedor"
+						styleClass="sofia-button p-m-0 sofia-button-info"
+						update="@(.sofia-container-main-update)"
+						action="#{proveedor.registrar()}" />
+				</h:panelGroup>
+
+			</h:panelGroup>
+		</p:fieldset>
+	</ui:define>
+
+</ui:composition>

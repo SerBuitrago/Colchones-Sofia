@@ -1,0 +1,428 @@
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	template="../../../template/template-admi.xhtml">
+
+	<!--      -->
+	<!-- HEAD -->
+	<!--      -->
+	<ui:define name="title"> | Información</ui:define>
+
+	<!--         -->
+	<!-- SECTION -->
+	<!--         -->
+	<ui:define name="component">
+		<h:panelGroup layout="block"
+			styleClass="sofia-container-section-generic__center p-p-3 sofia-update-generic"
+			id="sofia-update-generic">
+			<h:form>
+				<!-- MESSAGE -->
+				<p:growl showDetail="true" />
+				<h1 class="sofia-title p-mt-3 p-mb-3">Emails y Telefonos
+					Empresa</h1>
+
+				<!--       -->
+				<!-- PHONE -->
+				<!--       -->
+				<h:panelGroup layout="block" styleClass="p-mt-4 p-mb-4">
+					<p:staticMessage severity="warn" summary="" styleClass="p-p-3"
+						detail="Numero de telefono de #{app.empresa.nombre}." />
+				</h:panelGroup>
+
+				<p:fieldset legend="Información Telefonos" toggleable="true"
+					toggleSpeed="500" styleClass="p-mb-4">
+
+					<h:panelGroup layout="block" styleClass="p-mt-3 p-mb-3">
+						<p:commandButton
+							icon="fa fa-fw #{app.agregar_telefono_empresa ? 'fa-brush' : 'fa-plus'}"
+							action="#{app.activarAddTelefono()}"
+							update="@(.sofia-update-generic)"
+							styleClass="sofia-button-icon sofia-button-icon-small #{app.agregar_telefono_empresa ? 'sofia-button-warn' : 'sofia-button-succes'}" />
+					</h:panelGroup>
+
+
+					<p:panel header="Agregar Telefono" styleClass="p-mb-3 p-mt-3"
+						rendered="#{app.agregar_telefono_empresa}">
+						<h:panelGroup layout="block"
+							styleClass="p-mt-3 p-mb-3 ui-fluid p-formgrid p-d-flex p-jc-center">
+							<h:panelGroup layout="block" styleClass="p-field p-col p-md-4">
+								<h:outputLabel value="Telefono:" for="telefono" />
+								<p:inputText value="#{app.empresaInformacion.telefono}"
+									id="telefono" />
+							</h:panelGroup>
+						</h:panelGroup>
+
+						<h:panelGroup layout="block"
+							styleClass="ui-fluid p-formgrid p-grid p-mb-3">
+							<h:panelGroup layout="block" styleClass="p-field p-col-12">
+								<h:outputLabel value="Descripción:" for="descripcion" />
+								<p:inputTextarea value="#{app.empresaInformacion.descripcion}"
+									id="descripcion"></p:inputTextarea>
+							</h:panelGroup>
+						</h:panelGroup>
+
+
+						<h:panelGroup layout="block"
+							styleClass="p-d-flex p-jc-center p-ac-center">
+							<p:commandButton action="#{app.addTelefono()}" value="Agregar"
+								styleClass="sofia-button sofia-button-succes"
+								onclick="PF('sofia-table-update').clearFilters();"
+								icon="fa fa-fw fa-plus" update="@(.sofia-update-generic)" />
+						</h:panelGroup>
+					</p:panel>
+
+					<p:panel header="Telefonos">
+
+						<!--           -->
+						<!-- DATA VIEW -->
+						<!--           -->
+						<p:dataTable var="e" value="#{app.empresa_informacion_telefono}"
+							widgetVar="sofia-table-update" id="sofia-table-update"
+							emptyMessage="No se encontro ningun telefono."
+							filteredValue="#{app.filter_empresa_informacion_telefono}"
+							paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} 
+								   				   {PreviousPageLink} {CurrentPageReport} 
+								                   {NextPageLink} {LastPageLink}"
+							paginator="true" rows="20" rowIndexVar="index"
+							rowsPerPageTemplate="5,10,15,20,50,100" reflow="true"
+							scrollable="true" styleClass="p-mt-4">
+
+							<!-- HEADER -->
+							<f:facet name="header">
+								<p:outputPanel layout="block"
+									styleClass="p-d-flex p-jc-end p-ac-center">
+									<h:outputText value="Buscar:" styleClass="p-mt-1 p-mr-2" />
+									<p:inputText id="globalFilter"
+										onkeyup="PF('sofia-table-update').filter()" />
+								</p:outputPanel>
+								<p:outputPanel layout="block"
+									styleClass="p-d-flex p-jc-center p-ac-center p-p-3">
+									<h2>Telefonos</h2>
+									<h4 class="p-as-end">(#{app.empresa_informacion_telefono.size()}
+										resultados)</h4>
+								</p:outputPanel>
+							</f:facet>
+
+							<!-- ID -->
+							<p:column headerText="ID" footerText="ID" sortBy="#{e.id}">
+								<p:rowToggler />
+								<h:panelGroup layout="block"
+									styleClass="p-d-flex p-jc-center p-ac-center">
+									<h:outputText value="#{e.id}" />
+								</h:panelGroup>
+							</p:column>
+
+							<!-- NAME -->
+							<p:column filterBy="#{e.telefono}" headerText="Telefono"
+								footerText="Telefono" sortBy="#{e.telefono}"
+								filterMatchMode="contains">
+								<h:panelGroup layout="block"
+									styleClass="p-d-flex p-jc-center p-ac-center">
+									<h:outputText value="#{e.telefono}" />
+								</h:panelGroup>
+							</p:column>
+
+							<!-- ESTADO -->
+							<p:column filterBy="#{e.estado}" footerText="Estado"
+								headerText="Estado" filterMatchMode="equals">
+								<f:facet name="filter">
+									<p:selectOneButton onchange="PF('sofia-table-update').filter()"
+										styleClass="custom-filter">
+										<f:converter converterId="javax.faces.Boolean" />
+										<f:selectItem itemLabel="D" itemValue="" />
+										<f:selectItem itemLabel="A" itemValue="true" />
+										<f:selectItem itemLabel="B" itemValue="false" />
+									</p:selectOneButton>
+								</f:facet>
+								<h:panelGroup layout="block"
+									styleClass="p-d-flex p-jc-center p-ac-center">
+									<p:commandButton value="#{e.estado ? 'Activo': 'Bloqueado'}"
+										title="Cambiar estado" action="#{app.estadoTelefono()}"
+										onclick="PF('sofia-table-update').clearFilters()"
+										update="@(.sofia-update-generic)"
+										styleClass="#{e.estado ? 'sofia-statu-succes': 'sofia-statu-error'} sofia-statu">
+										<f:param name="id-telefono" value="#{e.id}" />
+									</p:commandButton>
+								</h:panelGroup>
+							</p:column>
+
+							<p:column headerText="Acciones" footerText="Acciones">
+								<h:panelGroup layout="block"
+									styleClass="p-d-flex p-jc-between p-ac-center">
+									<p:commandButton icon="fa fa-fw fa-edit"
+										action="#{app.statuEditarTelefono()}"
+										styleClass="sofia-button-icon sofia-button-primary sofia-button-icon-small"
+										update="@(.sofia-dialog-update)">
+										<f:param name="id-telefono" value="#{e.id}" />
+									</p:commandButton>
+
+									<p:commandButton icon="fa fa-fw fa-remove"
+										action="#{app.eliminarTelefono()}"
+										styleClass="sofia-button-icon sofia-button-error sofia-button-icon-small"
+										update="@(.sofia-update-generic)">
+										<f:param name="id-telefono" value="#{e.id}" />
+										<p:confirm header="Eliminar Telefono"
+											icon="pi pi-exclamation-triangle"
+											message="¿Quiere eliminar el telefono con ID #{e.id}?" />
+									</p:commandButton>
+								</h:panelGroup>
+							</p:column>
+
+							<p:rowExpansion>
+								<h4 class="p-mt-3">Descripción:</h4>
+								<h:panelGroup layout="block"
+									styleClass="p-d-flex p-jc-center p-ac-center p-p-4">
+									<h:outputText value="#{e.descripcion}" />
+								</h:panelGroup>
+							</p:rowExpansion>
+						</p:dataTable>
+					</p:panel>
+				</p:fieldset>
+
+				<!--        -->
+				<!-- EMAILS -->
+				<!--        -->
+				<h:panelGroup layout="block" styleClass="p-mt-4 p-mb-4">
+					<p:staticMessage severity="warn" summary="" styleClass="p-p-3"
+						detail="Email de #{app.empresa.nombre}." />
+				</h:panelGroup>
+				<p:fieldset legend="Información correos" toggleable="true"
+					toggleSpeed="500">
+
+					<h:panelGroup layout="block" styleClass="p-mt-3 p-mb-3">
+						<p:commandButton
+							icon="fa fa-fw #{app.agregar_email_empresa ? 'fa-brush' : 'fa-plus'}"
+							action="#{app.activarAddEmail()}"
+							update="@(.sofia-update-generic)"
+							styleClass="sofia-button-icon sofia-button-icon-small #{app.agregar_email_empresa ? 'sofia-button-warn' : 'sofia-button-succes'}" />
+					</h:panelGroup>
+
+					<p:panel header="Agregar Correo"
+						rendered="#{app.agregar_email_empresa}">
+						<h:panelGroup layout="block"
+							styleClass="p-mt-3 p-mb-3 ui-fluid p-formgrid p-d-flex p-jc-center">
+							<h:panelGroup layout="block" styleClass="p-field p-col p-md-4">
+								<h:outputLabel value="Correo:" for="correo" />
+								<p:inputText value="#{app.empresaInformacion.email}" id="mail"
+									validator="#{validator.isEmail}" />
+							</h:panelGroup>
+						</h:panelGroup>
+
+						<h:panelGroup layout="block"
+							styleClass="ui-fluid p-formgrid p-grid p-mb-3">
+							<h:panelGroup layout="block" styleClass="p-field p-col-12">
+								<h:outputLabel value="Descripción:" for="descripcion-email" />
+								<p:inputTextarea value="#{app.empresaInformacion.descripcion}"
+									id="descripcion-email"></p:inputTextarea>
+							</h:panelGroup>
+						</h:panelGroup>
+
+
+						<h:panelGroup layout="block"
+							styleClass="p-d-flex p-jc-center p-ac-center">
+							<p:commandButton action="#{app.addMail()}" value="Agregar"
+								styleClass="sofia-button sofia-button-succes"
+								oncomplete="PF('sofia-table-mail-update').clearFilters();"
+								icon="fa fa-fw fa-plus" update="@(.sofia-update-generic)" />
+						</h:panelGroup>
+					</p:panel>
+
+					<p:panel header="Correos">
+						<!--           -->
+						<!-- DATA VIEW -->
+						<!--           -->
+						<p:dataTable var="e" value="#{app.empresa_informacion_mail}"
+							widgetVar="sofia-table-mail-update" id="sofia-table-mail-update"
+							emptyMessage="No se encontro ningun correo."
+							filteredValue="#{app.filter_empresa_informacion_mail}"
+							paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} 
+								   				   {PreviousPageLink} {CurrentPageReport} 
+								                   {NextPageLink} {LastPageLink}"
+							paginator="true" rows="20" rowIndexVar="index"
+							rowsPerPageTemplate="5,10,15,20,50,100" reflow="true"
+							scrollable="true" styleClass="p-mt-4 sofia-table-mail-update">
+
+							<!-- HEADER -->
+							<f:facet name="header">
+								<p:outputPanel layout="block"
+									styleClass="p-d-flex p-jc-end p-ac-center">
+									<h:outputText value="Buscar:" styleClass="p-mt-1 p-mr-2" />
+									<p:inputText id="globalFilter"
+										onkeyup="PF('sofia-table-mail-update').filter()" />
+								</p:outputPanel>
+								<p:outputPanel layout="block"
+									styleClass="p-d-flex p-jc-center p-ac-center p-p-3">
+									<h2>Correos</h2>
+									<h4 class="p-as-end">(#{app.empresa_informacion_mail.size()}
+										resultados)</h4>
+								</p:outputPanel>
+							</f:facet>
+
+							<!-- ID -->
+							<p:column headerText="ID" footerText="ID" sortBy="#{e.id}">
+								<p:rowToggler />
+								<h:panelGroup layout="block"
+									styleClass="p-d-flex p-jc-center p-ac-center">
+									<h:outputText value="#{e.id}" />
+								</h:panelGroup>
+							</p:column>
+
+							<!-- NAME -->
+							<p:column filterBy="#{e.email}" headerText="Correo"
+								footerText="Correo" sortBy="#{e.email}">
+								<h:panelGroup layout="block"
+									styleClass="p-d-flex p-jc-center p-ac-center">
+									<h:outputText value="#{e.email}" />
+								</h:panelGroup>
+							</p:column>
+
+							<!-- ESTADO -->
+							<p:column filterBy="#{e.estado}" footerText="Estado"
+								headerText="Estado" filterMatchMode="equals">
+								<f:facet name="filter">
+									<p:selectOneButton
+										onchange="PF('sofia-table-mail-update').filter()"
+										styleClass="custom-filter">
+										<f:converter converterId="javax.faces.Boolean" />
+										<f:selectItem itemLabel="D" itemValue="" />
+										<f:selectItem itemLabel="A" itemValue="true" />
+										<f:selectItem itemLabel="B" itemValue="false" />
+									</p:selectOneButton>
+								</f:facet>
+								<h:panelGroup layout="block"
+									styleClass="p-d-flex p-jc-center p-ac-center">
+									<p:commandButton value="#{e.estado ? 'Activo': 'Bloqueado'}"
+										title="Cambiar estado" action="#{app.estadoMail()}"
+										onclick="PF('sofia-table-update').clearFilters()"
+										update="@(.sofia-update-generic), sofia-table-mail-update"
+										styleClass="#{e.estado ? 'sofia-statu-succes': 'sofia-statu-error'} sofia-statu">
+										<f:param name="id-mail" value="#{e.id}" />
+									</p:commandButton>
+								</h:panelGroup>
+							</p:column>
+
+							<p:column headerText="Acciones" footerText="Acciones">
+								<h:panelGroup layout="block"
+									styleClass="p-d-flex p-jc-between p-ac-center">
+									<p:commandButton icon="fa fa-fw fa-edit"
+										action="#{app.statuEditarMail()}"
+										styleClass="sofia-button-icon sofia-button-primary sofia-button-icon-small"
+										update="@(.sofia-dialog-mail-update)">
+										<f:param name="id-mail" value="#{e.id}" />
+									</p:commandButton>
+
+									<p:commandButton icon="fa fa-fw fa-remove"
+										action="#{app.eliminarEmail()}"
+										styleClass="sofia-button-icon sofia-button-error sofia-button-icon-small"
+										update="@(.sofia-update-generic)">
+										<f:param name="id-mail" value="#{e.id}" />
+										<p:confirm header="Eliminar Email"
+											icon="pi pi-exclamation-triangle"
+											message="¿Quiere eliminar el email con ID #{e.id}?" />
+									</p:commandButton>
+								</h:panelGroup>
+							</p:column>
+
+							<p:rowExpansion>
+								<h4 class="p-mt-3">Descripción:</h4>
+								<h:panelGroup layout="block"
+									styleClass="p-d-flex p-jc-center p-ac-center p-p-4">
+									<h:outputText value="#{e.descripcion}" />
+								</h:panelGroup>
+							</p:rowExpansion>
+						</p:dataTable>
+					</p:panel>
+				</p:fieldset>
+			</h:form>
+		</h:panelGroup>
+
+		<!--                            -->
+		<!-- DIALOG UPDATE AND REGISTER -->
+		<!--                            -->
+		<p:dialog header="Actualizar Telefono" widgetVar="sofia-dialog-update"
+			id="sofia-dialog-update" resizable="false" showEffect="explode"
+			styleClass="sofia-dialog-update" modal="true">
+			<h:form>
+				<h:panelGroup layout="block">
+					<h:panelGroup layout="block"
+						styleClass="p-mt-3 p-mb-3 ui-fluid p-formgrid p-d-flex p-jc-center">
+						<h:panelGroup layout="block" styleClass="p-field p-col p-md-4">
+							<h:outputLabel value="Telefono:" for="telefono-editar" />
+							<p:inputText value="#{app.empresaInformacion.telefono}"
+								id="telefono-editar" />
+						</h:panelGroup>
+					</h:panelGroup>
+					<h:panelGroup layout="block"
+						styleClass="ui-fluid p-formgrid p-grid p-mb-3">
+						<h:panelGroup layout="block" styleClass="p-field p-col-12">
+							<h:outputLabel value="Descripción:" for="descripcion-editar" />
+							<p:inputTextarea value="#{app.empresaInformacion.descripcion}"
+								id="descripcion-editar"></p:inputTextarea>
+						</h:panelGroup>
+					</h:panelGroup>
+					<h:panelGroup layout="block"
+						styleClass="p-d-flex p-jc-center p-ac-center">
+						<p:commandButton action="#{app.editarTelefono()}"
+							value="Actualizar" styleClass="sofia-button sofia-button-primary"
+							oncomplete="PF('sofia-table-update').clearFilters());"
+							icon="fa fa-fw fa-plus" update="@(.sofia-update-generic)" />
+					</h:panelGroup>
+				</h:panelGroup>
+			</h:form>
+		</p:dialog>
+
+		<!--                            -->
+		<!-- DIALOG UPDATE AND REGISTER -->
+		<!--                            -->
+		<p:dialog header="Actualizar Correo"
+			widgetVar="sofia-dialog-mail-update" id="sofia-dialog-mail-update"
+			resizable="false" showEffect="explode"
+			styleClass="sofia-dialog-mail-update" modal="true">
+			<h:form>
+				<h:panelGroup layout="block">
+					<h:panelGroup layout="block"
+						styleClass="p-mt-3 p-mb-3 ui-fluid p-formgrid p-d-flex p-jc-center">
+						<h:panelGroup layout="block" styleClass="p-field p-col p-md-4">
+							<h:outputLabel value="Correo:" for="mail-editar" />
+							<p:inputText value="#{app.empresaInformacion.email}"
+								id="mail-editar" />
+						</h:panelGroup>
+					</h:panelGroup>
+					<h:panelGroup layout="block"
+						styleClass="ui-fluid p-formgrid p-grid p-mb-3">
+						<h:panelGroup layout="block" styleClass="p-field p-col-12">
+							<h:outputLabel value="Descripción:" for="descripcion-editar" />
+							<p:inputTextarea value="#{app.empresaInformacion.descripcion}"
+								id="descripcion-editar"></p:inputTextarea>
+						</h:panelGroup>
+					</h:panelGroup>
+					<h:panelGroup layout="block"
+						styleClass="p-d-flex p-jc-center p-ac-center">
+						<p:commandButton action="#{app.editarMail()}" value="Actualizar"
+							styleClass="sofia-button sofia-button-primary"
+							oncomplete="PF('sofia-table-mail-update').clearFilters());"
+							icon="fa fa-fw fa-plus"
+							update="@(.sofia-update-generic),@form, @(.sofia-table-mail-update)" />
+					</h:panelGroup>
+				</h:panelGroup>
+			</h:form>
+		</p:dialog>
+
+		<!--                           -->
+		<!-- DIALOG CONFIMATION REMOVE -->
+		<!--                            -->
+		<p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+			<h:panelGroup layout="block" styleClass="p-d-flex p-jc-end">
+				<p:commandButton value="Si" type="button"
+					styleClass="ui-confirmdialog-yes sofia-statu-succes"
+					icon="pi pi-check" update="@(.sofia-update-generic)" />
+				<p:commandButton value="No" type="button"
+					styleClass="ui-confirmdialog-no sofia-statu-error"
+					icon="pi pi-times" update="@(.sofia-update-generic)" />
+			</h:panelGroup>
+		</p:confirmDialog>
+	</ui:define>
+</ui:composition>

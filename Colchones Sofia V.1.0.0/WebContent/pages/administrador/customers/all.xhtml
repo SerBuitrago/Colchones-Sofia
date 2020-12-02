@@ -1,0 +1,485 @@
+<!--          -->
+<!-- TEMPLATE -->
+<!--          -->
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	template="../../../template/advanced/template-advaced-admi.xhtml">
+
+	<!--       -->
+	<!-- TTILE -->
+	<!--       -->
+	<ui:define name="title-advaced">
+			| Cliente | Historial
+	</ui:define>
+
+	<ui:define name="component-statu-advaced">
+		<p:menuitem value="Home" url="../index.xhtml" />
+		<p:menuitem value="Cliente" url="index.xhtml" disabled="none" />
+		<p:menuitem value="Historial" url="all.xhtml" disabled="none" />
+	</ui:define>
+
+	<ui:define name="component-title-img-advaced">
+		<h:graphicImage library="img" name="all/customers.jpg"
+			styleClass="sofia-image-80 sofia-image-dark" />
+	</ui:define>
+
+	<ui:define name="component-title-h1-advaced">Cliente</ui:define>
+	<ui:define name="component-title-h2-advaced">Historial</ui:define>
+
+	<ui:define name="component-other-advaced">
+		<p:fieldset legend="Historial" toggleable="true" toggleSpeed="500">
+
+			<!--         -->
+			<!-- ACTIONS -->
+			<!--         -->
+			<p:separator styleClass="p-mt-4" />
+			<h:panelGroup layout="block"
+				styleClass="d-p-flex p-jc-star p-ac-center p-m-4">
+				<!--         -->
+				<!-- SPINNER -->
+				<!--         -->
+				<p:commandButton icon="fa fa-fw fa-brush" value="Limpiar"
+					onclick="PF('sofia-table-update').clearFilters()"
+					styleClass="sofia-button-warn p-ml-3"
+					update="@(.sofia-container-main-update)"
+					title="Limpiar filtros tabla."
+					disabled="#{fn:length(table.clientes) gt 0  ? 'false' : 'true'}" />
+			</h:panelGroup>
+			<p:separator styleClass="p-mb-4" />
+
+			<!--           -->
+			<!-- DATA VIEW -->
+			<!--           -->
+			<p:dataTable var="c" value="#{table.clientes}"
+				widgetVar="sofia-table-update" id="sofia-table-update"
+				emptyMessage="No se encontro ningun cliente."
+				filteredValue="#{table.filter_cliente}"
+				paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} 
+								   {CurrentPageReport} {NextPageLink} {LastPageLink}"
+				paginator="true" rows="20" rowIndexVar="index"
+				rowsPerPageTemplate="5,10,15,20,50,100" reflow="true"
+				scrollable="true" styleClass="p-mt-4">
+
+				<!-- HEADER -->
+				<f:facet name="header">
+					<p:outputPanel layout="block"
+						styleClass="p-d-flex p-jc-end p-ac-center">
+						<h:outputText value="Buscar:" styleClass="p-mt-1 p-mr-2" />
+						<p:inputText id="globalFilter"
+							onkeyup="PF('sofia-table-update').filter()" />
+					</p:outputPanel>
+					<p:outputPanel layout="block"
+						styleClass="p-d-flex p-jc-center p-ac-center p-p-3">
+						<h2>Clientes</h2>
+						<h4 class="p-as-end">(#{table.clientes.size()} resultados)</h4>
+					</p:outputPanel>
+				</f:facet>
+
+				<!--        -->
+				<!-- COLUMN -->
+				<!--        -->
+				<p:column style="width:50px">
+					<p:rowToggler />
+					<h:panelGroup layout="block"
+						styleClass="p-d-flex p-jc-center p-ac-center">
+						<h:outputLabel value="#{index + 1}" />
+					</h:panelGroup>
+				</p:column>
+
+				<!-- DOCUMENTO -->
+				<p:column filterBy="#{c.persona.documento}"
+					sortBy="#{c.persona.documento}" footerText="Documento"
+					filterMatchMode="contains">
+					<f:facet name="header">
+						<h:outputText value="Documento" />
+					</f:facet>
+					<h:panelGroup layout="block"
+						styleClass="p-d-flex p-jc-center p-ac-center">
+						<h:outputText value="#{c.persona.documento}" />
+					</h:panelGroup>
+				</p:column>
+
+				<!-- NAMES -->
+				<p:column filterBy="#{c.persona.nombre} #{c.persona.apellido}"
+					footerText="Nombre" filterMatchMode="contains"
+					sortBy="#{c.persona.nombre} #{c.persona.apellido}">
+					<f:facet name="header">
+						<h:outputText value="Nombre" />
+					</f:facet>
+					<h:panelGroup layout="block"
+						styleClass="p-d-flex p-jc-center p-ac-center p-ai-center p-text-center">
+						<h:outputText value="#{c.persona.nombre} #{c.persona.apellido}" />
+					</h:panelGroup>
+				</p:column>
+
+				<!-- NUMBER SALES -->
+				<p:column filterBy="#{c.ventas1.size()}" footerText="Número Ventas"
+					sortBy="#{c.ventas1.size()}">
+					<f:facet name="header">
+						<h:outputText value="Número Ventas" />
+					</f:facet>
+					<h:panelGroup layout="block"
+						styleClass="p-d-flex p-jc-center p-ac-center">
+						<h:outputText value="#{c.ventas1.size()}" />
+					</h:panelGroup>
+				</p:column>
+
+				<!-- ESTATU -->
+				<p:column filterBy="#{c.estado}" footerText="Estado"
+					headerText="Estado" filterMatchMode="equals">
+					<f:facet name="filter">
+						<p:selectOneButton onchange="PF('sofia-table-update').filter()"
+							styleClass="custom-filter">
+							<f:converter converterId="javax.faces.Boolean" />
+							<f:selectItem itemLabel="D" itemValue="" />
+							<f:selectItem itemLabel="A" itemValue="true" />
+							<f:selectItem itemLabel="B" itemValue="false" />
+						</p:selectOneButton>
+					</f:facet>
+					<h:panelGroup layout="block"
+						styleClass="p-d-flex p-jc-center p-ac-center">
+						<p:commandButton value="#{c.estado ? 'Activo': 'Bloqueado'}"
+							onclick="PF('sofia-table-update').clearFilters()"
+							title="Cambiar estado" action="#{clientes.estado()}"
+							update="@(.sofia-container-main-update)"
+							styleClass="#{c.estado ? 'sofia-statu-succes': 'sofia-statu-error'} sofia-statu">
+							<f:param name="documento-cliente" value="#{c.persona.documento}" />
+							<f:param name="tipo-documento-cliente"
+								value="#{c.persona.tipoDocumentoBean.tipoDocumento}" />
+						</p:commandButton>
+					</h:panelGroup>
+				</p:column>
+
+				<!-- EDIT -->
+				<p:column footerText="Editar Cliente">
+					<f:facet name="header">
+						<h:outputText value="Editar Cliente" />
+					</f:facet>
+					<h:panelGroup layout="block"
+						styleClass="p-d-flex p-jc-center p-ac-center">
+						<p:commandButton icon="fa fa-fw fa-user-edit p-ac-center"
+							title="Editar Clientes"
+							styleClass="sofia-button-info sofia-button-icon"
+							action="#{clientes.statuActualizar()}"
+							update="@(.sofia-container-main-update), @(.sofia-dialog-update)">
+							<f:param name="documento-cliente" value="#{c.persona.documento}" />
+							<f:param name="tipo-documento-cliente"
+								value="#{c.persona.tipoDocumentoBean.tipoDocumento}" />
+						</p:commandButton>
+					</h:panelGroup>
+				</p:column>
+
+				<!--        -->
+				<!-- EXPANT -->
+				<!--        -->
+				<p:rowExpansion>
+
+					<h:panelGroup layout="block" styleClass="p-mt-4 p-mb-4"
+						rendered="#{c.ventas1.size() == 0}">
+						<p:staticMessage severity="warn" summary="" styleClass="p-p-3"
+							detail="El cliente #{c.persona.nombre} #{c.persona.apellido} no tiene ninguna venta asociada." />
+					</h:panelGroup>
+
+					<ui:repeat var="list" value="#{c.ventas1}">
+
+						<p:dataGrid var="cl" value="#{list.detalleCompraVentas}"
+							styleClass="p-mt-4 p-mb-4" columns="3" layout="grid" rows="12"
+							paginator="true" id="cliente-venta"
+							paginatorTemplate="{CurrentPageReport}  {FirstPageLink}
+							                   {PreviousPageLink} {PageLinks} 
+							                   {NextPageLink} {LastPageLink} 
+							                   {RowsPerPageDropdown}"
+							rowsPerPageTemplate="3,6,9,12,15,50,100">
+
+							<f:facet name="header">
+				            	Venta ID #{list.id}
+				        </f:facet>
+
+							<p:panel header="#{cl.ventaBean.id}" style="text-align:center">
+								<h:panelGrid columns="1" style="width:100%;heigth:300px">
+									<p:graphicImage style="width:100px;heigth:100px" cache="false"
+										rendered="#{cl.detalleProducto.foto != null}"
+										value="#{image.detalle_producto}">
+										<f:param name="id-detalle-producto"
+											value="#{cl.detalleProducto.id}"></f:param>
+									</p:graphicImage>
+									<h:graphicImage style="width:100px;heigth:100px"
+										rendered="#{cl.detalleProducto.foto == null}" library="img"
+										name="product.png" />
+
+									<h:outputText value="#{cl.detalleProducto.productoBean.nombre}" />
+
+									<p:commandLink update="@(.sofia-container-main-update)"
+										oncomplete="PF('ventaProducto').show()" title="Ver Datos">
+										<h:outputText styleClass="pi pi-search" style="margin:0 auto;" />
+										<f:setPropertyActionListener value="#{cl}"
+											target="#{clientes.seleccionar}" />
+									</p:commandLink>
+
+								</h:panelGrid>
+							</p:panel>
+						</p:dataGrid>
+
+					</ui:repeat>
+				</p:rowExpansion>
+			</p:dataTable>
+
+			<!--         -->
+			<!-- ACTIONS -->
+			<!--         -->
+			<p:separator styleClass="p-mt-4" />
+			<h:panelGroup layout="block"
+				styleClass="d-p-flex p-jc-star p-ac-center p-m-4">
+				<!--         -->
+				<!-- SPINNER -->
+				<!--         -->
+				<p:commandButton icon="fa fa-fw fa-brush" value="Limpiar"
+					onclick="PF('sofia-table-update').clearFilters()"
+					styleClass="sofia-button-warn p-ml-3"
+					update="@(.sofia-container-main-update)"
+					title="Limpiar filtros tabla."
+					disabled="#{fn:length(table.clientes) gt 0  ? 'false' : 'true'}" />
+			</h:panelGroup>
+			<p:separator styleClass="p-mb-4" />
+
+			<!--           -->
+			<!-- VIEW SALE -->
+			<!--           -->
+			<p:dialog header="Datos del Producto" widgetVar="ventaProducto"
+				modal="true" showEffect="fade" hideEffect="fade" resizable="false"
+				width="50%">
+				<p:outputPanel id="ventaP" style="text-align:center;">
+					<p:panelGrid columns="2" rendered="#{clientes.seleccionar != null}"
+						columnClasses="label,value" style="width:100%">
+
+						<f:facet name="header">
+							<p:graphicImage style="width:100px;heigth:100px" cache="false"
+								rendered="#{clientes.seleccionar.detalleProducto.foto != null}"
+								value="#{image.detalle_producto}">
+								<f:param name="id-detalle-producto"
+									value="#{clientes.seleccionar.detalleProducto.id}"></f:param>
+							</p:graphicImage>
+							<h:graphicImage style="width:100px;heigth:100px"
+								rendered="#{clientes.seleccionar.detalleProducto.foto == null}"
+								library="img" name="product.png" />
+						</f:facet>
+
+						<h:outputText value="ID Producto:" />
+						<h:outputText
+							value="#{clientes.seleccionar.detalleProducto.productoBean.id}" />
+
+						<h:outputText value="Nombre:" />
+						<h:outputText
+							value="#{clientes.seleccionar.detalleProducto.productoBean.nombre}" />
+
+						<h:outputText value="Descripcion:" />
+						<h:outputText
+							value="#{clientes.seleccionar.detalleProducto.productoBean.descripcion}" />
+
+						<h:outputText value="ID Detalle" />
+						<h:outputText value="#{clientes.seleccionar.detalleProducto.id}" />
+
+						<h:outputText value="Color:" />
+						<h:outputText
+							value="#{clientes.seleccionar.detalleProducto.color}" />
+
+						<h:outputText value="Dimensión:" />
+						<h:outputText
+							value="#{clientes.seleccionar.detalleProducto.dimension}" />
+
+						<h:outputText value="Cantidad:" />
+						<h:outputText value="#{clientes.seleccionar.cantidad}"
+							styleClass="sofia-statu statu-primary" />
+
+						<h:outputText value="Precio:" />
+						<h:outputText value="#{clientes.seleccionar.precio}"
+							styleClass="sofia-statu #{clientes.seleccionar.precio == 0 ? 'sofia-statu-error' : 'sofia-statu-succes'}">
+							<f:convertNumber currencySymbol="$" type="currency" />
+						</h:outputText>
+
+						<h:outputText value="Descuento:" />
+						<h:outputText value="#{clientes.seleccionar.descuento}"
+							styleClass="sofia-statu #{clientes.seleccionar.descuento == 0 ? 'sofia-statu-warn' : 'sofia-statu-succes'}">
+							<f:convertNumber currencySymbol="$" type="currency" />
+						</h:outputText>
+
+						<h:outputText value="SubTotal:" />
+						<h:outputText value="#{clientes.seleccionar.subtotal}"
+							styleClass="sofia-statu #{clientes.seleccionar.subtotal == 0 ? 'sofia-statu-error' : 'sofia-statu-succes'}">
+							<f:convertNumber currencySymbol="$" type="currency" />
+						</h:outputText>
+
+					</p:panelGrid>
+				</p:outputPanel>
+			</p:dialog>
+		</p:fieldset>
+	</ui:define>
+
+	<ui:define name="component-dialog-advaced">
+		<!--                            -->
+		<!-- DIALOG UPDATE AND REGISTER -->
+		<!--                            -->
+		<p:dialog header="#{clientes.estado} clientes"
+			widgetVar="sofia-dialog-update" id="sofia-dialog-update"
+			resizable="false" showEffect="explode" style="max-heigth:50vh"
+			styleClass="sofia-dialog-update" modal="true">
+
+			<h:form>
+				<h:panelGroup layout="block">
+
+					<!--        -->
+					<!-- SELECT -->
+					<!--        -->
+					<h:panelGroup layout="block"
+						styleClass="ui-fluid p-formgrid p-d-flex p-jc-between p-ac-center">
+
+						<!--      -->
+						<!-- TYPE -->
+						<!--      -->
+						<h:panelGroup layout="block" styleClass="p-field p-col p-md-3">
+							<p:outputLabel for="add-tipo-documento-cliente"
+								value="Tipo Documento:" />
+							<p:selectOneMenu id="add-tipo-documento-cliente"
+								disabled="#{clientes.hidden}"
+								value="#{clientes.usuario.persona.tipoDocumentoBean.tipoDocumento}">
+								<f:selectItems value="#{selection.documentos}" styleClass="info" />
+							</p:selectOneMenu>
+						</h:panelGroup>
+
+						<!--          -->
+						<!-- DOCUMENT -->
+						<!--          -->
+						<h:panelGroup layout="block" styleClass="p-field p-col p-md-3">
+							<p:outputLabel for="add-documento-cliente" value="Documento:" />
+							<p:inputText id="add-documento-cliente"
+								disabled="#{clientes.hidden}" required="true"
+								requiredMessage="El campo documento no puede estar vacio."
+								value="#{clientes.usuario.persona.documento}" />
+						</h:panelGroup>
+					</h:panelGroup>
+
+					<!--        -->
+					<!-- UPLOAD -->
+					<!--        -->
+					<h:panelGroup layout="block"
+						styleClass="p-d-flex p-jc-center pac-center p-m-5">
+						<p:fileUpload listener="#{image.uploadImage}" mode="advanced"
+							dragDropSupport="false" update="@(.sofia-container-main-update)"
+							sizeLimit="100000" fileLimit="1"
+							allowTypes="/(\.|\/)(jpe?g|png)$/" />
+					</h:panelGroup>
+
+					<!--      -->
+					<!-- INFO -->
+					<!--      -->
+					<h:panelGroup layout="block"
+						styleClass="ui-fluid p-formgrid p-grid">
+
+						<!--      -->
+						<!-- NAME -->
+						<!--      -->
+						<div class="p-field p-col">
+							<p:outputLabel for="add-nombre-clientes" value="Nombre:" />
+							<p:inputText id="add-nombre-clientes" required="true"
+								requiredMessage="El campo nombre no puede estar vacio."
+								value="#{clientes.usuario.persona.nombre}" />
+						</div>
+
+						<!--          -->
+						<!-- LASTNAME -->
+						<!--          -->
+						<div class="p-field p-col">
+							<p:outputLabel for="add-apellido-clientes" value="Apellido:" />
+							<p:inputText id="add-apellido-clientes" required="true"
+								requiredMessage="El campo apellido no puede estar vacio."
+								value="#{clientes.usuario.persona.apellido}" />
+						</div>
+					</h:panelGroup>
+
+					<h:panelGroup layout="block"
+						styleClass="ui-fluid p-formgrid p-grid">
+
+						<!--       -->
+						<!-- PHONE -->
+						<!--       -->
+						<div class="p-field p-col p-col-12 p-md-4">
+							<p:outputLabel for="add-telefono-clientes" value="Telefono:" />
+							<p:inputText id="add-telefono-clientes" required="true"
+								requiredMessage="El campo telefono no puede estar vacio."
+								value="#{clientes.usuario.persona.telefono}" />
+						</div>
+
+						<!--           -->
+						<!-- DIRECTION -->
+						<!--           -->
+						<div class="p-field p-col">
+							<p:outputLabel for="add-direccion-clientes" value="Dirección:" />
+							<p:inputText id="add-direccion-clientes" required="true"
+								requiredMessage="El campo dirección no puede estar vacio."
+								value="#{clientes.usuario.persona.direccion}" />
+						</div>
+					</h:panelGroup>
+
+					<h:panelGroup layout="block"
+						styleClass="ui-fluid p-formgrid p-grid p-jc-center">
+						<!--       -->
+						<!-- BIRTH -->
+						<!--       -->
+						<div class="p-field p-col p-col-12 p-md-4">
+							<p:outputLabel for="add-fecha-nacimiento-clientes"
+								value="Fecha Nacimiento:" />
+							<p:datePicker id="add-fecha-nacimiento-clientes" required="true"
+								requiredMessage="El campo fecha nacimiento no puede estar vacio."
+								value="#{clientes.usuario.persona.fechaNacimiento}" />
+						</div>
+
+						<!--       -->
+						<!-- GENER -->
+						<!--       -->
+						<div class="p-field p-col-12 p-md-4">
+							<p:outputLabel for="add-sexo-clientes" value="Genero:" />
+							<p:selectOneMenu id="add-sexo-clientes"
+								value="#{clientes.usuario.persona.genero}">
+								<f:selectItem itemLabel="Masculino" itemValue="M" />
+								<f:selectItem itemLabel="Femenino" itemValue="F" />
+								<f:selectItem itemLabel="Otro" itemValue="O" />
+							</p:selectOneMenu>
+						</div>
+					</h:panelGroup>
+
+					<h:panelGroup layout="block"
+						styleClass="ui-fluid p-formgrid p-grid p-jc-center">
+						<!--       -->
+						<!-- EMAIL -->
+						<!--       -->
+						<div class="p-field p-col">
+							<p:outputLabel for="email-clientes" value="Email:" />
+							<p:inputText id="email-clientes" validator="#{validator.isEmail}"
+								requiredMessage="El campo email no puede estar vacio."
+								value="#{clientes.usuario.persona.email}" required="true" />
+						</div>
+
+					</h:panelGroup>
+
+					<!--     -->
+					<!-- ADD -->
+					<!--     -->
+					<h:panelGroup layout="block"
+						styleClass="p-d-flex p-jc-center p-mb-lg-6 p-mt-lg-6">
+						<p:commandButton value="#{clientes.estado}"
+							styleClass="sofia-button sofia-button-info p-m-0"
+							action="#{clientes.actualizar()}"
+							title="#{clientes.estado} asistentes"
+							onclick="PF('sofia-dialog-update').show();"
+							oncomplete="PF('sofia-table-update').clearFilters()"
+							update="@(.sofia-container-main-update), :sofia-dialog-update" />
+					</h:panelGroup>
+				</h:panelGroup>
+			</h:form>
+		</p:dialog>
+	</ui:define>
+</ui:composition>

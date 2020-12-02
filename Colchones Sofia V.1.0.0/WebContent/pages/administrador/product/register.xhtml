@@ -1,0 +1,145 @@
+<!--          -->
+<!-- TEMPLATE -->
+<!--          -->
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	template="../../../template/advanced/template-advaced-admi.xhtml">
+
+	<!--       -->
+	<!-- TITLE -->
+	<!--       -->
+	<ui:define name="title-advaced">
+			| Producto | Registrar
+	</ui:define>
+
+	<!--       -->
+	<!-- STATU -->
+	<!--       -->
+	<ui:define name="component-statu-advaced">
+		<p:menuitem value="Home" url="../index.xhtml" />
+		<p:menuitem value="Producto" url="index.xhtml" disabled="none" />
+		<p:menuitem value="Registrar" url="register.xhtml" disabled="none" />
+	</ui:define>
+
+	<!--       -->
+	<!-- IMAGE -->
+	<!--       -->
+	<ui:define name="component-title-img-advaced">
+		<h:graphicImage library="img" name="all/product.jpg"
+			styleClass="sofia-image-80 sofia-image-dark" />
+	</ui:define>
+	<ui:define name="component-title-h1-advaced">Producto</ui:define>
+	<ui:define name="component-title-h2-advaced">Registrar</ui:define>
+
+	<!--         -->
+	<!-- SECTION -->
+	<!--         -->
+	<ui:define name="component-other-advaced">
+		<p:fieldset legend="Registrar" toggleable="true" toggleSpeed="500">
+			<h:panelGroup layout="block">
+
+				<!--    -->
+				<!-- ID -->
+				<!--    -->
+				<h:panelGroup layout="block"
+					styleClass="ui-fluid p-formgrid p-grid p-jc-end p-ac-center">
+					<h:panelGroup layout="block" styleClass="p-field p-col p-md-3">
+						<p:outputLabel for="add-id-producto" value="ID:" />
+						<p:inputText id="add-id-producto" disabled="#{producto.hidden}"
+							required="true"
+							requiredMessage="El campo id no puede estar vacio."
+							value="#{producto.producto.id}" />
+					</h:panelGroup>
+				</h:panelGroup>
+
+				<!--      -->
+				<!-- DATA -->
+				<!--      -->
+				<h:panelGroup layout="block" styleClass="ui-fluid p-formgrid p-grid p-mt-4">
+					<!--      -->
+					<!-- NAME -->
+					<!--      -->
+					<h:panelGroup layout="block" styleClass="p-field p-col">
+						<p:outputLabel for="add-nombre-producto" value="Nombre:" />
+						<p:inputText id="add-nombre-producto" required="true"
+							rrequiredMessage="El campo nombre no puede estar vacio."
+							value="#{producto.producto.nombre}" />
+					</h:panelGroup>
+
+					<!--       -->
+					<!-- STOCK -->
+					<!--       -->
+					<h:panelGroup layout="block"
+						styleClass="ui-fluid p-formgrid p-grid p-justify-center">
+						<h:panelGroup layout="block" styleClass="p-field p-col-12 p-md-4">
+							<p:outputLabel for="add-stock-producto" value="Stock:" />
+							<p:inputNumber id="add-stock-producto" required="true"
+								requiredMessage="El campo stock no puede estar vacio."
+								value="#{producto.producto.stock}" />
+						</h:panelGroup>
+
+						<!--       -->
+						<!-- STOCK -->
+						<!--       -->
+						<h:panelGroup layout="block" styleClass="p-field p-col-12 p-md-4">
+							<p:outputLabel for="add-stockMinimo-producto"
+								value="Stock Minimo:" />
+							<p:inputNumber id="add-stockMinimo-producto" required="true"
+								requiredMessage="El campo stock minimo no puede estar vacio."
+								value="#{producto.producto.stockMinimo}" />
+						</h:panelGroup>
+					</h:panelGroup>
+				</h:panelGroup>
+
+				<h:panelGroup layout="block" styleClass="ui-fluid p-formgrid p-grid">
+					<!--             -->
+					<!-- DESCRIPTION -->
+					<!--             -->
+					<h:panelGroup layout="block" styleClass="p-field p-col-12 p-md">
+						<p:outputLabel for="descripcion-producto" value="Descripcion" />
+						<p:inputTextarea id="descripcion-producto"
+							value="#{producto.producto.descripcion}" />
+					</h:panelGroup>
+				</h:panelGroup>
+
+				<!--          -->
+				<!-- GARANTIA -->
+				<!--          -->
+				<h:panelGroup layout="block" styleClass="ui-fluid p-formgrid p-grid p-jc-end">
+					<h:panelGroup layout="block" styleClass="p-field p-col-12 p-md-5">
+						<p:outputLabel for="Garantia-producto" value="Garantia:" />
+						<p:inputText id="Garantia-producto"
+							value="#{producto.producto.garantia}" />
+					</h:panelGroup>
+				</h:panelGroup>
+
+				<h:panelGroup layout="block"
+					styleClass="ui-fluid p-formgrid p-gridp-jc-center">
+					<h:panelGroup layout="block" styleClass="p-field p-col-12 p-md">
+						<h:outputLabel for="categoria" value="Categoria: " />
+						<p:selectOneMenu id="productos"
+							value="#{producto.producto.categoriaBean.id}" filter="true"
+							filterMatchMode="startsWith">
+							<f:selectItems value="#{selection.categoria}" />
+						</p:selectOneMenu>
+					</h:panelGroup>
+				</h:panelGroup>
+
+				<!--     -->
+				<!-- ADD -->
+				<!--     -->
+				<h:panelGroup layout="block"
+					styleClass="p-d-flex p-jc-center p-mb-lg-6 p-mt-lg-6">
+					<p:commandButton value="Registrar" title="Registrar Producto"
+						styleClass="sofia-button p-m-0 sofia-button-info"
+						update="@(.sofia-container-main-update)"
+						action="#{producto.registrarP()}" />
+				</h:panelGroup>
+			</h:panelGroup>
+		</p:fieldset>
+	</ui:define>
+</ui:composition>

@@ -1,0 +1,123 @@
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	template="../../../template/template-admi.xhtml">
+
+	<!--      -->
+	<!-- HEAD -->
+	<!--      -->
+	<ui:define name="title"> | #{app.app.empresa.nombre}</ui:define>
+
+	<!--         -->
+	<!-- SECTION -->
+	<!--         -->
+	<ui:define name="component">
+		<h:panelGroup layout="block"
+			styleClass="sofia-container-section-generic__center p-p-3 sofia-update-generic"
+			id="sofia-update-generic">
+			<h:form>
+
+				<!-- MESSAGE -->
+				<p:growl showDetail="true" />
+
+				<!--       -->
+				<!-- PHONE -->
+				<!--       -->
+				<p:fieldset legend="Información Empresarial" toggleable="true"
+					toggleSpeed="500">
+
+					<p:panel header="Editar Informacion">
+
+						<h:panelGroup layout="block"
+							styleClass="p-mt-3 p-mb-3 ui-fluid p-formgrid p-d-flex p-jc-end">
+							<h:panelGroup layout="block" styleClass="p-field p-col p-md-4">
+								<h:outputLabel value="Nit:" for="nit" />
+								<p:inputText value="#{app.empresa.nit}" id="nit" required="true"
+									requiredMessage="El campo NIT no estar vacio." disabled="true" />
+							</h:panelGroup>
+						</h:panelGroup>
+
+						<h:panelGroup layout="block"
+							styleClass="p-mt-3 p-mb-3 ui-fluid p-formgrid p-d-flex p-jc-center">
+							<h:panelGroup layout="block" styleClass="p-field p-col p-md">
+								<h:outputLabel value="Nombre:" for="nombre" />
+								<p:inputText value="#{app.empresa.nombre}" id="nombre" />
+							</h:panelGroup>
+						</h:panelGroup>
+
+						<h:panelGroup layout="block" styleClass="p-mt-4 p-mb-4">
+							<p:staticMessage severity="warn" summary="" styleClass="p-p-3"
+								detail="Es el email asignado para enviar los correos de la empresa." />
+						</h:panelGroup>
+						
+						<h:panelGroup layout="block"
+							styleClass="p-mt-3 p-mb-3 ui-fluid p-formgrid p-d-flex p-jc-between">
+							<h:panelGroup layout="block" styleClass="p-field p-col">
+								<h:outputLabel value="Emial:" for="email-empresa" />
+								<p:inputText value="#{app.empresa.email}" id="email-empresa"
+									validator="#{validator.isEmail}" />
+							</h:panelGroup>
+
+							<h:panelGroup layout="block" styleClass="p-field p-col p-md-4">
+								<h:outputLabel value="Clave:" for="clave" />
+								<p:inputText value="#{app.empresa.clave}" id="clave" />
+							</h:panelGroup>
+						</h:panelGroup>
+
+						<h:panelGroup layout="block"
+							styleClass="p-mt-3 p-mb-3 ui-fluid p-formgrid p-d-flex p-jc-star">
+							<h:panelGroup layout="block" styleClass="p-field p-col">
+								<h:outputLabel value="Direccion" for="direccion" />
+								<p:inputText value="#{app.empresa.direccion}" id="direccion" />
+							</h:panelGroup>
+						</h:panelGroup>
+
+						<h:panelGroup layout="block"
+							styleClass="p-mt-3 p-mb-3 ui-fluid p-formgrid p-d-flex p-jc-center">
+							<h:panelGroup layout="block" styleClass="p-field p-col p-md-4">
+								<h:outputLabel value="Presupuesto:" for="presupuesto" />
+								<p:inputText value="#{app.empresa.presupuesto}" id="presupuesto" />
+							</h:panelGroup>
+						</h:panelGroup>
+
+						<h:panelGroup layout="block"
+							styleClass="p-mt-3 p-mb-3 ui-fluid p-formgrid p-d-flex p-jc-between p-ai-center p-p-4 p-flex-wrap">
+							<h:panelGroup layout="block" styleClass="p-field p-col p-md-4">
+								<h:outputLabel value="Icono:" for="icono" />
+								<p:fileUpload listener="#{app.uploadImage}" mode="advanced"
+									dragDropSupport="false" label="Agregar" uploadLabel="Subir"
+									cancelLabel="Cancelar" style="width: 500px"
+									update="@(.sofia-update-generic)" sizeLimit="200000"
+									fileLimit="1" allowTypes="/(\.|\/)(jpe?g|png)$/" />
+							</h:panelGroup>
+
+							<p:graphicImage value="#{image.logo}" title="Inicio"
+								style="width:200px; heigth:200px;" cache="false" />
+						</h:panelGroup>
+
+						<h:panelGroup layout="block"
+							styleClass="ui-fluid p-formgrid p-grid p-mb-3">
+							<h:panelGroup layout="block" styleClass="p-field p-col-12">
+								<h:outputLabel value="Descripción:" for="descripcion" />
+								<p:inputTextarea value="#{app.empresa.descripcion}"
+									id="descripcion"></p:inputTextarea>
+							</h:panelGroup>
+						</h:panelGroup>
+
+
+						<h:panelGroup layout="block"
+							styleClass="p-d-flex p-jc-center p-ac-center">
+							<p:commandButton action="#{app.editarEmpresa()}" value="Guardar"
+								styleClass="sofia-button sofia-button-succes"
+								icon="fa fa-fw fa-plus"
+								update="@(.sofia-update-generic), @(.sofia-container-main-update-main)" />
+						</h:panelGroup>
+					</p:panel>
+				</p:fieldset>
+			</h:form>
+		</h:panelGroup>
+	</ui:define>
+</ui:composition>

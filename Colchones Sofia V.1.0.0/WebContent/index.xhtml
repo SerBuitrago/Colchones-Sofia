@@ -1,0 +1,559 @@
+
+<!--          -->
+<!-- TEMPLATE -->
+<!--          -->
+<ui:composition template="template/template.xhtml"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui">
+
+	<!--           -->
+	<!-- COMPONENT -->
+	<!--           -->
+	<ui:define name="component">
+
+		<!--                  -->
+		<!-- SLIDER PROMOTION -->
+		<!--                  -->
+		<h:panelGroup layout="block"
+			styleClass="sofia-container-slider-main-index"
+			style="background: #F5F5F5;">
+			<main>
+				<section class="slides">
+
+					<section class="slides-nav">
+						<nav class="slides-nav__nav">
+							<button class="slides-nav__prev js-prev">Siguiente</button>
+							<button class="slides-nav__next js-next">Anterior</button>
+						</nav>
+					</section>
+
+					<ui:repeat var="pp" value="#{catalogo.promocion}" varStatus="index">
+						<section class="slide #{index.index == 0 ? 'is-active' : 'null'}">
+							<div class="slide__content">
+								<figure class="slide__figure">
+									<div class="slide__img">
+										<p:graphicImage rendered="#{pp.foto != null}"
+											value="#{image.detalle_producto}">
+											<f:param name="id-detalle-producto" value="#{pp.id}" />
+										</p:graphicImage>
+										<h:graphicImage library="img" name="product.jpg"
+											rendered="#{pp.foto == null}" />
+									</div>
+								</figure>
+								<header class="slide__header"
+									style="text-transform: uppercase; font-weight: 900;">
+									<h2 class="slide__title">
+										<span class="title-line">ID #{pp.id}</span> <span
+											class="title-line sofia-statu sofia-statu-succes"
+											style="font-size: 1em !important"> <h:outputText
+												value="#{catalogo.resta(pp.precioVenta, pp.descuento)}">
+												<f:convertNumber currencySymbol="$" type="currency" />
+											</h:outputText>
+										</span>
+									</h2>
+								</header>
+							</div>
+						</section>
+
+					</ui:repeat>
+				</section>
+			</main>
+			<div
+				style="height: 200px; overflow: hidden; position: absolute; bottom: 0; z-index: 1000; width: 100%;">
+				<svg viewBox="0 0 500 150" preserveAspectRatio="none"
+					style="height: 100%; width: 100%;">
+				<path
+						d="M0.00,49.98 C149.99,150.00 349.20,-49.98 500.00,49.98 L500.00,150.00 L0.00,150.00 Z"
+						style="stroke: none; fill: #ffffff;"></path></svg>
+			</div>
+		</h:panelGroup>
+
+		<!--         -->
+		<!-- PRODUCT -->
+		<!--         -->
+		<h:form>
+			<p:growl showDetail="true" />
+
+			<h:panelGroup layout="block" styleClass="sofia-container-card-main">
+				<div id="wrapper">
+					<div id="sidebar">
+						<h3>CART</h3>
+						<div id="cart">
+							<span class="empty">No items in cart.</span>
+						</div>
+
+						<h3>CATEGORIAS</h3>
+						<div class="checklist categories">
+							<ul>
+								<h:form>
+									<ui:repeat var="c" value="#{selection.categoria}">
+										<ui:repeat var="l" value="#{c.getSelectItems()}">
+											<li><p:commandLink>
+													<span></span>#{l.label}
+												<f:param name="id-categoria" value="#{l.value}"></f:param>
+												</p:commandLink></li>
+										</ui:repeat>
+									</ui:repeat>
+								</h:form>
+							</ul>
+						</div>
+
+						<h3>COLORES</h3>
+						<div class="checklist colors">
+							<ul>
+								<ui:repeat var="c" value="#{requests.colores()}">
+									<li><p:commandLink>
+											<span
+												style="background: #{c.nombre == 'ROJO' ? 'red' :
+											 c.nombre == 'AZUL' ? 'blue' :  c.nombre == 'BLANCO' ? 'white' : c.nombre == 'GRIS' ? 'gray' : 'black'}"></span>#{c.nombre} (#{c.cantidad})
+												<f:param name="color" value="#{c.nombre}"></f:param>
+										</p:commandLink></li>
+								</ui:repeat>
+							</ul>
+
+						</div>
+
+						<h3>RANGO PRECIO</h3>
+						<h:panelGrid columns="1">
+							<h:outputText id="displayRange"
+								value="Desde #{catalogo.a} Hasta #{catalogo.b}" />
+							<p:slider for="txt6,txt7" display="displayRange"
+								style="width: 200px" range="true" maxValue="9999999"
+								minValue="0" displayTemplate="Desde {min} Hasta {max}" />
+						</h:panelGrid>
+						<h:inputHidden id="txt6" value="#{catalogo.a}" />
+						<h:inputHidden id="txt7" value="#{catalogo.b}" />
+
+					</div>
+
+					<div id="grid-selector">
+						<div id="grid-menu">
+							View:
+							<ul>
+								<li class="largeGrid"><a href=""></a></li>
+								<li class="smallGrid"><a class="active" href=""></a></li>
+							</ul>
+						</div>
+
+						Se han encontrado #{fn:length(catalogo.detalles_productos_inicio)}
+						resultados.
+					</div>
+
+					<div id="grid">
+						<ui:repeat var="p" value="#{catalogo.detalles_productos_inicio}">
+							<div class="product">
+								<div class="info-large">
+									<h4>#{p.productoBean.nombre}</h4>
+									<div class="sku">
+										ID: <strong>#{p.id}</strong>
+									</div>
+
+									<div class="price-big">
+										<span> <h:outputText value="#{p.precioVenta}">
+												<f:convertNumber currencySymbol="$" type="currency" />
+											</h:outputText>
+										</span>
+										<h:outputText
+											value="#{catalogo.resta(p.precioVenta, p.descuento)}">
+											<f:convertNumber currencySymbol="$" type="currency" />
+										</h:outputText>
+									</div>
+
+									<h3>COLORS</h3>
+									<div class="colors-large">
+										<ul>
+											<li><a href=""
+												style="background: #{p.color == 'ROJO' ? 'red' :
+											 p.color == 'AZUL' ? 'blue' :  p.color == 'BLANCO' ? 'white' : p.color == 'GRIS' ? 'gray' : 'black'}"><span></span></a></li>
+										</ul>
+									</div>
+
+									<h3>Dimensión</h3>
+									<div class="sizes-large">
+										<span>#{p.dimension}</span>
+									</div>
+
+									<p:commandButton value="Agregar Carrito"
+										action="#{venta_online.addProductosCliente()}"
+										styleClass="add-cart-large"
+										update="@(.sofia-container-main-template)">
+										<f:param name="id-detalle-producto" value="#{p.id}"></f:param>
+									</p:commandButton>
+
+								</div>
+								<div class="make3D" style="height: 460px;">
+									<div class="product-front">
+										<div class="shadow"></div>
+										<p:graphicImage value="#{image.detalle_producto}"
+											cache="false"
+											style="width: 100%; height: 100%;object-fit: contain;">
+											<f:param name="id-detalle-producto" value="#{p.id}" />
+										</p:graphicImage>
+										<div class="image_overlay"></div>
+										<div class="add_to_cart">Agregar Carrito</div>
+										<div class="view_gallery">Ver</div>
+										<div class="stats">
+											<div class="stats-container">
+												<span class="product_price"><h:outputText
+														value="#{catalogo.resta(p.precioVenta, p.descuento)}">
+														<f:convertNumber currencySymbol="$" type="currency" />
+													</h:outputText></span> <span class="product_name">#{p.productoBean.nombre}</span>
+												<p>#{p.id}</p>
+
+												<div class="product-options">
+													<strong>DIMENSION</strong> <span>#{p.dimension}</span> <strong>COLOR</strong>
+													<div class="colors">
+														<div
+															class="#{p.color == 'ROJO' ? 'c-red' :
+																 p.color == 'AZUL' ? 'c-blue' :  p.color == 'BLANCO' ? 'c-white' : p.color == 'GRIS' ? 'c-gray' : 'c-black'}">
+															<span></span>
+														</div>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+
+									<div class="product-back">
+										<div class="shadow"></div>
+										<div class="carousel">
+											<ul class="carousel-container">
+												<li><p:graphicImage value="#{image.detalle_producto}"
+														cache="false"
+														style="width: 100%; height: 100%;object-fit: contain;">
+														<f:param name="id-detalle-producto" value="#{p.id}" />
+													</p:graphicImage></li>
+
+											</ul>
+											<div class="arrows-perspective">
+												<div class="carouselPrev">
+													<div class="y"></div>
+													<div class="x"></div>
+												</div>
+												<div class="carouselNext">
+													<div class="y"></div>
+													<div class="x"></div>
+												</div>
+											</div>
+										</div>
+										<div class="flip-back">
+											<div class="cy"></div>
+											<div class="cx"></div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</ui:repeat>
+					</div>
+				</div>
+			</h:panelGroup>
+		</h:form>
+		
+		<!--        -->
+		<!-- SLIDER -->
+		<!--        -->
+		<h:panelGroup layout="block" styleClass="sofia-container-slider-main-one-index">
+			<div class="content-product">
+				<!--Container das imagens do slide-->
+				<div class="img-product">
+					<!--Item Slide-->
+					<div class="product-img-item" id="img1">
+						<img src="https://image.ibb.co/cm7DXq/deadpool-cosbaby-img.png"
+							alt="" class="product-img-img" />
+					</div>
+					<!--Item Slide-->
+					<div class="product-img-item" id="img2">
+						<img src="https://image.ibb.co/egpDyV/thor-ragnarok-cosbaby.png"
+							alt="" class="product-img-img" />
+					</div>
+				</div>
+
+				<!--Conteudo dos produtos-->
+				<div class="product-slider-info">
+					<!--Buttons next and prev slide-->
+					<button class="prev disabled">
+						<span class="icon"> <i class="fas fa-arrow-left"></i>
+						</span>
+					</button>
+					<button class="next">
+						<span class="icon"> <i class="fas fa-arrow-right"
+							style="color: #000;"></i>
+						</span>
+					</button>
+					<!--End button-->
+					<div class="content-slider-geek-store swiper-wrapper">
+						<div class="product-slider-item swiper-slide" data-target="img1">
+							<div class="product-slider-item-card">
+								<div class="product-slider-item-content">
+									<!--Titulo do produto-->
+									<h1 class="product-slider-title">Deadpool Cosbaby</h1>
+									<!--Preço do produto-->
+									<span class="product-slider-price">R$ 79,<sup>99</sup></span>
+									<p class="product-slider-description">Lorem Ipsum é
+										simplesmente uma simulação de texto da indústria tipográfica e
+										de impressos, e vem sendo utilizado desde o século XVI, quando
+										um impressor desconhecido pegou uma bandeja de tipos e os
+										embaralhou para fazer um livro de modelos de tipos.</p>
+									<div class="product-ctr"></div>
+									<div class="product-slider__bottom">
+										<button class="product-slider__cart">COMPRAR AGORA</button>
+										<button class="product-slider__fav js-fav">
+											<span class="heart"></span>ADD LISTA DE DESEJOS
+										</button>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="product-slider-item swiper-slide" data-target="img2">
+							<div class="product-slider-item-card">
+								<div class="product-slider-item-content">
+									<!--Titulo do produto-->
+									<h1 class="product-slider-title">Thor Cosbaby</h1>
+									<!--Preço do produto-->
+									<span class="product-slider-price">R$ 79,<sup>99</sup></span>
+									<p class="product-slider-description">Lorem Ipsum é
+										simplesmente uma simulação de texto da indústria tipográfica e
+										de impressos, e vem sendo utilizado desde o século XVI, quando
+										um impressor desconhecido pegou uma bandeja de tipos e os
+										embaralhou para fazer um livro de modelos de tipos.</p>
+									<div class="product-ctr"></div>
+									<div class="product-slider__bottom">
+										<button class="product-slider__cart">COMPRAR AGORA</button>
+										<button class="product-slider__fav js-fav">
+											<span class="heart"></span>ADD LISTA DE DESEJOS
+										</button>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+		</h:panelGroup>
+
+
+
+		<div style="height: 150px; overflow: hidden;">
+			<svg viewBox="0 0 500 150" preserveAspectRatio="none"
+				style="height: 100%; width: 100%;">
+				<path
+					d="M0.00,49.98 C149.99,150.00 349.20,-49.98 500.00,49.98 L500.00,150.00 L0.00,150.00 Z"
+					style="stroke: none; fill: #f5f5f5;"></path></svg>
+		</div>
+
+		<!--      -->
+		<!-- KNOW -->
+		<!--      -->
+		<h:panelGroup layout="block" styleClass="sofia-container-know-main">
+			<div class="com">
+				<div class="com__content">
+
+					<section
+						class="com__section com__section--text com__section--text-img">
+						<div class="com__section-half">
+							<h1 class="animate slideInLeft ">¿Quienes Somos?</h1>
+							<p class="animate slideInLeft delay-3">#{app.app.quienesSomos}</p>
+						</div>
+						<div class="com__section-half">
+							<p:graphicImage library="img" name="bed.jpeg"
+								style="width:600px !important; height:100% !important; max-width:600px"
+								styleClass="animate slideInRight delay-3" />
+						</div>
+					</section>
+
+					<section
+						class="com__section com__section--text com__section--text-img">
+						<div class="com__section-half">
+							<h1 class="animate slideInLeft">Misión</h1>
+							<p class="animate slideInLeft delay-2">#{app.app.mision}</p>
+						</div>
+					</section>
+					<section
+						class="com__section com__section--text com__section--text-img">
+						<div class="com__section-half">
+							<h1 class="animate slideInLeft">Visión</h1>
+							<p class="animate slideInLeft delay-2">#{app.app.vision}</p>
+						</div>
+					</section>
+				</div>
+				<nav class="com__nav">
+					<ul class="com__nav-list">
+						<li class="com__nav-item"><a href="" class="com__nav-link">
+								<span class="blue-line animate scaleInLeft delay-2"></span> <span
+								class="white-line animate scaleInLeft delay-4"></span> <span
+								class="white-line animate scaleInLeft delay-5"></span>
+						</a></li>
+						<li class="com__nav-item"><a href=""
+							class="com__nav-link flex-row">
+								<div class="com__section-half">
+									<span class="blue-line animate scaleInLeft delay-3"></span> <span
+										class="white-line animate scaleInLeft delay-4"></span>
+								</div>
+								<div class="com__section-half">
+									<span class="white-circle animate slideInRight delay-5"></span>
+								</div>
+						</a></li>
+						<li class="com__nav-item"><a href=""
+							class="com__nav-link centered"> <span
+								class="blue-line animate scaleIn delay-3"></span> <span
+								class="white-circle animate scaleIn delay-5"></span>
+						</a></li>
+					</ul>
+				</nav>
+			</div>
+		</h:panelGroup>
+
+		<div style="height: 150px; overflow: hidden;">
+			<svg viewBox="0 0 500 150" preserveAspectRatio="none"
+				style="height: 100%; width: 100%;">
+				<path
+					d="M-0.27,150.48 C131.77,71.53 267.77,17.27 500.27,92.27 L500.00,0.00 L0.00,0.00 Z"
+					style="stroke: none; fill: #f5f5f5;"></path></svg>
+		</div>
+
+		<!--          -->
+		<!-- LOCATION -->
+		<!--          -->
+		<h:panelGroup layout="block"
+			styleClass="sofia-container-location-main">
+
+			<h:panelGroup layout="block" styleClass="sofia-container-text-image">
+				<h1 class="sofia-container-text-image__h1"
+					style="background: url(https://cdn.shopify.com/s/files/1/0446/5590/2886/files/CAMAS-AJUSTABLE1080x1080_1_640x512.jpg?v=1599154964) repeat; background-size: 200%; background-clip: text; font-family: $- -project-font-family; position: relative; text-align: center; line-height: 120px; -webkit-background-clip: text; letter-spacing: -5px; font-weight: 900; font-family: Arial !important; font-size: 100px;">Ubicación</h1>
+			</h:panelGroup>
+
+			<h:panelGroup layout="block"
+				styleClass="sofia-container-location-main-other">
+				<!--       -->
+				<!-- PHONE -->
+				<!--       -->
+				<h:panelGroup layout="block" styleClass="inner-content">
+					<h:panelGroup layout="block" styleClass="boxy">
+						<h:graphicImage
+							value="https://www.banpais.hn/wp-content/uploads/2020/09/whatsapp-icon-transparent-png-6.png" />
+					</h:panelGroup>
+					<h:panelGroup layout="block" styleClass="boxy">
+						<div id="slider">
+							<figure>
+								<ul>
+									<ui:repeat var="t" value="#{app.app.telefono}">
+										<li>
+											<h4>#{t.telefono}</h4>
+											<p>#{t.descripcion}</p>
+										</li>
+									</ui:repeat>
+								</ul>
+							</figure>
+						</div>
+					</h:panelGroup>
+				</h:panelGroup>
+
+				<h:panelGroup layout="block"
+					style="width: 100%;height: 80vh; overflow: hidden;">
+					<iframe
+						src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3282.899434615644!2d-58.439769684174266!3d-34.63198156650238!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x95bcca386ffcd167%3A0x71ae8ed72f243b85!2sCOLCHONES%20SOFIA%20en%20Parque%20Chacabuco!5e0!3m2!1ses!2sco!4v1606870280782!5m2!1ses!2sco"
+						width="600" height="450" frameborder="0"
+						style="border: 0; width: 100%; height: 100%;" allowfullscreen=""
+						aria-hidden="false" tabindex="0"></iframe>
+				</h:panelGroup>
+
+				<!--       -->
+				<!-- EMAIL -->
+				<!--       -->
+				<h:panelGroup layout="block" styleClass="inner-content">
+					<h:panelGroup layout="block" styleClass="boxy">
+						<h:graphicImage
+							value="https://1000logos.net/wp-content/uploads/2018/05/Gmail-logo.png" />
+					</h:panelGroup>
+					<h:panelGroup layout="block" styleClass="boxy">
+						<div id="slider">
+							<figure>
+								<ul>
+									<ui:repeat var="t" value="#{app.app.email}">
+										<li>
+											<h4>#{t.email}</h4>
+											<p>#{t.descripcion}</p>
+										</li>
+									</ui:repeat>
+								</ul>
+							</figure>
+						</div>
+					</h:panelGroup>
+				</h:panelGroup>
+			</h:panelGroup>
+		</h:panelGroup>
+
+
+		<!--         -->
+		<!-- CONTACT -->
+		<!--         -->
+		<h:panelGroup layout="block" styleClass="sofia-container-contact">
+			<section class="form_wrap">
+
+				<section class="cantact_info">
+					<section class="info_title">
+						<h:form>
+							<h:panelGroup layout="block"
+								styleClass="p-d-flex p-jc-center p-ac-center p-mb-3">
+								<p:commandLink action="/faces/index?faces-redirect=true">
+									<p:graphicImage value="#{image.logo}" title="Inicio"
+										cache="false" styleClass="sofia-logo"
+										style="width:150px; height:100px" />
+								</p:commandLink>
+							</h:panelGroup>
+						</h:form>
+
+						<h2>
+							INFORMACIÓN<br />CONTACTO
+						</h2>
+					</section>
+					<section class="info_items">
+						<p>
+							<span class="fa fa-envelope" style="font-size: 2em"></span>
+							#{app.empresa.email}
+						</p>
+						<p>
+							<span class="fa fa-mobile" style="font-size: 2em"></span> +(57)
+							3118938189
+						</p>
+					</section>
+				</section>
+
+				<h:form styleClass="form_contact">
+					<h2>Envia un mensaje</h2>
+					<div class="user_info">
+						<label for="names">Nombre <span style="color: red">*</span></label>
+						<p:inputText />
+
+						<label for="phone">Telefono / Celular</label>
+						<p:inputMask mask="###-####-####" />
+
+						<label for="email">Correo electronico <span
+							style="color: red">*</span></label>
+						<p:inputText />
+
+						<label for="mensaje">Mensaje <span style="color: red">*</span></label>
+						<p:inputTextarea />
+
+						<p:commandButton styleClass="sofia-button-primary" value="Enviar" />
+					</div>
+				</h:form>
+			</section>
+		</h:panelGroup>
+
+	</ui:define>
+
+	<!--    -->
+	<!-- JS -->
+	<!--    -->
+	<ui:define name="js">
+		<h:outputScript library="js" name="slider.js" />
+		<h:outputScript library="js" name="slider-two.js" />
+		<script type="module" src="../resources/js/module.js"></script>
+	</ui:define>
+</ui:composition>

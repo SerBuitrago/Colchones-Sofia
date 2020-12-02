@@ -1,0 +1,347 @@
+
+<!--          -->
+<!-- TEMPLATE -->
+<!--          -->
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	template="../../../template/advanced/template-advaced-admi.xhtml">
+
+	<!--       -->
+	<!-- TITLE -->
+	<!--       -->
+	<ui:define name="title-advaced">
+			| Categoria | Historial
+	</ui:define>
+
+	<!--       -->
+	<!-- STATU -->
+	<!--       -->
+	<ui:define name="component-statu-advaced">
+		<p:menuitem value="Home" url="../index.xhtml" />
+		<p:menuitem value="Categoria" url="index.xhtml" disabled="none" />
+		<p:menuitem value="Historial" url="all.xhtml" disabled="none" />
+	</ui:define>
+
+	<!--       -->
+	<!-- IMAGE -->
+	<!--       -->
+	<ui:define name="component-title-img-advaced">
+		<h:graphicImage library="img" name="all/category.jpg"
+			styleClass="sofia-image-80 sofia-image-dark" />
+	</ui:define>
+	<ui:define name="component-title-h1-advaced">Categoria</ui:define>
+	<ui:define name="component-title-h2-advaced">Historial</ui:define>
+
+	<!--         -->
+	<!-- SECTION -->
+	<!--         -->
+	<ui:define name="component-other-advaced">
+		<p:fieldset legend="Historial" toggleable="true" toggleSpeed="500">
+			<!--         -->
+			<!-- ACTIONS -->
+			<!--         -->
+			<p:separator styleClass="p-mt-4" />
+			<h:panelGroup layout="block"
+				styleClass="d-p-flex p-jc-star p-ac-center p-m-4">
+
+				<!--     -->
+				<!-- ADD -->
+				<!--     -->
+				<p:commandButton icon="pi pi-plus" value="Agregar"
+					styleClass="sofia-button-succes" title="Agregar"
+					action="#{categoria.statuRegistrar()}"
+					update="sofia-container-main-update, :sofia-dialog-update" />
+
+				<!--         -->
+				<!-- SPINNER -->
+				<!--         -->
+				<p:commandButton icon="fa fa-fw fa-brush" value="Limpiar"
+					onclick="PF('sofia-table-update').clearFilters()"
+					styleClass="sofia-button-warn p-ml-3"
+					update="sofia-container-main-update, :sofia-dialog-update"
+					title="Actualizar"
+					disabled="#{fn:length(table.categoria) gt 0  ? 'false' : 'true'}" />
+			</h:panelGroup>
+			<p:separator styleClass="p-mb-4" />
+
+			<h:panelGroup layout="block">
+				<!--       -->
+				<!-- EMPTY -->
+				<!--       -->
+				<h:panelGroup layout="block"
+					rendered=" #{fn:length(table.categoria) == 0}">
+					<h:outputLabel styleClass="sofia-title p-d-block p-text-center"
+						value="No hay ninguna categoria registrada."
+						style="font-size:1.5em" />
+					<h:graphicImage library="img" name="product.png"
+						styleClass="p-d-block"
+						style="margin:1em auto; width:30%; heigth:30%" />
+				</h:panelGroup>
+				<!--           -->
+				<!-- DATA VIEW -->
+				<!--           -->
+				<p:dataTable var="c" value="#{table.categoria}"
+					rendered="#{fn:length(table.categoria) gt 0 }"
+					widgetVar="sofia-table-update" id="sofia-table-update"
+					emptyMessage="No se encontro ninguna categoria."
+					filteredValue="#{table.filter_categoria}"
+					paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} 
+								   {PreviousPageLink} {CurrentPageReport} 
+								   {NextPageLink} {LastPageLink}"
+					paginator="true" rows="20" rowIndexVar="index"
+					rowsPerPageTemplate="5,10,15,20,50,100" reflow="true"
+					scrollable="true" styleClass="p-mt-4">
+
+					<!-- HEADER -->
+					<f:facet name="header">
+						<p:outputPanel layout="block"
+							styleClass="p-d-flex p-jc-end p-ac-center">
+							<h:outputText value="Buscar:" styleClass="p-mt-1 p-mr-2" />
+							<p:inputText id="globalFilter"
+								onkeyup="PF('sofia-table-update').filter()" />
+						</p:outputPanel>
+						<p:outputPanel layout="block"
+							styleClass="p-d-flex p-jc-center p-ac-center p-p-3">
+							<h2>Categorias</h2>
+							<h4 class="p-as-end">(#{table.categoria.size()} resultados)</h4>
+						</p:outputPanel>
+					</f:facet>
+
+					<!--        -->
+					<!-- COLUMN -->
+					<!--        -->
+					<p:column style="width:50px">
+						<p:rowToggler />
+						<h:panelGroup layout="block"
+							styleClass="p-d-flex p-jc-center p-ac-center">
+							<h:outputLabel value="#{index + 1}" />
+						</h:panelGroup>
+					</p:column>
+
+					<!-- ID -->
+					<p:column filterBy="#{c.id}" headerText="ID" footerText="ID"
+						sortBy="#{c.id}" filterMatchMode="contains">
+						<h:panelGroup layout="block"
+							styleClass="p-d-flex p-jc-center p-ac-center">
+							<h:outputText value="#{c.id}" />
+						</h:panelGroup>
+					</p:column>
+
+					<!-- NAME -->
+					<p:column filterBy="#{c.nombre}" headerText="Nombre"
+						footerText="Nombre" sortBy="#{c.nombre}"
+						filterMatchMode="contains">
+						<h:panelGroup layout="block"
+							styleClass="p-d-flex p-jc-center p-ac-center">
+							<h:outputText value="#{c.nombre}" />
+						</h:panelGroup>
+					</p:column>
+
+					<!-- REGISTER -->
+					<p:column headerText="Fecha Creación" footerText="Fecha Creación"
+						sortBy="${c.fechaCreacion}">
+						<h:panelGroup layout="block"
+							styleClass="p-d-flex p-jc-center p-ac-center p-text-center">
+							<h:outputText value="#{c.fechaCreacion}">
+								<f:convertDateTime pattern="dd/MM/yyyy HH:mm:ss" />
+							</h:outputText>
+						</h:panelGroup>
+					</p:column>
+
+					<!-- SIZE -->
+					<p:column filterBy="#{c.productos.size()}" headerText="Cantidad"
+						footerText="Productos" sortBy="#{c.productos.size()}">
+						<h:panelGroup layout="block"
+							styleClass="p-d-flex p-jc-center p-ac-center">
+							<h:outputText value="#{c.productos.size()}" />
+						</h:panelGroup>
+					</p:column>
+
+					<!-- ESTATU -->
+					<p:column filterBy="#{c.estado}" footerText="Estado"
+						headerText="Estado" filterMatchMode="equals">
+						<f:facet name="filter">
+							<p:selectOneButton onchange="PF('sofia-table-update').filter()"
+								styleClass="custom-filter">
+								<f:converter converterId="javax.faces.Boolean" />
+								<f:selectItem itemLabel="D" itemValue="" />
+								<f:selectItem itemLabel="A" itemValue="true" />
+								<f:selectItem itemLabel="B" itemValue="false" />
+							</p:selectOneButton>
+						</f:facet>
+						<h:panelGroup layout="block"
+							styleClass="p-d-flex p-jc-center p-ac-center">
+							<p:commandButton value="#{c.estado ? 'Activo': 'Bloqueado'}"
+								title="Cambiar estado" action="#{categoria.estado()}"
+								onclick="PF('sofia-table-update').clearFilters()"
+								update="@(.sofia-container-main-update)"
+								styleClass="#{c.estado ? 'sofia-statu-succes': 'sofia-statu-error'} sofia-statu">
+								<f:param name="id-categoria" value="#{c.id}" />
+							</p:commandButton>
+						</h:panelGroup>
+					</p:column>
+
+					<!--        -->
+					<!-- EXPANT -->
+					<!--        -->
+					<p:rowExpansion>
+
+						<h:panelGroup layout="block"
+							styleClass="p-d-flex p-jc-center p-ac-center">
+
+							<!--      -->
+							<!-- LIST -->
+							<!--      -->
+							<p:dataList value="#{c.productos}" var="cp" type="ordered"
+								rendered="#{c.productos.size() > 0}"
+								widgetVar="lista-productos-categoria" style="width: 70%"
+								emptyMessage="Esta categoria no tiene productos asociados.">
+								<f:facet name="header">
+									<h:panelGroup layout="block"
+										styleClass="p-d-flex p-jc-between p-ac-center p-p-3">
+										<h:outputLabel value="ID" />
+										<h:outputLabel value="Nombre" />
+										<h:outputLabel value="Stock" />
+									</h:panelGroup>
+
+								</f:facet>
+								<h:panelGroup layout="block"
+									styleClass="p-d-flex p-jc-between p-ac-center p-p-3 #{(cp.stock == 0) ? 'sofia-table-color-error-rgba' : 'null'}">
+									<h:outputLabel value="#{cp.id}" />
+									<h:outputLabel value="#{cp.nombre}" />
+									<h:outputLabel value="#{cp.stock}"
+										styleClass="#{(cp.stock == 0) ? 'sofia-statu-error' : 
+										((cp.stock lt cp.stockMinimo) ? 'sofia-statu-warn' : 'sofia-statu-succes') }
+														    sofia-statu" />
+								</h:panelGroup>
+							</p:dataList>
+
+							<h:panelGroup layout="block" styleClass="p-mt-4 p-mb-4"
+								rendered="#{c.productos.size() == 0}">
+								<p:staticMessage severity="warn" summary="" styleClass="p-p-3"
+									detail="La categoria #{c.nombre} no tiene ningun producto asosiado, para poderle asociar productos tienes que ingresar a la vista de producto y registrar uno con esta categoria #{c.id}." />
+							</h:panelGroup>
+						</h:panelGroup>
+
+						<!--         -->
+						<!-- ACTIONS -->
+						<!--         -->
+						<p:separator styleClass="p-mt-4 p-mb-4" />
+						<h:panelGroup layout="block"
+							styleClass="p-d-flex p-jc-center p-ac-center">
+
+							<!-- EDIT -->
+							<p:commandButton icon="fa fa-fw fa-edit" title="Editar Categoria"
+								styleClass="sofia-button-info sofia-button-icon sofia-button-icon-small"
+								action="#{categoria.statuActualizar()}"
+								update="@(.sofia-container-main-update), @(.sofia-dialog-update)">
+								<f:param name="id-categoria" value="#{c.id}" />
+							</p:commandButton>
+
+							<!-- REMOVE -->
+							<p:commandButton icon="fa fa-fw fa-trash-alt"
+								title="Eliminar Categoria"
+								styleClass="sofia-button-error sofia-button-icon sofia-button-icon-small"
+								action="#{categoria.eliminar()}"
+								update="@(.sofia-container-main-update), @(.sofia-dialog-update)"
+								oncomplete="PF('sofia-table-update').clearFilters()">
+								<f:param name="id-categoria" value="#{c.id}" />
+								<p:confirm header="Eliminar Categoria"
+									icon="pi pi-exclamation-triangle"
+									message="¿Quieres eliminar la categoria #{c.id}?" />
+							</p:commandButton>
+						</h:panelGroup>
+						<p:separator styleClass="p-mt-4 p-mb-4" />
+
+					</p:rowExpansion>
+
+				</p:dataTable>
+			</h:panelGroup>
+
+			<!--         -->
+			<!-- ACTIONS -->
+			<!--         -->
+			<p:separator styleClass="p-mt-4" />
+			<h:panelGroup layout="block"
+				styleClass="d-p-flex p-jc-star p-ac-center p-m-4">
+
+				<!--     -->
+				<!-- ADD -->
+				<!--     -->
+				<p:commandButton icon="pi pi-plus" value="Agregar"
+					styleClass="sofia-button-succes" title="Agregar"
+					action="#{categoria.statuRegistrar()}"
+					update="sofia-container-main-update, :sofia-dialog-update" />
+
+				<!--         -->
+				<!-- SPINNER -->
+				<!--         -->
+				<p:commandButton icon="fa fa-fw fa-brush" value="Limpiar"
+					onclick="PF('sofia-table-update').clearFilters()"
+					styleClass="sofia-button-warn p-ml-3"
+					update="sofia-container-main-update, :sofia-dialog-update"
+					title="Actualizar"
+					disabled="#{fn:length(table.categoria) gt 0  ? 'false' : 'true'}" />
+			</h:panelGroup>
+			<p:separator styleClass="p-mb-4" />
+		</p:fieldset>
+	</ui:define>
+
+
+	<!--        -->
+	<!-- DIALOG -->
+	<!--        -->
+	<ui:define name="component-dialog-advaced">
+
+		<!--                            -->
+		<!-- DIALOG UPDATE AND REGISTER -->
+		<!--                            -->
+		<p:dialog header="#{categoria.estado} Categoria"
+			widgetVar="sofia-dialog-update" id="sofia-dialog-update"
+			resizable="false" showEffect="explode" width="40%"
+			styleClass="sofia-dialog-update" modal="true">
+
+			<h:form>
+				<h:panelGroup layout="block"
+					styleClass="ui-fluid p-formgrid p-d-flex p-jc-end">
+					<!--     -->
+					<!-- ID  -->
+					<!--     -->
+					<h:panelGroup layout="block" styleClass="p-field p-col p-md-4">
+						<p:outputLabel for="id-categoria" value="ID:" />
+						<p:inputText id="id-categoria" disabled="#{categoria.hidden}"
+							value="#{categoria.id}" />
+					</h:panelGroup>
+				</h:panelGroup>
+
+				<h:panelGroup layout="block" styleClass="ui-fluid p-formgrid p-grid">
+					<!--       -->
+					<!-- NAME  -->
+					<!--       -->
+					<h:panelGroup layout="block" styleClass="p-field p-col">
+						<p:outputLabel for="nombre-categoria" value="Nombre:" />
+						<p:inputText id="nombre-categoria"
+							value="#{categoria.categoria.nombre}" />
+					</h:panelGroup>
+				</h:panelGroup>
+
+				<!--     -->
+				<!-- ADD -->
+				<!--     -->
+				<h:panelGroup layout="block"
+					styleClass="p-d-flex p-jc-center p-mb-3 p-mt-lg-6">
+					<p:commandButton value="#{categoria.estado}"
+						styleClass="sofia-button sofia-button-info p-m-0"
+						action="#{categoria.status()}"
+						icon="fa fa-fw  #{categoria.estado == 'Registrar' ? 'fa-plus': 'fa-edit'}"
+						update="@(.sofia-container-main-update), :sofia-dialog-update"
+						oncomplete="PF('sofia-table-update').clearFilters()" />
+				</h:panelGroup>
+			</h:form>
+		</p:dialog>
+	</ui:define>
+</ui:composition>

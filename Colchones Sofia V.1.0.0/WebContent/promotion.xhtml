@@ -1,0 +1,25 @@
+
+<!--          -->
+<!-- TEMPLATE -->
+<!--          -->
+<ui:composition template="template/template.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui">
+	
+	<!--      -->
+	<!-- HEAD -->
+	<!--      -->
+	<ui:define name="title"> | Promociones</ui:define> 
+
+	<!--        -->
+	<!-- NAVBAR -->
+	<!--        -->
+	<ui:define name="menu-top">
+		<p:commandLink value="Conocenos"
+			action="/faces/know-us?faces-redirect=true" />
+		<a href="#">Contactanos</a>
+	</ui:define>
+</ui:composition>

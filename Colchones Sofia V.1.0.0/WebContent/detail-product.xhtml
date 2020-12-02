@@ -1,0 +1,192 @@
+
+<!--          -->
+<!-- TEMPLATE -->
+<!--          -->
+<ui:composition template="template/template.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui">
+
+	<!--          -->
+	<!-- SECURITY -->
+	<!--          -->
+	<ui:define name="event">
+		<f:event type="preRenderView" listener="#{inicio.detalleProducto()}" />
+	</ui:define>
+
+	<!--      -->
+	<!-- HEAD -->
+	<!--      -->
+	<ui:define name="title"> | #{inicio.detalle_producto.id}</ui:define>
+
+	<!--        -->
+	<!-- NAVBAR -->
+	<!--        -->
+	<ui:define name="menu-top">
+		<p:commandLink value="Inicio"
+			action="/faces/index?faces-redirect=true" />
+	</ui:define>
+
+	<!--         -->
+	<!-- SECTION -->
+	<!--         -->
+	<ui:define name="component">
+
+		<h:panelGroup layout="block"
+			rendered="#{inicio.detalle_producto != null}"
+			styleClass="sofia-page-product-structure">
+
+			<!--       -->
+			<!-- IMAGE -->
+			<!--       -->
+			<h:panelGroup layout="block"
+				styleClass="sofia-page-product-structure-one">
+				<h:panelGroup layout="block" style="width:1000px">
+					<p:graphicImage value="#{image.detalle_producto}" width="100%"
+						rendered="#{inicio.detalle_producto.foto != null}" height="300px"
+						cache="false" style="object-fit: contain;">
+						<f:param name="id-detalle-producto"
+							value="#{inicio.detalle_producto.id}"></f:param>
+					</p:graphicImage>
+
+					<p:graphicImage library="img" name="product.png"
+						rendered="#{inicio.detalle_producto.foto == null}" width="100%"
+						height="100%" style="object-fit: contain;" />
+
+				</h:panelGroup>
+
+			</h:panelGroup>
+
+			<!--     -->
+			<!-- ADD -->
+			<!--     -->
+			<h:panelGroup layout="block"
+				styleClass="sofia-page-product-structure-two p-p-2">
+				<p:separator styleClass="p-mt-3 p-mb-1" />
+				<h:outputLabel style="font-weight: bold;"
+					value="#{inicio.detalle_producto.productoBean.nombre}"
+					styleClass="sofia-subtitle p-d-block p-text-center" />
+				<p:separator styleClass="p-mt-1 p-mb-3" />
+			</h:panelGroup>
+
+			<!--             -->
+			<!-- DESCRIPTION -->
+			<!--             -->
+			<h:panelGroup layout="block"
+				styleClass="sofia-page-product-structure-three p-p-3">
+				<p:separator styleClass="p-mt-3 p-mb-1" />
+				<h:outputLabel styleClass="sofia-subtitle" value="Descripción:"
+					style="font-weight: bold;" />
+				<p:separator styleClass="p-mt-1 p-mb-3" />
+				<h:outputText
+					value="#{fn:length(inicio.detalle_producto.descripcion) == 0 ? 'No hay ninguna descripción para este detalle producto.' 
+				     : inicio.detalle_producto.descripcion}" />
+			</h:panelGroup>
+
+			<!--            -->
+			<!-- DATA SHEET -->
+			<!--            -->
+			<h:panelGroup layout="block"
+				styleClass="sofia-page-product-structure-four p-p-3">
+				<p:separator styleClass="p-mt-3 p-mb-1" />
+				<h:outputLabel styleClass="sofia-subtitle" value="Ficha Tecnica:"
+					style="font-weight: bold;" />
+				<p:separator styleClass="p-mt-1 p-mb-3" />
+
+				<!--            -->
+				<!-- DATA SHEET -->
+				<!--            -->
+				<h:panelGroup layout="block" styleClass="sofia-container-data-sheet">
+
+					<h:panelGroup layout="block"
+						styleClass="p-d-flex p-ac-center p-jc-center sofia-container-data-sheet-row">
+						<h:panelGroup layout="block"
+							styleClass="sofia-container-data-sheet-column">
+							<h:outputLabel value="Categoria:" />
+						</h:panelGroup>
+						<h:panelGroup layout="block"
+							styleClass="sofia-container-data-sheet-column">
+							<h:outputLabel
+								value="#{inicio.detalle_producto.productoBean.categoriaBean.nombre}" />
+						</h:panelGroup>
+					</h:panelGroup>
+
+					<h:panelGroup layout="block"
+						styleClass="p-d-flex p-ac-center p-jc-center sofia-container-data-sheet-row">
+						<h:panelGroup layout="block"
+							styleClass="sofia-container-data-sheet-column">
+							<h:outputLabel value="Garantia:" />
+						</h:panelGroup>
+						<h:panelGroup layout="block"
+							styleClass="sofia-container-data-sheet-column">
+							<h:outputLabel
+								styleClass="sofia-statu #{inicio.detalle_producto.productoBean.garantia == 0 ? 'sofia-statu-warn' : 'sofia-statu-succes'}"
+								value="#{inicio.detalle_producto.productoBean.garantia} Año" />
+						</h:panelGroup>
+					</h:panelGroup>
+
+					<h:panelGroup layout="block"
+						styleClass="p-d-flex p-ac-center p-jc-center sofia-container-data-sheet-row">
+						<h:panelGroup layout="block">
+							<h:outputLabel value="Color:"
+								styleClass="sofia-container-data-sheet-column" />
+						</h:panelGroup>
+						<h:panelGroup layout="block"
+							styleClass="sofia-container-data-sheet-column">
+							<h:outputLabel value="#{inicio.detalle_producto.color}" />
+						</h:panelGroup>
+					</h:panelGroup>
+
+					<h:panelGroup layout="block"
+						styleClass="p-d-flex p-ac-center p-jc-center sofia-container-data-sheet-row">
+						<h:panelGroup layout="block"
+							styleClass="sofia-container-data-sheet-column">
+							<h:outputLabel value="Dimensión:" />
+						</h:panelGroup>
+						<h:panelGroup layout="block"
+							styleClass="sofia-container-data-sheet-column">
+							<h:outputLabel value="#{inicio.detalle_producto.dimension}" />
+						</h:panelGroup>
+					</h:panelGroup>
+
+					<h:panelGroup layout="block"
+						styleClass="p-d-flex p-ac-center p-jc-center sofia-container-data-sheet-row">
+						<h:panelGroup layout="block"
+							styleClass="sofia-container-data-sheet-column">
+							<h:outputLabel value="Precio:" />
+						</h:panelGroup>
+						<h:panelGroup layout="block"
+							styleClass="sofia-container-data-sheet-column">
+							<h:outputLabel value="#{inicio.detalle_producto.precioVenta}"
+								styleClass="sofia-statu
+											 #{inicio.detalle_producto.precioVenta == 0 ? 'sofia-statu-warn' : 'sofia-statu-succes'}">
+								<f:convertNumber currencySymbol="$" type="currency" />
+							</h:outputLabel>
+						</h:panelGroup>
+					</h:panelGroup>
+
+					<h:panelGroup layout="block"
+						styleClass="p-d-flex p-ac-center p-jc-center sofia-container-data-sheet-row">
+						<h:panelGroup layout="block">
+							<h:outputLabel value="Descuento:"
+								styleClass="sofia-container-data-sheet-column" />
+						</h:panelGroup>
+						<h:panelGroup layout="block"
+							styleClass="sofia-container-data-sheet-column">
+							<h:outputLabel value="#{inicio.detalle_producto.descuento}"
+								styleClass="sofia-statu 
+											 #{inicio.detalle_producto.descuento == 0 ? 'sofia-statu-warn' : 'sofia-statu-succes'}">
+								<f:convertNumber currencySymbol="$" type="currency" />
+							</h:outputLabel>
+						</h:panelGroup>
+					</h:panelGroup>
+
+				</h:panelGroup>
+			</h:panelGroup>
+
+		</h:panelGroup>
+	</ui:define>
+</ui:composition>

@@ -1,0 +1,677 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui">
+<!--          -->
+<!-- TEMPLATE -->
+<!--          -->
+<ui:composition
+	template="../../../template/advanced/template-advaced-admi.xhtml">
+
+	<!--       -->
+	<!-- TITLE -->
+	<!--       -->
+	<ui:define name="title-advaced">
+			| Venta | #{app.mes}
+	</ui:define>
+
+	<!--       -->
+	<!-- STATU -->
+	<!--       -->
+	<ui:define name="component-statu-advaced">
+		<p:menuitem value="Home" url="../index.xhtml" />
+		<p:menuitem value="Venta" url="index.xhtml" disabled="none" />
+		<p:menuitem value="Venta #{app.mes}/#{app.anio}" url="month.xhtml"
+			disabled="none" />
+	</ui:define>
+
+	<!--       -->
+	<!-- TITLE -->
+	<!--       -->
+	<ui:define name="component-title-img-advaced">
+		<h:graphicImage library="img" name="all/sale.jpg"
+			styleClass="sofia-image-80 sofia-image-dark" />
+	</ui:define>
+	<ui:define name="component-title-h1-advaced">Venta</ui:define>
+	<ui:define name="component-title-h2-advaced">#{app.mes} - #{app.anio}</ui:define>
+
+	<!--         -->
+	<!-- SECTION -->
+	<!--         -->
+	<ui:define name="component-other-advaced">
+
+		<p:fieldset legend="Historial Venta Mensual" toggleable="true"
+			toggleSpeed="500">
+
+			<!--         -->
+			<!-- ACTIONS -->
+			<!--         -->
+			<p:separator styleClass="p-mt-4" />
+			<h:panelGroup layout="block"
+				styleClass="d-p-flex p-jc-star p-ac-center p-m-4">
+				<!--     -->
+				<!-- ADD -->
+				<!--     -->
+				<p:commandButton icon="pi pi-plus" value="Agregar"
+					styleClass="sofia-button-succes" title="Agregar"
+					action="register?faces-redirect=true"
+					update="@(.sofia-container-main-update)" />
+
+				<!--         -->
+				<!-- SPINNER -->
+				<!--         -->
+				<p:commandButton icon="fa fa-fw fa-brush" value="Limpiar"
+					onclick="PF('sofia-table-update').clearFilters()"
+					styleClass="sofia-button-warn p-ml-3"
+					update="@(.sofia-container-main-update)"
+					title="Limpiar filtros tabla."
+					disabled="#{fn:length(table.venta_mensual) gt 0  ? 'false' : 'true'}" />
+			</h:panelGroup>
+			<p:separator styleClass="p-mb-4" />
+
+			<!--           -->
+			<!-- DATA VIEW -->
+			<!--           -->
+			<p:dataTable var="v" value="#{table.venta_mensual}"
+				widgetVar="sofia-table-update" id="sofia-table-update"
+				emptyMessage="No se encontro ninguna venta del #{app.mes}/#{app.anio}"
+				filteredValue="#{table.filter_venta_mensual}"
+				paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink}
+								   {PreviousPageLink} {CurrentPageReport} 
+								   {NextPageLink} {LastPageLink}"
+				paginator="true" rows="20" rowIndexVar="index"
+				rowsPerPageTemplate="5,10,15,20,50,100" reflow="true"
+				scrollable="true" styleClass="p-mt-4">
+
+				<!-- HEADER -->
+				<f:facet name="header">
+					<p:outputPanel layout="block"
+						styleClass="p-d-flex p-jc-end p-ac-center">
+						<h:outputText value="Buscar:" styleClass="p-mt-1 p-mr-2" />
+						<p:inputText id="globalFilter"
+							onkeyup="PF('sofia-table-update').filter()" />
+					</p:outputPanel>
+					<p:outputPanel layout="block"
+						styleClass="p-d-flex p-jc-center p-ac-center p-p-3">
+						<h2>Ventas #{app.mes}</h2>
+						<h4 class="p-as-end">(#{table.venta_mensual.size()}
+							resultados)</h4>
+					</p:outputPanel>
+				</f:facet>
+
+				<!--        -->
+				<!-- COLUMN -->
+				<!--        -->
+				<p:column style="width:50px">
+					<p:rowToggler />
+					<h:panelGroup layout="block"
+						styleClass="p-d-flex p-jc-center p-ac-center">
+						<h:outputLabel value="#{index + 1}" />
+					</h:panelGroup>
+				</p:column>
+
+				<!-- NAME -->
+				<p:column footerText="ID" headerText="ID" sortBy="#{v.id}"
+					filterBy="#{v.id}">
+					<h:panelGroup layout="block"
+						styleClass="p-d-flex p-jc-center p-ac-center">
+						<h:outputText value="#{v.id}" />
+					</h:panelGroup>
+				</p:column>
+
+				<!-- DATE -->
+				<p:column footerText="Fecha" headerText="Fecha"
+					sortBy="#{v.fechaRegistro}">
+					<h:panelGroup layout="block"
+						styleClass="p-d-flex p-jc-center p-ac-center">
+						<h:outputText value="#{v.fechaRegistro}">
+							<f:convertDateTime pattern="dd/MM/yyyy HH:mm:ss" />
+						</h:outputText>
+					</h:panelGroup>
+				</p:column>
+
+				<!-- OTHER -->
+				<p:column footerText="Envio" headerText="Envio"
+					sortBy="#{v.costoEnvio}">
+					<h:panelGroup layout="block"
+						styleClass="p-d-flex p-jc-end p-ac-center">
+						<h:outputLabel value="#{v.costoEnvio}"
+							styleClass="sofia-statu #{v.costoEnvio > 0 ? 'sofia-statu-succes' : 'sofia-statu-warn'}">
+							<f:convertNumber currencySymbol="$" type="currency" />
+						</h:outputLabel>
+					</h:panelGroup>
+				</p:column>
+
+				<!-- TOTAL -->
+				<p:column footerText="Total" headerText="Total" sortBy="#{v.total}">
+					<h:panelGroup layout="block"
+						styleClass="p-d-flex p-jc-end p-ac-center">
+						<h:outputLabel value="#{v.total}">
+							<f:convertNumber currencySymbol="$" type="currency" />
+						</h:outputLabel>
+					</h:panelGroup>
+				</p:column>
+
+				<!-- TYPE -->
+				<p:column footerText="Pago" headerText="Pago">
+					<h:panelGroup layout="block"
+						styleClass="p-d-flex p-jc-center p-ac-center">
+						<h:outputLabel value="#{v.metodoPagoBean.banco}" />
+					</h:panelGroup>
+				</p:column>
+
+				<!--        -->
+				<!-- EXPANT -->
+				<!--        -->
+				<p:rowExpansion styleClass="p-p-3">
+
+					<!--           -->
+					<!-- CUSTOMERS -->
+					<!--           -->
+					<p:fieldset legend="Cliente" toggleable="true" toggleSpeed="500"
+						styleClass="p-mb-4" style="overflow:hidden;">
+
+						<!--      -->
+						<!-- MAIN -->
+						<!--      -->
+						<h:panelGroup layout="block"
+							styleClass="sofia-container-section-generic__center">
+
+							<h:panelGroup layout="block"
+								styleClass="sofia-page-profile-structure">
+
+								<!--      -->
+								<!-- LEFT -->
+								<!--      -->
+								<h:panelGroup layout="block"
+									styleClass="sofia-page-profile-structure-left sofia-container-profile-image">
+
+									<!--       -->
+									<!-- IMAGE -->
+									<!--       -->
+									<h:panelGroup layout="block"
+										styleClass="sofia-container-image-profile-user">
+										<h:graphicImage rendered="#{v.usuario1.persona.foto == null}"
+											library="img" name="user.png" />
+
+										<p:graphicImage rendered="#{v.usuario1.persona.foto != null}"
+											value="#{image.persona}">
+											<f:param name="documento-persona"
+												value="#{v.usuario1.persona.documento}" />
+										</p:graphicImage>
+									</h:panelGroup>
+								</h:panelGroup>
+
+								<!--       -->
+								<!-- RIGTH -->
+								<!--       -->
+								<h:panelGroup layout="block"
+									styleClass="sofia-page-profile-structure-right p-m-4">
+									<p:fieldset legend="Datos Personales" toggleable="true"
+										toggleSpeed="500" style="overflow:hidden">
+
+										<h:panelGroup layout="block"
+											styleClass="ui-fluid p-formgrid p-grid p-m-4 p-jc-between p-ac-center">
+
+											<!--    -->
+											<!-- ID -->
+											<!--    -->
+											<h:panelGroup layout="block"
+												styleClass="p-field p-col-12 p-md-4">
+												<p:outputLabel for="documento-cliente" value="Documento:" />
+												<p:inputText id="documento-cliente"
+													value="#{v.usuario1.persona.documento}" disabled="true" />
+											</h:panelGroup>
+
+											<!--          -->
+											<!-- TYPE ID  -->
+											<!--          -->
+											<h:panelGroup layout="block"
+												styleClass="p-field p-col p-md-6">
+												<p:outputLabel for="tipo-documento-cliente"
+													value="Tipo Documento: " />
+
+												<h:panelGroup layout="block"
+													styleClass="p-d-flex p-jc-center p-ac-center ">
+													<p:inputText id="tipo-documento-cliente"
+														styleClass="p-mr-2"
+														value="#{v.usuario1.persona.tipoDocumentoBean.tipoDocumento}"
+														disabled="true" />
+												</h:panelGroup>
+											</h:panelGroup>
+										</h:panelGroup>
+
+										<h:panelGroup layout="block"
+											styleClass="ui-fluid p-formgrid p-grid p-m-4 p-jc-between p-ac-center">
+
+											<!--      -->
+											<!-- NAME -->
+											<!--      -->
+											<h:panelGroup layout="block"
+												styleClass="p-field p-col-12 p-md-6">
+												<p:outputLabel for="nombre-cliente" value="Nombre:" />
+												<p:inputText id="nombre-cliente" disabled="true"
+													value="#{v.usuario1.persona.nombre}" />
+											</h:panelGroup>
+
+											<!--      -->
+											<!-- NAME -->
+											<!--      -->
+											<h:panelGroup layout="block"
+												styleClass="p-field p-col-12 p-md-6">
+												<p:outputLabel for="apellido-cliente" value="Apellido:" />
+												<p:inputText id="apellido-cliente" disabled="true"
+													value="#{v.usuario1.persona.apellido}" />
+											</h:panelGroup>
+										</h:panelGroup>
+
+										<h:panelGroup layout="block"
+											styleClass="ui-fluid p-formgrid p-grid p-m-4 p-jc-between p-ac-center">
+
+											<!--       -->
+											<!-- EMAIL -->
+											<!--       -->
+											<h:panelGroup layout="block"
+												styleClass="p-field p-col-12 p-md-6">
+												<p:outputLabel for="email-cliente" value="Email:" />
+												<p:inputText id="email-cliente" disabled="true"
+													value="#{v.usuario1.persona.email}" />
+											</h:panelGroup>
+
+											<!--       -->
+											<!-- STATU -->
+											<!--       -->
+											<h:panelGroup layout="block"
+												styleClass="p-field p-col p-md-4">
+												<p:outputLabel for="estado-cliente" value="Estado:" />
+												<p:inputText id="estado-cliente" disabled="true"
+													value="#{v.usuario1.estado ? 'Activo' : 'Bloqueado'}" />
+											</h:panelGroup>
+										</h:panelGroup>
+
+										<h:panelGroup layout="block"
+											styleClass="ui-fluid p-formgrid p-grid p-m-4 p-jc-between p-ac-center">
+
+											<!--        -->
+											<!-- ADRESS -->
+											<!--        -->
+											<h:panelGroup layout="block" styleClass="p-field p-col">
+												<p:outputLabel for="direccion-cliente" value="Dirección:" />
+												<p:inputText id="direccion-cliente" disabled="true"
+													value="#{v.usuario1.persona.direccion}" />
+											</h:panelGroup>
+
+											<!--       -->
+											<!-- PHONE -->
+											<!--       -->
+											<h:panelGroup layout="block"
+												styleClass="p-field p-col-12 p-md-6">
+												<p:outputLabel for="telefono-cliente" value="Telefono:" />
+												<p:inputText id="telefono-cliente" disabled="true"
+													value="#{v.usuario1.persona.telefono}" />
+											</h:panelGroup>
+										</h:panelGroup>
+
+										<h:panelGroup layout="block"
+											styleClass="ui-fluid p-formgrid p-grid p-m-4 p-jc-between p-ac-center">
+
+											<!--            -->
+											<!-- DATE BIRTH -->
+											<!--            -->
+											<h:panelGroup layout="block"
+												styleClass="p-field p-col p-md-6">
+												<p:outputLabel for="fecha-nacimiento-cliente"
+													value="Fecha Nacimiento:" />
+												<p:inputText id="fecha-nacimiento-cliente" disabled="true"
+													value="#{v.usuario1.persona.fechaNacimiento}" />
+											</h:panelGroup>
+
+											<!--               -->
+											<!-- DATE REGISTER -->
+											<!--               -->
+											<h:panelGroup layout="block"
+												styleClass="p-field p-col p-md-6">
+												<p:outputLabel for="fecha-registro-cliente"
+													value="Fecha Registro:" />
+												<p:inputText id="fecha-registro-cliente" disabled="true"
+													value="#{v.usuario1.fechaCreacion}" />
+											</h:panelGroup>
+										</h:panelGroup>
+									</p:fieldset>
+								</h:panelGroup>
+							</h:panelGroup>
+						</h:panelGroup>
+					</p:fieldset>
+
+					<!--        -->
+					<!-- SELLER -->
+					<!--        -->
+					<p:fieldset legend="Vendedor" toggleable="true" toggleSpeed="500"
+						styleClass="p-mb-4" style="overflow:hidden;"
+						rendered="#{v.usuario2 != null}">
+
+						<!--      -->
+						<!-- MAIN -->
+						<!--      -->
+						<h:panelGroup layout="block"
+							styleClass="sofia-container-section-generic__center">
+
+							<h:panelGroup layout="block"
+								styleClass="sofia-page-profile-structure">
+
+								<!--      -->
+								<!-- LEFT -->
+								<!--      -->
+								<h:panelGroup layout="block"
+									styleClass="sofia-page-profile-structure-left sofia-container-profile-image">
+
+									<!--       -->
+									<!-- IMAGE -->
+									<!--       -->
+									<h:panelGroup layout="block"
+										styleClass="sofia-container-image-profile-user">
+										<h:graphicImage rendered="#{v.usuario2.persona.foto == null}"
+											library="img" name="user.png" />
+
+										<p:graphicImage rendered="#{v.usuario2.persona.foto != null}"
+											value="#{image.persona}" cache="false">
+											<f:param name="documento-persona"
+												value="#{v.usuario2.persona.documento}" />
+										</p:graphicImage>
+									</h:panelGroup>
+								</h:panelGroup>
+
+								<!--       -->
+								<!-- RIGTH -->
+								<!--       -->
+								<h:panelGroup layout="block"
+									styleClass="sofia-page-profile-structure-right p-m-4">
+									<p:fieldset legend="Datos Personales" toggleable="true"
+										toggleSpeed="500" style="overflow:hidden">
+
+										<h:panelGroup layout="block"
+											styleClass="ui-fluid p-formgrid p-grid p-m-4 p-jc-between p-ac-center">
+
+											<!--    -->
+											<!-- ID -->
+											<!--    -->
+											<h:panelGroup layout="block"
+												styleClass="p-field p-col-12 p-md-4">
+												<p:outputLabel for="documento-vendedor" value="Documento:" />
+												<p:inputText id="documento-vendedor"
+													value="#{v.usuario2.persona.documento}" disabled="true" />
+											</h:panelGroup>
+
+											<!--          -->
+											<!-- TYPE ID  -->
+											<!--          -->
+											<h:panelGroup layout="block"
+												styleClass="p-field p-col p-md-6">
+												<p:outputLabel for="tipo-documento-vendedor"
+													value="Tipo Documento: " />
+
+												<h:panelGroup layout="block"
+													styleClass="p-d-flex p-jc-center p-ac-center ">
+													<p:inputText id="tipo-documento-vendedor"
+														styleClass="p-mr-2"
+														value="#{v.usuario2.persona.tipoDocumentoBean.tipoDocumento}"
+														disabled="true" />
+												</h:panelGroup>
+											</h:panelGroup>
+										</h:panelGroup>
+
+										<h:panelGroup layout="block"
+											styleClass="ui-fluid p-formgrid p-grid p-m-4 p-jc-between p-ac-center">
+
+											<!--      -->
+											<!-- NAME -->
+											<!--      -->
+											<h:panelGroup layout="block"
+												styleClass="p-field p-col-12 p-md-6">
+												<p:outputLabel for="nombre-vendedor" value="Nombre:" />
+												<p:inputText id="nombre-vendedor" disabled="true"
+													value="#{v.usuario2.persona.nombre}" />
+											</h:panelGroup>
+
+											<!--      -->
+											<!-- NAME -->
+											<!--      -->
+											<h:panelGroup layout="block"
+												styleClass="p-field p-col-12 p-md-6">
+												<p:outputLabel for="apellido-vendedor" value="Apellido:" />
+												<p:inputText id="apellido-vendedor" disabled="true"
+													value="#{v.usuario2.persona.apellido}" />
+											</h:panelGroup>
+										</h:panelGroup>
+
+										<h:panelGroup layout="block"
+											styleClass="ui-fluid p-formgrid p-grid p-m-4 p-jc-between p-ac-center">
+
+											<!--       -->
+											<!-- EMAIL -->
+											<!--       -->
+											<h:panelGroup layout="block"
+												styleClass="p-field p-col-12 p-md-6">
+												<p:outputLabel for="email-vendedor" value="Email:" />
+												<p:inputText id="email-vendedor" disabled="true"
+													value="#{v.usuario2.persona.email}" />
+											</h:panelGroup>
+
+											<!--       -->
+											<!-- STATU -->
+											<!--       -->
+											<h:panelGroup layout="block"
+												styleClass="p-field p-col p-md-4">
+												<p:outputLabel for="estado-vendedor" value="Estado:" />
+												<p:inputText id="estado-vendedor" disabled="true"
+													value="#{v.usuario2.estado ? 'Activo' : 'Bloqueado'}" />
+											</h:panelGroup>
+										</h:panelGroup>
+
+										<h:panelGroup layout="block"
+											styleClass="ui-fluid p-formgrid p-grid p-m-4 p-jc-between p-ac-center">
+
+											<!--        -->
+											<!-- ADRESS -->
+											<!--        -->
+											<h:panelGroup layout="block" styleClass="p-field p-col">
+												<p:outputLabel for="direccion-vendedor" value="Dirección:" />
+												<p:inputText id="direccion-vendedor" disabled="true"
+													value="#{v.usuario2.persona.direccion}" />
+											</h:panelGroup>
+
+											<!--       -->
+											<!-- PHONE -->
+											<!--       -->
+											<h:panelGroup layout="block"
+												styleClass="p-field p-col-12 p-md-6">
+												<p:outputLabel for="telefono-vendedor" value="Telefono:" />
+												<p:inputText id="telefono-vendedor" disabled="true"
+													value="#{v.usuario2.persona.telefono}" />
+											</h:panelGroup>
+										</h:panelGroup>
+
+										<h:panelGroup layout="block"
+											styleClass="ui-fluid p-formgrid p-grid p-m-4 p-jc-between p-ac-center">
+
+											<!--            -->
+											<!-- DATE BIRTH -->
+											<!--            -->
+											<h:panelGroup layout="block"
+												styleClass="p-field p-col p-md-6">
+												<p:outputLabel for="fecha-nacimiento-vendedor"
+													value="Fecha Nacimiento:" />
+												<p:inputText id="fecha-nacimiento-vendedor" disabled="true"
+													value="#{v.usuario2.persona.fechaNacimiento}" />
+											</h:panelGroup>
+
+											<!--               -->
+											<!-- DATE REGISTER -->
+											<!--               -->
+											<h:panelGroup layout="block"
+												styleClass="p-field p-col p-md-6">
+												<p:outputLabel for="fecha-registro-vendedor"
+													value="Fecha Registro:" />
+												<p:inputText id="fecha-registro-vendedor" disabled="true"
+													value="#{v.usuario2.fechaCreacion}" />
+											</h:panelGroup>
+										</h:panelGroup>
+									</p:fieldset>
+								</h:panelGroup>
+							</h:panelGroup>
+						</h:panelGroup>
+					</p:fieldset>
+
+					<p:fieldset legend="Productos" toggleable="true" toggleSpeed="500"
+						styleClass="p-mb-4" style="overflow:hidden;">
+						<!--       -->
+						<!-- TABLE -->
+						<!--       -->
+						<p:dataTable var="vp" value="#{v.detalleCompraVentas}"
+							widgetVar="sofia-table-detalle-update"
+							id="sofia-table-detalle-update"
+							emptyMessage="No se encontro ninguna detalle venta del #{app.mes}/#{app.anio}"
+							paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink}
+								   			   {PreviousPageLink} {CurrentPageReport} 
+								               {NextPageLink} {LastPageLink}"
+							paginator="true" rows="20" rowIndexVar="index-detalle"
+							rowsPerPageTemplate="5,10,15,20,50,100" reflow="true"
+							expandableRowGroups="true"
+							sortBy="#{vp.detalleProducto.productoBean.id}">
+
+							<!--          -->
+							<!-- CATEGORY -->
+							<!--          -->
+							<p:headerRow>
+								<p:column colspan="6">
+									<h:panelGroup layout="block"
+										styleClass="p-d-block p-text-center">
+										<h:outputLabel
+											value="#{vp.detalleProducto.productoBean.categoriaBean.nombre}" />
+									</h:panelGroup>
+
+									<h:panelGroup layout="block"
+										styleClass="p-d-flex p-jc-between p-ac-center">
+										<h:outputLabel
+											value="#{vp.detalleProducto.productoBean.nombre}" />
+									</h:panelGroup>
+								</p:column>
+							</p:headerRow>
+
+							<!--        -->
+							<!-- COLUMN -->
+							<!--        -->
+							<p:column style="width:50px">
+								<h:panelGroup layout="block"
+									styleClass="p-d-flex p-jc-center p-ac-center">
+									<h:outputLabel value="#{vp.id}" />
+								</h:panelGroup>
+							</p:column>
+
+							<!-- DETAIL -->
+							<p:column headerText="Detalle" footerText="Detalle"
+								sortBy="#{vp.detalleProducto.id}">
+								<h:panelGroup layout="block"
+									styleClass="p-d-flex p-jc-between p-ac-center">
+									<!-- ID -->
+									<h:outputLabel value="#{vp.detalleProducto.id}"
+										styleClass="p-as-center" />
+
+									<!-- IMAGE -->
+									<h:panelGroup layout="block"
+										styleClass="sofia-container-img-small">
+										<h:graphicImage rendered="#{vp.detalleProducto.foto == null}"
+											library="img" name="product.png"
+											styleClass="sofia-container-img-small-img" />
+
+										<p:graphicImage rendered="#{vp.detalleProducto.foto != null}"
+											styleClass="sofia-container-img-small-img" cache="false"
+											value="#{image.detalle_producto}">
+											<f:param name="id-detalle-producto"
+												value="#{vp.detalleProducto.id}" />
+										</p:graphicImage>
+									</h:panelGroup>
+								</h:panelGroup>
+							</p:column>
+
+							<!-- QUANTITY -->
+							<p:column headerText="Cantidad" footerText="Cantidad"
+								style="width: 100px" sortBy="#{vp.cantidad}">
+								<h:panelGroup layout="block"
+									styleClass="p-d-flex p-jc-center p-ac-center">
+									<h:outputText value="#{vp.cantidad}"
+										styleClass="#{(vp.cantidad == 0) ? 'sofia-statu-error' : ((vp.cantidad lt 5) ? 'sofia-statu-warn' : 'sofia-statu-succes') }
+													sofia-statu" />
+								</h:panelGroup>
+							</p:column>
+
+							<!-- PRICE -->
+							<p:column headerText="Precio" footerText="Precio"
+								sortBy="#{vp.precio}">
+								<h:panelGroup layout="block"
+									styleClass="p-d-flex p-jc-end p-ac-center">
+									<h:outputText value="#{vp.precio}">
+										<f:convertNumber currencySymbol="$" type="currency" />
+									</h:outputText>
+								</h:panelGroup>
+							</p:column>
+
+							<!-- DISCOUNT -->
+							<p:column headerText="Descuento" footerText="Descuento"
+								sortBy="#{vp.descuento}" style="width: 300px">
+								<h:panelGroup layout="block"
+									styleClass="p-d-flex p-jc-end p-ac-center">
+									<h:outputText value="#{vp.descuento}"
+										styleClass="#{vp.descuento == 0 ? 'sofia-statu-warn' : 'sofia-statu-succes'} sofia-statu">
+										<f:convertNumber currencySymbol="$" type="currency" />
+									</h:outputText>
+								</h:panelGroup>
+							</p:column>
+
+							<!-- DISCOUNT -->
+							<p:column headerText="SubTotal" footerText="SubTotal"
+								sortBy="#{vp.subtotal}">
+								<h:panelGroup layout="block"
+									styleClass="p-d-flex p-jc-end p-ac-center">
+									<h:outputText value="#{vp.subtotal}">
+										<f:convertNumber currencySymbol="$" type="currency" />
+									</h:outputText>
+								</h:panelGroup>
+							</p:column>
+						</p:dataTable>
+					</p:fieldset>
+				</p:rowExpansion>
+			</p:dataTable>
+
+			<!--         -->
+			<!-- ACTIONS -->
+			<!--         -->
+			<p:separator styleClass="p-mt-4" />
+			<h:panelGroup layout="block"
+				styleClass="d-p-flex p-jc-star p-ac-center p-m-4">
+				<!--     -->
+				<!-- ADD -->
+				<!--     -->
+				<p:commandButton icon="pi pi-plus" value="Agregar"
+					styleClass="sofia-button-succes" title="Agregar"
+					action="register?faces-redirect=true"
+					update="@(.sofia-container-main-update)" />
+
+				<!--         -->
+				<!-- SPINNER -->
+				<!--         -->
+				<p:commandButton icon="fa fa-fw fa-brush" value="Limpiar"
+					onclick="PF('sofia-table-update').clearFilters()"
+					styleClass="sofia-button-warn p-ml-3"
+					update="@(.sofia-container-main-update)"
+					title="Limpiar filtros tabla."
+					disabled="#{fn:length(table.venta_mensual) gt 0  ? 'false' : 'true'}" />
+			</h:panelGroup>
+			<p:separator styleClass="p-mb-4" />
+		</p:fieldset>
+	</ui:define>
+</ui:composition>
+</html>

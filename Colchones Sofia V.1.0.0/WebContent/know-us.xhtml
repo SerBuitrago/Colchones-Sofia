@@ -1,0 +1,87 @@
+
+<!--          -->
+<!-- TEMPLATE -->
+<!--          -->
+<ui:composition template="template/template.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui">
+	
+	<!--      -->
+	<!-- HEAD -->
+	<!--      -->
+	<ui:define name="title"> | Conocenos</ui:define>
+
+	<!--        -->
+	<!-- NAVBAR -->
+	<!--        -->
+	<ui:define name="menu-top">
+		<p:commandLink value="Inicio"
+			action="/faces/index?faces-redirect=true" />
+	</ui:define>
+
+	<!--  --> 
+	<ui:define name="component">
+		<h:panelGroup layout="block" styleClass="sofia-container-know-main">
+			<div class="com">
+				<div class="com__content">
+
+					<section
+						class="com__section com__section--text com__section--text-img">
+						<div class="com__section-half">
+							<h1 class="animate slideInLeft ">¿Quienes Somos?</h1>
+							<p class="animate slideInLeft delay-3">#{app.app.quienesSomos}</p>
+						</div>
+						<div class="com__section-half">
+							<p:graphicImage library="img" name="bed.jpeg" style="width:600px !important; height:100% !important; max-width:600px"
+								styleClass="animate slideInRight delay-3"/>
+						</div>
+					</section>
+
+					<section
+						class="com__section com__section--text com__section--text-img">
+						<div class="com__section-half">
+							<h1 class="animate slideInLeft">Misión</h1>
+							<p class="animate slideInLeft delay-2">#{app.app.mision}</p>
+						</div>
+					</section>
+					<section class="com__section com__section--text com__section--text-img">
+						<div class="com__section-half">
+							<h1 class="animate slideInLeft">Visión</h1>
+							<p class="animate slideInLeft delay-2">#{app.app.vision}</p>
+						</div>
+					</section>
+				</div>
+				<nav class="com__nav">
+					<ul class="com__nav-list">
+						<li class="com__nav-item"><a href="" class="com__nav-link">
+								<span class="blue-line animate scaleInLeft delay-2"></span> <span
+								class="white-line animate scaleInLeft delay-4"></span> <span
+								class="white-line animate scaleInLeft delay-5"></span>
+						</a></li>
+						<li class="com__nav-item"><a href=""
+							class="com__nav-link flex-row">
+								<div class="com__section-half">
+									<span class="blue-line animate scaleInLeft delay-3"></span> <span
+										class="white-line animate scaleInLeft delay-4"></span>
+								</div>
+								<div class="com__section-half">
+									<span class="white-circle animate slideInRight delay-5"></span>
+								</div>
+						</a></li>
+						<li class="com__nav-item"><a href=""
+							class="com__nav-link centered"> <span
+								class="blue-line animate scaleIn delay-3"></span> <span
+								class="white-circle animate scaleIn delay-5"></span>
+						</a></li>
+					</ul>
+				</nav>
+			</div>
+		</h:panelGroup>
+
+	</ui:define>
+	
+</ui:composition>

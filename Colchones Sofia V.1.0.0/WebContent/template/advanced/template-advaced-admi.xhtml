@@ -1,0 +1,109 @@
+
+<!--          -->
+<!-- TEMPLATE -->
+<!--          -->
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	template="../../template/template-admi.xhtml">
+
+	<!--      -->
+	<!-- HEAD -->
+	<!--      -->
+	<ui:define name="title">
+		<ui:insert name="title-advaced" />
+	</ui:define>
+
+	<!--         -->
+	<!-- SECTION -->
+	<!--         -->
+	<ui:define name="component">
+		<h:panelGroup layout="block"
+			styleClass="sofia-container-section-generic__center">
+
+			<!--       -->
+			<!-- STATU -->
+			<!--       -->
+			<p:breadCrumb styleClass="sofia-container-is-statu-generic">
+				<ui:insert name="component-statu-advaced" />
+			</p:breadCrumb>
+
+			<!--       -->
+			<!-- TITLE -->
+			<!--       -->
+			<h:panelGroup layout="block"
+				styleClass="sofia-container-section-generic__center-title">
+
+				<ui:insert name="component-title-img-advaced" />
+
+				<h:panelGroup layout="block"
+					styleClass="sofia-container-section-generic__center-title-absolute">
+					<h1 class="sofia-title">
+						<ui:insert name="component-title-h1-advaced" />
+					</h1>
+					<h2 class="sofia-subtitle">
+						<ui:insert name="component-title-h2-advaced" />
+					</h2>
+				</h:panelGroup>
+
+				<!--     -->
+				<!-- SVG -->
+				<!--     -->
+				<h:panelGroup layout="block"
+					styleClass="sofia-container-section-generic__center-title-svg">
+					<svg viewBox="0 0 500 150" preserveAspectRatio="none"> <path
+							d="M-0.27,23.19 C170.71,199.83 205.70,95.22 500.84,-0.48 L500.00,150.00 L0.00,150.00 Z" />
+					</svg>
+				</h:panelGroup>
+			</h:panelGroup>
+
+			<!--       -->
+			<!-- OTHER -->
+			<!--       -->
+			<h:panelGroup layout="block"
+				styleClass="sofia-container-section-generic__center-padding">
+
+				<!--      -->
+				<!-- INFO -->
+				<!--      -->
+
+				<ui:insert name="component-other-one-advaced" />
+
+				<h:form>
+					<p:outputPanel id="sofia-container-main-update"
+						styleClass="sofia-container-main-update">
+						<!-- MESSAGE -->
+						<p:growl showDetail="true" />
+
+						<ui:insert name="component-other-advaced" />
+
+					</p:outputPanel>
+				</h:form>
+
+
+				<!--        -->
+				<!-- DIALOG -->
+				<!--        -->
+
+				<!--                           -->
+				<!-- DIALOG CONFIMATION REMOVE -->
+				<!--                            -->
+				<p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+					<h:panelGroup layout="block" styleClass="p-d-flex p-jc-end">
+						<p:commandButton value="Si" type="button"
+							styleClass="ui-confirmdialog-yes sofia-statu-succes"
+							icon="pi pi-check" update="@(.sofia-container-main-update)" />
+						<p:commandButton value="No" type="button"
+							styleClass="ui-confirmdialog-no sofia-statu-error"
+							icon="pi pi-times" update="@(.sofia-container-main-update)" />
+					</h:panelGroup>
+				</p:confirmDialog>
+
+				<ui:insert name="component-dialog-advaced" />
+
+			</h:panelGroup>
+		</h:panelGroup>
+	</ui:define>
+</ui:composition>

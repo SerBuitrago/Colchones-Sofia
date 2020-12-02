@@ -1,0 +1,209 @@
+<!--          -->
+<!-- TEMPLATE -->
+<!--          -->
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	template="../../../template/advanced/template-advaced-admi.xhtml">
+
+	<ui:define name="title-advaced">
+			| Vendedor 
+	</ui:define>
+
+	<ui:define name="component-statu-advaced">
+		<p:menuitem value="Home" url="../index.xhtml" />
+		<p:menuitem value="vendedores" url="index.xhtml" disabled="none" />
+	</ui:define>
+
+	<ui:define name="component-title-img-advaced">
+		<h:graphicImage library="img" name="all/seller.jpg"
+			styleClass="sofia-image-80 sofia-image-dark" />
+	</ui:define>
+
+	<ui:define name="component-title-h1-advaced">Vendedores</ui:define>
+	<ui:define name="component-title-h2-advaced">Inicio</ui:define>
+
+	<!--         -->
+	<!-- SECTION -->
+	<!--         -->
+	<ui:define name="component-other-advaced">
+		<p:fieldset legend="Estadistica" toggleable="true" toggleSpeed="500">
+			<p:tabView>
+				<!--         -->
+				<!-- REPORST -->
+				<!--         -->
+				<p:tab title="Reportes">
+					<h:panelGroup layout="block">
+
+						<!--      -->
+						<!-- DATE -->
+						<!--      -->
+						<p:fieldset legend="Fechas" toggleable="true" toggleSpeed="500">
+
+							<h:panelGroup layout="block"
+								styleClass="ui-fluid p-formgrid p-d-flex p-jc-between p-ac-center">
+								<!--           -->
+								<!-- DATE STAR -->
+								<!--           -->
+								<h:panelGroup layout="block" styleClass="p-field p-col p-md-4">
+									<p:outputLabel for="fecha-inicio" value="Fecha Inicio:" />
+									<p:datePicker id="fecha-inicio" required="true"
+										requiredMessage="El campo fecha inicio no puede estar vacia."
+										value="#{reporte.fecha_inicio}">
+									</p:datePicker>
+								</h:panelGroup>
+
+								<!--          -->
+								<!-- DATE END -->
+								<!--          -->
+								<h:panelGroup layout="block" styleClass="p-field p-col p-md-4">
+									<p:outputLabel for="fecha-fin" value="Fecha Fin:" />
+									<p:datePicker id="fecha-fin" required="true"
+										requiredMessage="El campo fecha fin no puede estar vacia."
+										value="#{reporte.fecha_fin}">
+									</p:datePicker>
+								</h:panelGroup>
+							</h:panelGroup>
+
+							<!--        -->
+							<!-- BUTTON -->
+							<!--        -->
+							<p:separator styleClass="p-mt-3 p-mb-3" />
+							<h:panelGroup layout="block"
+								styleClass="p-d-flex p-jc-between p-ac-center p-mb-3">
+								<p:commandButton update="@(.sofia-container-main-update)"
+									styleClass="sofia-button-succes" icon="fa fa-fw fa-search"
+									action="#{reporte.consultarVendedor()}" value="Consultar" />
+								<p:commandButton update="@(.sofia-container-main-update)"
+									styleClass="sofia-button-warn" icon="fa fa-fw fa-brush"
+									disabled="#{fn:length(reporte.vendedores) gt 0 ? 'false' : 'true'}"
+									action="#{reporte.limpirarFiltroVendedor()}" value="Limpiar" />
+							</h:panelGroup>
+							<p:separator styleClass="p-mt-3 p-mb-3" />
+						</p:fieldset>
+					</h:panelGroup>
+
+					<!-- 		   -->
+					<!-- DATA VIEW -->
+					<!-- 		   -->
+					<p:dataTable rendered="#{reporte.vendedores.size() > 0}" var="ve"
+						value="#{reporte.vendedores}" widgetVar="sofia-table-update"
+						id="sofia-table-update"
+						emptyMessage="No se encontro ningun vendedor"
+						filteredValue="#{reporte.vendedor_filter}"
+						paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} 
+						                   {PreviousPageLink}  {CurrentPageReport} 
+						                   {NextPageLink} {LastPageLink}"
+						paginator="true" rows="20" rowIndexVar="index"
+						rowsPerPageTemplate="5,10,15,20,50,100" reflow="true"
+						scrollable="true" styleClass="p-mt-4">
+
+						<!-- HEADER -->
+						<f:facet name="header">
+							<p:outputPanel layout="block"
+								styleClass="p-d-flex p-jc-end p-ac-center">
+								<h:outputText value="Buscar:" styleClass="p-mt-1 p-mr-2" />
+								<p:inputText id="globalFilter"
+									onkeyup="PF('sofia-table-update').filter()" />
+							</p:outputPanel>
+							<p:outputPanel layout="block"
+								styleClass="p-d-flex p-jc-center p-ac-center p-p-3">
+								<h2>vendedores</h2>
+								<h4 class="p-as-end">(#{reporte.vendedores.size()}
+									resultados)</h4>
+							</p:outputPanel>
+						</f:facet>
+
+						<!-- COLUMN -->
+						<p:column style="width:50px">
+							<h:panelGroup layout="block"
+								styleClass="p-d-flex p-jc-center p-ac-center">
+								<h:outputLabel value="#{index + 1}" />
+							</h:panelGroup>
+						</p:column>
+
+						<!-- ID -->
+						<p:column footerText="ID">
+							<f:facet name="header">
+								<h:outputText value="ID " />
+							</f:facet>
+							<h:panelGroup layout="block"
+								styleClass="p-d-flex p-jc-center p-ac-center">
+								<h:outputText value="#{ve.id}" />
+							</h:panelGroup>
+						</p:column>
+
+						<!--  DOCUMENTO -->
+						<p:column footerText="Documento">
+							<f:facet name="header">
+								<h:outputText value="Documento" />
+							</f:facet>
+							<h:panelGroup layout="block"
+								styleClass="p-d-flex p-jc-center p-ac-center">
+								<h:outputText value="#{ve.persona.documento}" />
+							</h:panelGroup>
+						</p:column>
+
+						<!--  NOMBRE -->
+						<p:column footerText="Nombre">
+							<f:facet name="header">
+								<h:outputText value="Nombre" />
+							</f:facet>
+							<h:panelGroup layout="block"
+								styleClass="p-d-flex p-jc-center p-ac-center">
+								<h:outputText value="#{ve.persona.nombre}" />
+							</h:panelGroup>
+						</p:column>
+
+						<!--  VENTAS -->
+						<p:column footerText="Ventas">
+							<f:facet name="header">
+								<h:outputText value="Ventas" />
+							</f:facet>
+							<h:panelGroup layout="block"
+								styleClass="p-d-flex p-jc-center p-ac-center">
+								<h:outputText value="#{ve.ventas2.size()}" />
+							</h:panelGroup>
+						</p:column>
+
+						<!-- FECHA REGISTRO -->
+						<p:column footerText="Registro">
+							<f:facet name="header">
+								<h:outputText value="Registro" />
+							</f:facet>
+							<h:panelGroup layout="block"
+								styleClass="p-d-flex p-jc-center p-ac-center">
+								<h:outputText value="#{ve.fechaCreacion}">
+									<f:convertDateTime pattern="dd/MM/yyyy HH:mm:ss" />
+								</h:outputText>
+							</h:panelGroup>
+						</p:column>
+					</p:dataTable>
+
+					<!--        -->
+					<!-- BUTTON -->
+					<!--        -->
+					<h:panelGroup layout="block"
+						rendered="#{fn:length(reporte.vendedores) gt 0}">
+						<p:separator styleClass="p-mt-3 p-mb-3" />
+						<h:panelGroup layout="block"
+							styleClass="p-d-flex p-jc-center p-ac-center p-mb-3 p-mt-4">
+							<p:commandButton update="@(.sofia-container-main-update)"
+								ajax="false" icon="fa fa-fw fa-download"
+								styleClass="sofia-button-succes" value="Descargar"
+								actionListener="#{reporte.exportarPDFVendedores}" />
+							<p:commandButton update="@(.sofia-container-main-update)"
+								ajax="false" icon="fa fa-fw fa-eye"
+								styleClass="sofia-button-primary" value="Ver en PDF"
+								actionListener="#{reporte.verPDFVendedores}" />
+						</h:panelGroup>
+						<p:separator styleClass="p-mt-3 p-mb-3" />
+					</h:panelGroup>
+				</p:tab>
+			</p:tabView>
+		</p:fieldset>
+	</ui:define>
+</ui:composition>

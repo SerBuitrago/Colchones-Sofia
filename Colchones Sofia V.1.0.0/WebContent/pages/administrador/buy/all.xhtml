@@ -1,0 +1,337 @@
+<!--          -->
+<!-- TEMPLATE -->
+<!--          -->
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	template="../../../template/advanced/template-advaced-admi.xhtml">
+
+	<!--       -->
+	<!-- TITLE -->
+	<!--       -->
+	<ui:define name="title-advaced">
+			| Compra | Historial
+	</ui:define>
+
+	<!--       -->
+	<!-- STATU -->
+	<!--       -->
+	<ui:define name="component-statu-advaced">
+		<p:menuitem value="Home" url="../index.xhtml" />
+		<p:menuitem value="Compra" url="index.xhtml" disabled="none" />
+		<p:menuitem value="Historial" url="all.xhtml" disabled="none" />
+	</ui:define>
+
+	<!--       -->
+	<!-- IMAGE --> 
+	<!--       -->
+	<ui:define name="component-title-img-advaced">
+		<h:graphicImage library="img" name="all/buy.jpeg"
+			styleClass="sofia-image-80 sofia-image-dark" />
+	</ui:define>
+	<ui:define name="component-title-h1-advaced">Compra</ui:define>
+	<ui:define name="component-title-h2-advaced">Historial</ui:define>
+
+	<!--         -->
+	<!-- SECTION -->
+	<!--         -->
+	<ui:define name="component-other-advaced">
+		<p:fieldset legend="Historial" toggleable="true" toggleSpeed="500">
+
+			<!--         -->
+			<!-- ACTIONS -->
+			<!--         -->
+			<p:separator styleClass="p-mt-4" />
+			<h:panelGroup layout="block"
+				styleClass="d-p-flex p-jc-star p-ac-center p-m-4">
+
+				<!--     -->
+				<!-- ADD -->
+				<!--     -->
+				<p:commandButton icon="pi pi-plus" value="Agregar"
+					styleClass="sofia-button-succes" title="Agregar"
+					action="register?faces-redirect=true"
+					update="@(.sofia-container-main-update)" />
+
+				<!--         -->
+				<!-- SPINNER -->
+				<!--         -->
+				<p:commandButton icon="fa fa-fw fa-brush" value="Limpiar"
+					onclick="PF('sofia-table-update').clearFilters()"
+					styleClass="sofia-button-warn p-ml-3"
+					update="@(.sofia-container-main-update)"
+					title="Limpiar filtros tabla." />
+			</h:panelGroup>
+			<p:separator styleClass="p-mb-4" />
+
+			<!--            -->
+			<!-- DATA TABLE -->
+			<!--            -->
+			<p:dataTable id="sofia-table-update" var="v"
+				widgetVar="sofia-table-update" styleClass="sofia-table-update"
+				value="#{table.comprar}" filteredValue="#{table.filter_comprar}"
+				paginatorTemplate="{CurrentPageReport} {RowsPerPageDropdown} 
+					               {FirstPageLink} {PreviousPageLink} 
+								   {CurrentPageReport} {NextPageLink} 
+								   {LastPageLink} {Exporters}"
+				emptyMessage="No se encontro ninguna venta." reflow="true"
+				paginator="true" rows="20" rowIndexVar="index"
+				rowsPerPageTemplate="5,10,15,20,50,100"
+				rowStyleClass="#{v.detalleCompraVentas.size() == 0 ? 'sofia-table-color-error-rgba' : null}">
+
+				<!-- HEADER -->
+				<f:facet name="header">
+					<p:outputPanel layout="block"
+						styleClass="p-d-flex p-jc-end p-ac-center">
+						<h:outputText value="Buscar:" styleClass="p-mt-1 p-mr-2" />
+						<p:inputText id="globalFilter"
+							onkeyup="PF('sofia-table-update').filter()" />
+					</p:outputPanel>
+					<p:outputPanel layout="block"
+						styleClass="p-d-flex p-jc-center p-ac-center p-p-3">
+						<h2>Compras</h2>
+						<h4>(#{table.comprar.size()} Resultados)</h4>
+					</p:outputPanel>
+				</f:facet>
+
+				<!--        -->
+				<!-- COLUMN -->
+				<!--        -->
+				<p:column style="width:50px">
+					<p:rowToggler />
+					<h:panelGroup layout="block"
+						styleClass="p-d-flex p-jc-center p-ac-center">
+						<h:outputLabel value="#{index + 1}" />
+					</h:panelGroup>
+				</p:column>
+
+				<!-- ID -->
+				<p:column headerText="ID" footerText="ID" filterBy="#{v.id}"
+					sortBy="#{v.id}" filterMatchMode="contains">
+					<h:panelGroup layout="block"
+						styleClass="p-d-flex p-jc-center p-ac-center">
+						<h:outputLabel value="#{v.id}" styleClass="p-as-center" />
+					</h:panelGroup>
+				</p:column>
+
+				<!-- DATE -->
+				<p:column headerText="Fecha" footerText="Fecha"
+					sortBy="#{v.fechaCreacion}">
+					<h:panelGroup layout="block"
+						styleClass="p-d-flex p-jc-center p-ac-center">
+						<h:outputLabel value="#{v.fechaCreacion}" styleClass="p-as-center">
+							<f:convertDateTime pattern="dd/MM/yyyy HH:mm:ss" />
+						</h:outputLabel>
+					</h:panelGroup>
+				</p:column>
+
+				<!-- DETAIL -->
+				<p:column headerText="Cantidad" footerText="Cantidad"
+					filterBy="#{v.detalleCompraVentas.size()}"
+					sortBy="#{v.detalleCompraVentas.size()}">
+					<h:panelGroup layout="block"
+						styleClass="p-d-flex p-jc-center p-ac-center">
+						<h:outputLabel value="#{v.detalleCompraVentas.size()}"
+							styleClass="p-as-center" />
+					</h:panelGroup>
+				</p:column>
+
+				<!-- TOTAL -->
+				<p:column headerText="Total" footerText="Total" sortBy="#{v.total}">
+					<h:panelGroup layout="block"
+						styleClass="p-d-flex p-jc-end p-ac-center">
+						<h:outputLabel value="#{v.total}" styleClass="p-as-center">
+							<f:convertNumber currencySymbol="$" type="currency" />
+						</h:outputLabel>
+					</h:panelGroup>
+				</p:column>
+
+				<!-- ESTATU -->
+				<p:column filterBy="#{v.estado}" footerText="Estado"
+					headerText="Estado" filterMatchMode="equals">
+					<f:facet name="filter">
+						<p:selectOneButton onchange="PF('sofia-table-update').filter()"
+							styleClass="custom-filter">
+							<f:converter converterId="javax.faces.Boolean" />
+							<f:selectItem itemLabel="D" itemValue="" />
+							<f:selectItem itemLabel="A" itemValue="true" />
+							<f:selectItem itemLabel="B" itemValue="false" />
+						</p:selectOneButton>
+					</f:facet>
+					<h:panelGroup layout="block"
+						styleClass="p-d-flex p-jc-center p-ac-center">
+						<p:commandButton value="#{v.estado ? 'Activo': 'Bloqueado'}"
+							onclick="PF('sofia-table-update').clearFilters()"
+							title="Cambiar estado" action="#{table.estadoCompra()}"
+							update="@(.sofia-container-main-update)"
+							styleClass="#{v.estado ? 'sofia-statu-succes': 'sofia-statu-error'} sofia-statu">
+							<f:param name="id-compra" value="#{v.id}" />
+						</p:commandButton>
+					</h:panelGroup>
+				</p:column>
+
+				<!--        -->
+				<!-- EXPANT -->
+				<!--        -->
+				<p:rowExpansion styleClass="p-p-4">
+
+					<h:panelGroup layout="block" styleClass="p-mt-4 p-mb-4"
+						rendered="#{v.detalleCompraVentas.size() == 0}">
+						<p:staticMessage severity="error" summary="" styleClass="p-p-3"
+							detail="La compra ID #{v.id} no tiene ningun detalle compra asosiado." />
+					</h:panelGroup>
+
+					<h:panelGroup layout="block" styleClass="p-mt-3 p-mb-3">
+						<p:dataGrid var="vdp" value="#{v.detalleCompraVentas}" columns="3"
+							layout="grid" rows="12" paginator="true" id="vdp"
+							paginatorTemplate="{CurrentPageReport}  {FirstPageLink} 
+						                   {PreviousPageLink} {PageLinks} 
+						                   {NextPageLink} {LastPageLink} 
+						                   {RowsPerPageDropdown}"
+							rendered="#{v.detalleCompraVentas.size() > 0}"
+							rowsPerPageTemplate="6,12,16">
+
+							<f:facet name="header">
+           			  	      Detalle Compra
+        					</f:facet>
+
+							<p:panel header="ID #{vdp.id}" styleClass="p-text-center">
+								<h:panelGrid columns="1" style="width:100%">
+
+									<h:panelGroup layout="block">
+										<!-- IMAGE -->
+										<h:panelGroup layout="block"
+											style="width:100px; heigth:100px; display:block; margin:auto">
+											<h:graphicImage
+												rendered="#{vdp.detalleProducto.foto == null}" library="img"
+												name="product.png"
+												styleClass="sofia-container-img-small-img" />
+
+											<p:graphicImage
+												rendered="#{vdp.detalleProducto.foto != null}"
+												styleClass="sofia-container-img-small-img"
+												value="#{image.detalle_producto}">
+												<f:param name="id-detalle-producto"
+													value="#{vdp.detalleProducto.id}" />
+											</p:graphicImage>
+										</h:panelGroup>
+									</h:panelGroup>
+
+									<h:outputText
+										value="#{vdp.detalleProducto.productoBean.categoriaBean.nombre}"
+										style="text-transform: uppercase;" />
+
+									<h:outputText
+										value="#{vdp.detalleProducto.productoBean.nombre} - Detalle: #{vdp.detalleProducto.id}"
+										style="text-transform: uppercase;" />
+
+									<p:commandLink update="@(.sofia-container-main-update)"
+										oncomplete="PF('sofia-dialog-product').show()" title="Ver">
+										<h:outputText styleClass="pi pi-search" style="margin:0 auto;" />
+										<f:setPropertyActionListener value="#{vdp}"
+											target="#{compra.detalle_seleccionado_ver}" />
+									</p:commandLink>
+								</h:panelGrid>
+							</p:panel>
+						</p:dataGrid>
+					</h:panelGroup>
+				</p:rowExpansion>
+			</p:dataTable>
+
+			<!--         -->
+			<!-- ACTIONS -->
+			<!--         -->
+			<p:separator styleClass="p-mt-4" />
+			<h:panelGroup layout="block"
+				styleClass="d-p-flex p-jc-star p-ac-center p-m-4">
+
+				<!--     -->
+				<!-- ADD -->
+				<!--     -->
+				<p:commandButton icon="pi pi-plus" value="Agregar"
+					styleClass="sofia-button-succes" title="Agregar"
+					action="register?faces-redirect=true"
+					update="@(.sofia-container-main-update)" />
+
+				<!--         -->
+				<!-- SPINNER -->
+				<!--         -->
+				<p:commandButton icon="fa fa-fw fa-brush" value="Limpiar"
+					onclick="PF('sofia-table-update').clearFilters()"
+					styleClass="sofia-button-warn p-ml-3"
+					update="@(.sofia-container-main-update)"
+					title="Limpiar filtros tabla." />
+			</h:panelGroup>
+			<p:separator styleClass="p-mb-4" />
+
+		</p:fieldset>
+
+		<!--        -->
+		<!-- DIALOG -->
+		<!--        -->
+		<p:dialog header="Detalle Compra" widgetVar="sofia-dialog-product"
+			width="60%" modal="true" showEffect="fade" hideEffect="fade"
+			resizable="false">
+			<p:outputPanel id="carDetail" styleClass="p-text-center">
+				<p:panelGrid columns="2" style="width:100%"
+					rendered="#{compra.detalle_seleccionado_ver != null}"
+					columnClasses="label,value">
+
+					<f:facet name="header">
+						<h:panelGroup layout="block"
+							style="width:100px; heigth:100px; display:block; margin:auto">
+							<h:graphicImage
+								rendered="#{compra.detalle_seleccionado_ver.detalleProducto.foto == null}"
+								library="img" name="product.png"
+								styleClass="sofia-container-img-small-img" />
+
+							<p:graphicImage
+								rendered="#{compra.detalle_seleccionado_ver.detalleProducto.foto != null}"
+								styleClass="sofia-container-img-small-img"
+								value="#{image.detalle_producto}">
+								<f:param name="id-detalle-producto"
+									value="#{compra.detalle_seleccionado_ver.detalleProducto.id}" />
+							</p:graphicImage>
+						</h:panelGroup>
+					</f:facet>
+
+					<h:outputText value="ID Detalle Compra:" />
+					<h:outputText value="#{compra.detalle_seleccionado_ver.id}" />
+
+					<h:outputText value="Producto:" />
+					<h:outputText
+						value="#{compra.detalle_seleccionado_ver.detalleProducto.productoBean.nombre}" />
+
+					<h:outputText value="ID Detalle Producto:" />
+					<h:outputText
+						value="#{compra.detalle_seleccionado_ver.detalleProducto.id}" />
+
+					<h:outputText value="Garantia:" />
+					<h:outputText value="#{compra.detalle_seleccionado_ver.garantia}" />
+
+					<h:outputText value="Cantidad:" />
+					<h:outputText value="#{compra.detalle_seleccionado_ver.cantidad}" />
+
+					<h:outputText value="Precio U/C:" />
+					<h:outputText value="#{compra.detalle_seleccionado_ver.precio}">
+						<f:convertNumber currencySymbol="$" type="currency" />
+					</h:outputText>
+
+					<h:outputText value="Descuento:" />
+					<h:outputText value="#{compra.detalle_seleccionado_ver.descuento}">
+						<f:convertNumber currencySymbol="$" type="currency" />
+					</h:outputText>
+
+					<h:outputText value="SubTotal:" />
+					<h:outputText value="#{compra.detalle_seleccionado_ver.subtotal}">
+						<f:convertNumber currencySymbol="$" type="currency" />
+					</h:outputText>
+				</p:panelGrid>
+			</p:outputPanel>
+		</p:dialog>
+	</ui:define>
+
+
+</ui:composition>

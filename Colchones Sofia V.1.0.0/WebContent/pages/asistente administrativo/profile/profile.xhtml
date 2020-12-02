@@ -1,0 +1,275 @@
+
+<!--          -->
+<!-- TEMPLATE -->
+<!--          -->
+<ui:composition template="../../../template/template-asist.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui">
+
+
+	<!--       -->
+	<!-- TITLE -->
+	<!--       -->
+	<ui:define name="title">
+		| Perfil
+	</ui:define>
+
+	<!--         -->
+	<!-- SECTION -->
+	<!--         -->
+	<ui:define name="component">
+
+		<h:form id="sofia-container-main-update" enctype="multipart/form-data"
+			styleClass="sofia-container-main-update">
+			<!-- MESSAGE -->
+			<p:growl showDetail="true" />
+
+			<h:panelGroup layout="block"
+				styleClass="sofia-container-section-generic__center">
+
+				<!--      -->
+				<!-- MAIN -->
+				<!--      -->
+				<h:panelGroup layout="block"
+					styleClass="sofia-page-profile-structure">
+
+					<!--      -->
+					<!-- LEFT -->
+					<!--      -->
+					<h:panelGroup layout="block"
+						styleClass="sofia-page-profile-structure-left sofia-container-profile-image">
+
+						<!--       -->
+						<!-- IMAGE -->
+						<!--       -->
+						<h:panelGroup layout="block"
+							styleClass="sofia-container-image-profile-user">
+							
+							<h:graphicImage
+								rendered="#{usuario.usuario.persona.foto == null and usuario.cambiar_imagen == false}"
+								library="img" name="user.png" />
+								
+							<p:graphicImage cache="false"
+								rendered="#{usuario.usuario.persona.foto != null and usuario.cambiar_imagen == false}"
+								value="#{image.persona}">
+								<f:param name="documento-persona"
+									value="#{usuario.usuario.persona.documento}" />
+							</p:graphicImage>
+							
+							<p:graphicImage rendered="#{usuario.cambiar_imagen}" cache="false"
+								value="#{image.perfil}" />
+
+							<!--      -->
+							<!-- ICON -->
+							<!--      -->
+							<p:fileUpload listener="#{usuario.uploadImage}" mode="advanced"
+								auto="true" label="" fileLimit="1"
+								chooseIcon="fa fa-fw fa-camera-retro"
+								update="@(.sofia-container-main-update)"
+								styleClass="sofia-container-image-profile-user-icon
+							    	#{usuario.cambiar_imagen ? 'sofia-icon-succes' : 'sofia-icon-error'}">
+							</p:fileUpload>
+
+						</h:panelGroup>
+
+						<!--     -->
+						<!-- ROL -->
+						<!--     -->
+						<p:separator styleClass="p-mt-4" />
+						<h:panelGroup layout="block">
+							<h:outputLabel value="#{usuario.usuario.rolBean.rol == 'ADMINISTRADOR' ? usuario.usuario.rolBean.rol : 'Asistente'}"
+								styleClass="sofia-text-title" />
+						</h:panelGroup>
+						<p:separator />
+
+					</h:panelGroup>
+
+					<!--       -->
+					<!-- RIGTH -->
+					<!--       -->
+					<h:panelGroup layout="block"
+						styleClass="sofia-page-profile-structure-right p-m-4">
+						<p:fieldset legend="Datos Personales" toggleable="true"
+							toggleSpeed="500" style="overflow:hidden">
+
+							<h:panelGroup layout="block"
+								styleClass="ui-fluid p-formgrid p-grid p-m-4 p-jc-between p-ac-center">
+
+								<!--    -->
+								<!-- ID -->
+								<!--    -->
+								<h:panelGroup layout="block"
+									styleClass="p-field p-col-12 p-md-4">
+									<p:outputLabel for="documento-usuario" value="Documento:" />
+									<p:inputText id="documento-usuario"
+										value="#{usuario.usuario.persona.documento}" disabled="true" />
+								</h:panelGroup>
+
+								<!--          -->
+								<!-- TYPE ID  -->
+								<!--          -->
+								<h:panelGroup layout="block" styleClass="p-field p-col p-md-6">
+									<p:outputLabel for="tipo-documento-usuario"
+										value="Tipo Documento: " />
+
+									<h:panelGroup layout="block"
+										styleClass="p-d-flex p-jc-center p-ac-center ">
+										<p:inputText id="tipo-documento-usuario" styleClass="p-mr-2"
+											value="#{usuario.usuario.rolBean.rol}" disabled="true" />
+									</h:panelGroup>
+								</h:panelGroup>
+							</h:panelGroup>
+
+							<h:panelGroup layout="block"
+								styleClass="ui-fluid p-formgrid p-grid p-m-4 p-jc-between p-ac-center">
+
+								<!--      -->
+								<!-- NAME -->
+								<!--      -->
+								<h:panelGroup layout="block"
+									styleClass="p-field p-col-12 p-md-6">
+									<p:outputLabel for="nombre-usuario" value="Nombre:" />
+									<p:inputText id="nombre-usuario"
+										value="#{usuario.usuario.persona.nombre}" />
+								</h:panelGroup>
+
+								<!--      -->
+								<!-- NAME -->
+								<!--      -->
+								<h:panelGroup layout="block"
+									styleClass="p-field p-col-12 p-md-6">
+									<p:outputLabel for="apellido-usuario" value="Apellido:" />
+									<p:inputText id="apellido-usuario"
+										value="#{usuario.usuario.persona.apellido}" />
+								</h:panelGroup>
+							</h:panelGroup>
+
+							<h:panelGroup layout="block"
+								styleClass="ui-fluid p-formgrid p-grid p-m-4 p-jc-between p-ac-center">
+
+								<!--       -->
+								<!-- EMAIL -->
+								<!--       -->
+								<h:panelGroup layout="block"
+									styleClass="p-field p-col-12 p-md">
+									<p:outputLabel for="email-usuario" value="Email:" />
+									<p:inputText id="email-usuario" validator="#{validator.isEmail}"
+										value="#{usuario.usuario.persona.email}" />
+								</h:panelGroup>
+
+							</h:panelGroup>
+
+							<h:panelGroup layout="block"
+								styleClass="ui-fluid p-formgrid p-grid p-m-4 p-jc-between p-ac-center">
+
+								<!--        -->
+								<!-- ADRESS -->
+								<!--        -->
+								<h:panelGroup layout="block" styleClass="p-field p-col">
+									<p:outputLabel for="direccion-usuario" value="Dirección:" />
+									<p:inputText id="direccion-usuario"
+										value="#{usuario.usuario.persona.direccion}" />
+								</h:panelGroup>
+
+								<!--       -->
+								<!-- PHONE -->
+								<!--       -->
+								<h:panelGroup layout="block"
+									styleClass="p-field p-col p-col-12 p-md-4">
+									<p:outputLabel for="telefono-usuario" value="Telefono:" />
+									<p:inputMask id="telefono-usuario" required="true"
+										value="#{usuario.usuario.persona.telefono}"
+										mask="999-9999-999" />
+								</h:panelGroup>
+							</h:panelGroup>
+
+							<h:panelGroup layout="block"
+								styleClass="ui-fluid p-formgrid p-grid p-m-4 p-jc-between p-ac-center">
+
+								<!--            -->
+								<!-- DATE BIRTH -->
+								<!--            -->
+								<h:panelGroup layout="block" styleClass="p-field p-col p-md-4">
+									<p:outputLabel for="fecha-nacimiento-usuario"
+										value="Fecha Nacimiento:" />
+									<p:datePicker id="fecha-nacimiento-usuario"
+										value="#{usuario.usuario.persona.fechaNacimiento}" />
+								</h:panelGroup>
+
+								<!--               -->
+								<!-- DATE REGISTER -->
+								<!--               -->
+								<h:panelGroup layout="block" styleClass="p-field p-col p-md-4">
+									<p:outputLabel for="fecha-registro-usuario"
+										value="Fecha Registro:" />
+									<p:inputText id="fecha-registro-usuario" disabled="true"
+										value="#{usuario.usuario.fechaCreacion}" />
+								</h:panelGroup>
+
+							</h:panelGroup>
+
+							<h:panelGroup layout="block"
+								styleClass="ui-fluid p-formgrid p-grid p-m-4 p-jc-center p-ac-center">
+								<!--       -->
+								<!-- GENER -->
+								<!--       -->
+								<h:panelGroup layout="block"
+									styleClass="p-field p-col p-col-12 p-md-5">
+									<p:outputLabel for="genero-usuario"
+										value="Genero: #{usuario.usuario.persona.genero}" />
+									<p:selectOneMenu id="genero-usuario"
+										value="#{usuario.usuario.persona.genero}">
+										<f:selectItem
+											itemLabel="Defecto #{usuario.usuario.persona.genero == 'M' ? 'Masculino' : 
+									   (usuario.usuario.persona.genero == 'F' ? 'Femenino' : 'Otro')}"
+											itemValue="#{usuario.usuario.persona.genero}" />
+										<f:selectItem itemLabel="Masculino" itemValue="M" />
+										<f:selectItem itemLabel="Femenino" itemValue="F" />
+										<f:selectItem itemLabel="Otro" itemValue="O" />
+									</p:selectOneMenu>
+								</h:panelGroup>
+							</h:panelGroup>
+
+							<!--        -->
+							<!-- ACTION -->
+							<!--        -->
+							<h:panelGroup layout="block"
+								styleClass="p-d-flex p-jc-end p-ac-center p-mb-4">
+								<p:commandButton icon="fa fa-fw fa-send"
+									action="#{usuario.modificar()}"
+									update="@(.sofia-container-main-update), @(.sofia-container-main-update-main)"
+									styleClass="sofia-button-icon sofia-button-succes sofia-button-icon-small">
+									<p:confirm header="Actualizar Información"
+										icon="pi pi-exclamation-triangle"
+										message="¿Quieres actualizar la información personal?" />
+								</p:commandButton>
+							</h:panelGroup>
+
+						</p:fieldset>
+					</h:panelGroup>
+				</h:panelGroup>
+			</h:panelGroup>
+		</h:form>
+
+		<!--        -->
+		<!-- DIALOG -->
+		<!--        -->
+
+		<!--                           -->
+		<!-- DIALOG CONFIMATION REMOVE -->
+		<!--                            -->
+		<p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+			<h:panelGroup layout="block" styleClass="p-d-flex p-jc-end">
+				<p:commandButton value="Si" type="button"
+					styleClass="ui-confirmdialog-yes sofia-statu-succes"
+					icon="pi pi-check" />
+				<p:commandButton value="No" type="button"
+					styleClass="ui-confirmdialog-no sofia-statu-error"
+					icon="pi pi-times" />
+			</h:panelGroup>
+		</p:confirmDialog>
+	</ui:define>
+</ui:composition>

@@ -1,0 +1,106 @@
+
+
+<!--          -->
+<!-- TEMPLATE -->
+<!--          -->
+<ui:composition template="template/template.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui">
+
+	<!--      -->
+	<!-- HEAD -->
+	<!--      -->
+	<ui:define name="title"> | Ubicación</ui:define>
+
+	<!--        -->
+	<!-- NAVBAR -->
+	<!--        -->
+	<ui:define name="menu-top">
+		<p:commandLink value="Inicio"
+			action="/faces/index?faces-redirect=true" />
+		<p:commandLink value="Conocenos"
+			action="/faces/know-us?faces-redirect=true" />
+	</ui:define>
+
+	<!--  -->
+	<ui:define name="component">
+		<h:panelGroup layout="block"
+			styleClass="sofia-container-location-main">
+
+			<h:panelGroup layout="block" styleClass="sofia-container-text-image">
+				<h1 class="sofia-container-text-image__h1"
+					style="background: url(https://cdn.shopify.com/s/files/1/0446/5590/2886/files/CAMAS-AJUSTABLE1080x1080_1_640x512.jpg?v=1599154964) repeat; background-size: 200%; background-clip: text; font-family: $- -project-font-family; position: relative; text-align: center; line-height: 120px; -webkit-background-clip: text; letter-spacing: -5px; font-weight: 900; font-family: Arial !important; font-size: 100px;">Ubicación</h1>
+			</h:panelGroup>
+
+			<h:panelGroup layout="block"
+				styleClass="sofia-container-location-main-other">
+				<!--       -->
+				<!-- PHONE -->
+				<!--       -->
+				<h:panelGroup layout="block" styleClass="inner-content">
+					<h:panelGroup layout="block" styleClass="boxy">
+						<h:graphicImage
+							value="https://www.banpais.hn/wp-content/uploads/2020/09/whatsapp-icon-transparent-png-6.png" />
+					</h:panelGroup>
+					<h:panelGroup layout="block" styleClass="boxy">
+						<div id="slider">
+							<figure>
+								<ul>
+									<ui:repeat var="t" value="#{app.app.telefono}">
+										<li>
+											<h4>#{t.telefono}</h4>
+											<p>#{t.descripcion}</p>
+										</li>
+									</ui:repeat>
+								</ul>
+							</figure>
+						</div>
+					</h:panelGroup>
+				</h:panelGroup>
+
+				<h:panelGroup layout="block" style="width: 100%;height: 80vh; overflow: hidden;">
+					<iframe
+						src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3282.899434615644!2d-58.439769684174266!3d-34.63198156650238!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x95bcca386ffcd167%3A0x71ae8ed72f243b85!2sCOLCHONES%20SOFIA%20en%20Parque%20Chacabuco!5e0!3m2!1ses!2sco!4v1606870280782!5m2!1ses!2sco"
+						width="600" height="450" frameborder="0" style="border: 0;     width: 100%;height: 100%;"
+						allowfullscreen="" aria-hidden="false" tabindex="0"></iframe>
+				</h:panelGroup>
+
+				<!--       -->
+				<!-- EMAIL -->
+				<!--       -->
+				<h:panelGroup layout="block" styleClass="inner-content">
+					<h:panelGroup layout="block" styleClass="boxy">
+						<h:graphicImage
+							value="https://1000logos.net/wp-content/uploads/2018/05/Gmail-logo.png" />
+					</h:panelGroup>
+					<h:panelGroup layout="block" styleClass="boxy">
+						<div id="slider">
+							<figure>
+								<ul>
+									<ui:repeat var="t" value="#{app.app.email}">
+										<li>
+											<h4>#{t.email}</h4>
+											<p>#{t.descripcion}</p>
+										</li>
+									</ui:repeat>
+								</ul>
+							</figure>
+						</div>
+					</h:panelGroup>
+				</h:panelGroup>
+			</h:panelGroup>
+		</h:panelGroup>
+	</ui:define>
+
+	<!--    -->
+	<!-- JS -->
+	<!--    -->
+	<ui:define name="js">
+
+	</ui:define>
+
+</ui:composition>

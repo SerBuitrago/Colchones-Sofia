@@ -1,0 +1,373 @@
+
+<!--          -->
+<!-- TEMPLATE -->
+<!--          -->
+<ui:composition template="template/template.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui">
+
+	<!--      -->
+	<!-- HEAD -->
+	<!--      -->
+	<ui:define name="title"> | Comprar</ui:define>
+
+	<!--        -->
+	<!-- NAVBAR -->
+	<!--        -->
+	<ui:define name="menu-top">
+		<p:commandLink value="Inicio"
+			action="/faces/index?faces-redirect=true" />
+		<p:commandLink value="Conocenos"
+			action="/faces/know-us?faces-redirect=true" />
+	</ui:define>
+
+	<!--         -->
+	<!-- SECTION -->
+	<!--         -->
+	<ui:define name="component">
+		<h:form style="width:90%; margin:auto" styleClass="p-d-block">
+			<p:growl showDetail="true" />
+
+			<!--        -->
+			<!-- WIZARD -->
+			<!--        -->
+			<p:wizard flowListener="#{venta_online.onFlowProcess}"
+				nextLabel="Siguiente" backLabel="Anterior"
+				style="margin-top:3em; margin-bottom:3em">
+
+				<!--         -->
+				<!-- PRODUCT -->
+				<!--         -->
+				<p:tab id="wizard-productos" title="Productos">
+
+					<h:panelGroup layout="block" style="margin-bottom:4em">
+						<!-- ALL -->
+						<ui:repeat var="p" value="#{venta_online.tabla_venta}">
+							<!--        -->
+							<!-- DETAIL -->
+							<!--        -->
+							<h:panelGroup layout="block"
+								styleClass="p-d-flex p-jc-between p-ac-center sofia-container-sale-online-table p-flex-wrap">
+
+								<!-- IMAGE -->
+								<h:panelGroup layout="block"
+									styleClass="p-mt-1 sofia-container-sale-online-table-container-img">
+									<a
+										href="detail-product.xhtml?detalle-producto=#{p.detalleProducto.id}">
+										<p:graphicImage rendered="#{p.detalleProducto.foto != null}"
+											cache="false" value="#{image.detalle_producto}">
+											<f:param name="id-detalle-producto"
+												value="#{p.detalleProducto.id}"></f:param>
+										</p:graphicImage> <p:graphicImage library="img" name="product.png"
+											rendered="#{p.detalleProducto.foto == null}" />
+									</a>
+
+								</h:panelGroup>
+
+								<!-- QUANTI -->
+								<h:panelGroup layout="block"
+									styleClass="p-ai-center p-d-flex p-jc-center p-ac-center">
+									<p:spinner id="rotate" value="#{p.cantidad}" min="1"
+										max="#{p.detalleProducto.stock}" rotate="true">
+										<p:ajax listener="#{venta_online.recalcular()}"
+											update="@(.sofia-container-main-template)"></p:ajax>
+										<f:param name="id-detalle-producto"
+											value="#{p.detalleProducto.id}"></f:param>
+									</p:spinner>
+								</h:panelGroup>
+
+								<!-- PRICE -->
+								<h:panelGroup layout="block"
+									styleClass="p-ai-center p-d-flex p-jc-center p-ac-center p-flex-column">
+
+									<!-- PRICE -->
+									<h:panelGroup layout="block"
+										styleClass="p-d-flex p-jc-between p-ac-center p-flex-row p-mb-3">
+										<h:outputLabel value="P.U:" styleClass="p-mr-3" />
+										<h:outputLabel value="#{p.precio}"
+											styleClass="sofia-statu sofia-statu-primary">
+											<f:convertNumber currencySymbol="$" type="currency" />
+										</h:outputLabel>
+									</h:panelGroup>
+
+									<!-- DESCONT -->
+									<h:panelGroup layout="block"
+										styleClass="p-d-flex p-jc-between p-ac-center p-flex-row p-mb-3">
+										<h:outputLabel value="DES:" styleClass="p-mr-3" />
+										<h:outputLabel value="#{p.descuento}"
+											styleClass="sofia-statu sofia-statu-warn">
+											<f:convertNumber currencySymbol="$" type="currency" />
+										</h:outputLabel>
+									</h:panelGroup>
+
+									<!-- DESCONT -->
+									<h:panelGroup layout="block"
+										styleClass="p-d-flex p-jc-between p-ac-center p-flex-row p-mb-3">
+										<h:outputLabel value="SUB:" styleClass="p-mr-3" />
+										<h:outputLabel value="#{p.subtotal}"
+											styleClass="sofia-statu sofia-statu-succes">
+											<f:convertNumber currencySymbol="$" type="currency" />
+										</h:outputLabel>
+									</h:panelGroup>
+								</h:panelGroup>
+							</h:panelGroup>
+							<p:separator />
+						</ui:repeat>
+
+						<!--       -->
+						<!-- TOTAL -->
+						<!--       -->
+						<h:panelGroup layout="block"
+							rendered="#{fn:length(venta_online.tabla_venta) gt 0}"
+							styleClass="p-d-flex p-jc-end p-ac-center sofia-table-color-warn-rgba p-p-2 container-precio"
+							style="margin-top:2em">
+							<h:outputLabel value="TOTAL PAGAR:" styleClass="p-mr-4" />
+							<h:outputLabel value="#{venta_online.venta.total}"
+								styleClass="sofia-statu sofia-statu-succes">
+								<f:convertNumber currencySymbol="$" type="currency" />
+							</h:outputLabel>
+						</h:panelGroup>
+
+
+					</h:panelGroup>
+
+
+					<!-- EMPYT -->
+					<h:panelGroup layout="block" style="margin-bottom:4em"
+						rendered="#{fn:length(venta_online.tabla_venta) == 0}">
+						<h:graphicImage library="img" name="product.png"
+							styleClass="p-d-block"
+							style="margin:1em auto; width:400px; height:400px" />
+						<h:outputLabel styleClass="sofia-subtitle p-d-block"
+							value="No has agregado ningun producto al carrito de compra." />
+					</h:panelGroup>
+
+				</p:tab>
+
+				<!--          -->
+				<!-- CUSTOMER -->
+				<!--          -->
+				<p:tab id="wizard-customer" title="Cliente">
+					<!--        -->
+					<!-- ACTION -->
+					<!--        -->
+					<p:separator styleClass="p-mt-3 p-mb-3" />
+					<h:panelGroup layout="block"
+						styleClass="p-d-flex p-jc-end p-ac-center">
+
+						<p:commandButton icon="fas fa-filter"
+							disabled="#{venta_online.filter_cliente}"
+							action="#{venta_online.filtrarCliente()}" title="Filtrar persona"
+							styleClass="sofia-button-icon sofia-button-succes sofia-button-icon-small"
+							update="@(.sofia-container-main-template)" />
+
+						<p:commandButton icon="fa fa-fw fa-brush"
+							disabled="#{(venta_online.filter_cliente == true) ? 'false' : 
+							((venta_online.venta.usuario1 != null and  fn:length(venta_online.venta.usuario1.persona.documento) gt 0) ? 'false' : 'true')}"
+							action="#{venta_online.limpiarFiltro()}" title="Limpiar datos"
+							styleClass="sofia-button-icon sofia-button-error sofia-button-icon-small"
+							update="@(.sofia-container-main-template)">
+							<p:confirm header="Limpiar Datos"
+								icon="pi pi-exclamation-triangle"
+								message="¿Quieres limpiar la información?" />
+						</p:commandButton>
+
+						<p:commandButton
+							disabled="#{venta_online.filter_cliente ? 'false' : 'true'}"
+							title="#{venta_online.hidden_cliente ? 'Editar' : 'Bloquear'} Cliente"
+							icon="fa fa-fw #{venta_online.hidden_cliente ? 'fa-edit' : 'fa-lock'}"
+							action="#{venta_online.estadoEditarCliente()}"
+							update="@(.sofia-container-main-template)"
+							styleClass="sofia-button-icon #{venta_online.hidden_cliente ? 'sofia-button-primary' : 'sofia-button-error'} 
+						 sofia-button-icon-small" />
+					</h:panelGroup>
+					<p:separator styleClass="p-mt-3 p-mb-3" />
+
+
+					<!--             -->
+					<!-- INFORMATION -->
+					<!--             -->
+					<h:panelGroup layout="block">
+						<h3 class="p-mt-3 p-mb-3">Información Cliente:</h3>
+
+						<h:panelGroup layout="block"
+							styleClass="p-d-flex p-ac-center p-ai-center p-flex-wrap p-mb-4 #{venta_online.filter_cliente ? 'p-jc-between' : 'p-jc-center'}">
+
+							<h:panelGroup layout="block" rendered="#{venta_online.filter_cliente}"
+								styleClass="sofia-container-image-profile-square">
+								<h:graphicImage
+									styleClass="sofia-container-image-profile-square__img"
+									rendered="#{venta_online.venta.usuario1.persona.foto == null}"
+									library="img" name="user.png" />
+
+								<p:graphicImage cache="false"
+									styleClass="sofia-container-image-profile-square__img"
+									rendered="#{venta_online.venta.usuario1.persona.foto != null}"
+									value="#{image.persona}">
+									<f:param name="documento-persona"
+										value="#{venta_online.venta.usuario1.persona.documento}"></f:param>
+								</p:graphicImage>
+							</h:panelGroup>
+
+							<!--        -->
+							<!-- UPLOAD -->
+							<!--        -->
+							<h:panelGroup layout="block"
+								rendered="#{venta_online.filter_cliente == false ? 'true' : 'false'}"
+								styleClass="p-d-flex p-jc-center p-ac-center p-flex-column p-ai-center">
+
+								<h:panelGroup layout="block" styleClass="p-mt-4 p-mb-4">
+									<p:staticMessage severity="warn" summary="" styleClass="p-p-3"
+										detail="Al agregar la foto debes subirla para que nuestro sistema valide y procese la imagen." />
+								</h:panelGroup>
+
+								<h:panelGroup layout="block" styleClass="p-ai-star">
+									<p:fileUpload listener="#{image.uploadImage}" mode="advanced"
+										dragDropSupport="false" label="Agregar" uploadLabel="Subir"
+										cancelLabel="Cancelar" style="max-width: 700px"
+										disabled="#{compra.hidden_proveedor}"
+										fileLimitMessage="No se puede incluir mas archivos."
+										invalidFileMessage="El archivo seleccionado no es permitido, solo se permite: (jpe,jpg,jpeg,png)."
+										invalidSizeMessage="El archivo es muy pesado lo maximo es 200000."
+										update="@(.sofia-container-main-template)" sizeLimit="200000"
+										fileLimit="1" allowTypes="/(\.|\/)(jpe?g|png)$/" />
+								</h:panelGroup>
+							</h:panelGroup>
+						</h:panelGroup>
+
+						<h:panelGroup layout="block"
+							styleClass="ui-fluid p-formgrid p-grid p-mt-2 p-jc-between">
+							<h:panelGroup layout="block" styleClass="p-field p-col p-md-4">
+								<p:outputLabel for="cliente-tipo-documento"
+									value="Tipo Documento:" />
+								<p:selectOneMenu id="cliente-tipo-documento" filter="true"
+									disabled="#{venta_online.hidden_cliente}"
+									value="#{venta_online.venta.usuario1.persona.tipoDocumentoBean.tipoDocumento}">
+									<f:selectItem
+										itemValue="#{venta_online.venta.usuario1.persona.tipoDocumentoBean.tipoDocumento}"
+										itemLabel="Seleccionado #{venta_online.venta.usuario1.persona.tipoDocumentoBean.tipoDocumento}" />
+									<f:selectItems value="#{selection.documentos}"
+										noSelectionOption="true" />
+								</p:selectOneMenu>
+							</h:panelGroup>
+							<h:panelGroup layout="block" styleClass="p-field p-col p-md-4">
+								<p:outputLabel for="cliente-documento" value="Documento:" />
+								<p:inputText id="cliente-documento"
+									disabled="#{venta_online.hidden_cliente}"
+									value="#{venta_online.venta.usuario1.persona.documento}" />
+							</h:panelGroup>
+						</h:panelGroup>
+
+						<h:panelGroup layout="block"
+							styleClass="ui-fluid p-formgrid p-grid">
+							<h:panelGroup layout="block" styleClass="p-field p-col">
+								<p:outputLabel for="cliente-nombre" value="Nombre:" />
+								<p:inputText id="cliente-nombre"
+									disabled="#{venta_online.hidden_cliente}"
+									value="#{venta_online.venta.usuario1.persona.nombre}" />
+							</h:panelGroup>
+							<h:panelGroup layout="block" styleClass="p-field p-col">
+								<p:outputLabel for="cliente-apellido" value="Apellido:" />
+								<p:inputText id="cliente-apellido"
+									disabled="#{venta_online.hidden_cliente}"
+									value="#{venta_online.venta.usuario1.persona.apellido}" />
+							</h:panelGroup>
+						</h:panelGroup>
+
+						<h:panelGroup layout="block"
+							styleClass="ui-fluid p-formgrid p-grid">
+
+							<!--      -->
+							<!-- EMAIL -->
+							<!--      -->
+							<h:panelGroup layout="block" styleClass="p-field p-col">
+								<p:outputLabel for="cliente-email" value="Email:" />
+								<p:inputText id="cliente-email" validator="#{validator.isEmail}"
+									disabled="#{venta_online.hidden_cliente}"
+									value="#{venta_online.venta.usuario1.persona.email}" />
+							</h:panelGroup>
+
+							<!--       -->
+							<!-- PHONE -->
+							<!--       -->
+							<h:panelGroup layout="block" styleClass="p-field p-col p-md-3">
+								<p:outputLabel for="cliente-telefono" value="Telefono:" />
+								<p:inputText id="cliente-telefono" mask="999-9999-999"
+									disabled="#{venta_online.hidden_cliente}" maxlength="10"
+									value="#{venta_online.venta.usuario1.persona.telefono}" />
+							</h:panelGroup>
+						</h:panelGroup>
+
+						<h:panelGroup layout="block"
+							styleClass="ui-fluid p-formgrid p-grid">
+
+							<!--           -->
+							<!-- DIRECTION -->
+							<!--           -->
+							<h:panelGroup layout="block" styleClass="p-field p-col">
+								<p:outputLabel for="cliente-direccion" value="Dirección:" />
+								<p:inputText id="cliente-direccion"
+									disabled="#{venta_online.hidden_cliente}"
+									value="#{venta_online.venta.usuario1.persona.direccion}" />
+							</h:panelGroup>
+
+							<!--      -->
+							<!-- DATE -->
+							<!--      -->
+							<h:panelGroup layout="block" styleClass="p-field p-col p-md-3">
+								<p:outputLabel for="cliente-fecha-nacimiento"
+									value="Fecha Nacimiento:" />
+								<p:datePicker id="cliente-fecha-nacimiento"
+									disabled="#{venta_online.hidden_cliente}"
+									value="#{venta_online.venta.usuario1.persona.fechaNacimiento}" />
+							</h:panelGroup>
+						</h:panelGroup>
+
+
+						<h:panelGroup layout="block"
+							styleClass="ui-fluid p-formgrid p-grid p-jc-center p-ac-center">
+							<!--       -->
+							<!-- GENER -->
+							<!--       -->
+							<h:panelGroup layout="block"
+								styleClass="p-field p-col p-col-12 p-md-5">
+								<p:outputLabel for="genero-usuario" value="Genero:">
+									<p:outputLabel styleClass="sofia-statu sofia-statu-warn p-ml-2"
+										rendered="#{fn:length(venta_online.venta.usuario1.persona.genero) gt 0}"
+										value="#{venta_online.venta.usuario1.persona.genero == 'M' ? 'Masculino' : 
+									   (venta_online.venta.usuario1.persona.genero == 'F' ? 'Femenino' : 'Otro')}" />
+								</p:outputLabel>
+								<p:selectOneMenu id="genero-usuario"
+									disabled="#{venta_online.hidden_cliente}"
+									value="#{venta_online.venta.usuario1.persona.genero}">
+									<f:selectItem
+										itemLabel="Defecto #{venta_online.venta.usuario1.persona.genero == 'M' ? 'Masculino' : 
+									   (venta_online.venta.usuario1.persona.genero == 'F' ? 'Femenino' : 'Otro')}"
+										itemValue="#{venta_online.venta.usuario1.persona.genero}" />
+									<f:selectItem itemLabel="Masculino" itemValue="M" />
+									<f:selectItem itemLabel="Femenino" itemValue="F" />
+									<f:selectItem itemLabel="Otro" itemValue="O" />
+								</p:selectOneMenu>
+							</h:panelGroup>
+						</h:panelGroup>
+					</h:panelGroup>
+
+					<h:panelGroup layout="block"
+						styleClass="p-d-flex p-jc-center p-ac-center p-mt-3 p-mb-3">
+						<p:commandButton icon="fa fa-fw fa-check" value="Validar"
+							update="@(.sofia-container-main-template)"
+							styleClass="sofia-button-succes"
+							action="#{venta_online.validarCliente()}" />
+					</h:panelGroup>
+
+				</p:tab>
+
+			</p:wizard>
+		</h:form>
+	</ui:define>
+
+</ui:composition>

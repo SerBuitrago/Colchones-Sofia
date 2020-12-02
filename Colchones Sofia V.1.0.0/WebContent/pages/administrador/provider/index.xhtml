@@ -1,0 +1,272 @@
+<!--          -->
+<!-- TEMPLATE -->
+<!--          -->
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	template="../../../template/advanced/template-advaced-admi.xhtml">
+
+	<!--       -->
+	<!-- TITLE -->
+	<!--       -->
+	<ui:define name="title-advaced">
+			| Proveedor 
+	</ui:define>
+
+	<!--       -->
+	<!-- STATU -->
+	<!--       -->
+	<ui:define name="component-statu-advaced">
+		<p:menuitem value="Home" url="../index.xhtml" />
+		<p:menuitem value="Proveedor" url="index.xhtml" disabled="none" />
+	</ui:define>
+
+	<!--       -->
+	<!-- IMAGE -->
+	<!--       -->
+	<ui:define name="component-title-img-advaced">
+		<h:graphicImage library="img" name="all/provider.jpg"
+			styleClass="sofia-image-80 sofia-image-dark" />
+	</ui:define>
+	<ui:define name="component-title-h1-advaced">Proveedor</ui:define>
+	<ui:define name="component-title-h2-advaced">Inicio</ui:define>
+
+	<!--         -->
+	<!-- SECTION -->
+	<!--         -->
+	<ui:define name="component-other-advaced">
+		<p:fieldset legend="Proveedor" toggleable="true" toggleSpeed="500">
+			<p:tabView>
+
+				<!--         -->
+				<!-- REPORST -->
+				<!--         -->
+				<p:tab title="Reportes">
+					<h:panelGroup layout="block">
+
+						<!--      -->
+						<!-- DATE -->
+						<!--      -->
+						<p:fieldset legend="Fechas" toggleable="true" toggleSpeed="500">
+
+							<h:panelGroup layout="block"
+								styleClass="ui-fluid p-formgrid p-d-flex p-jc-between p-ac-center">
+								<!--           -->
+								<!-- DATE STAR -->
+								<!--           -->
+								<h:panelGroup layout="block" styleClass="p-field p-col p-md-4">
+									<p:outputLabel for="fecha-inicio" value="Fecha Inicio:" />
+									<p:calendar id="fecha-inicio" required="true" pattern="MM/dd/yyyy HH:mm:ss"
+										requiredMessage="El campo fecha inicio no puede estar vacia."
+										value="#{reporte.fecha_inicio}">
+									</p:calendar>
+								</h:panelGroup>
+
+								<!--          -->
+								<!-- DATE END -->
+								<!--          -->
+								<h:panelGroup layout="block" styleClass="p-field p-col p-md-4">
+									<p:outputLabel for="fecha-fin" value="Fecha Fin:" />
+									<p:calendar id="fecha-fin" required="true" pattern="MM/dd/yyyy HH:mm:ss"
+										requiredMessage="El campo fecha fin no puede estar vacia."
+										value="#{reporte.fecha_fin}">
+									</p:calendar>
+								</h:panelGroup>
+							</h:panelGroup>
+
+							<!--        -->
+							<!-- BUTTON -->
+							<!--        -->
+							<p:separator styleClass="p-mt-3 p-mb-3" />
+							<h:panelGroup layout="block"
+								styleClass="p-d-flex p-jc-between p-ac-center p-mb-3">
+								<p:commandButton update="@(.sofia-container-main-update)"
+									styleClass="sofia-button-succes" icon="fa fa-fw fa-search"
+									action="#{reporte.consultarProveedor()}" value="Consultar" />
+								<p:commandButton update="@(.sofia-container-main-update)"
+									styleClass="sofia-button-warn" icon="fa fa-fw fa-brush"
+									disabled="#{fn:length(reporte.proveedores) gt 0 ? 'false' : 'true'}"
+									action="#{reporte.limpirarFiltroProveedor()}" value="Limpiar" />
+							</h:panelGroup>
+							<p:separator styleClass="p-mt-3 p-mb-3" />
+						</p:fieldset>
+					</h:panelGroup>
+
+					<!--           -->
+					<!-- DATA VIEW -->
+					<!--           -->
+					<p:dataTable rendered="#{reporte.proveedores.size() > 0}" var="p"
+						value="#{reporte.proveedores}" widgetVar="sofia-table-update"
+						id="sofia-table-update"
+						emptyMessage="No se encontro ningun proveedor."
+						filteredValue="#{reporte.proveedor_filter}"
+						paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink}
+										   {PreviousPageLink} {CurrentPageReport} 
+										   {NextPageLink} {LastPageLink}"
+						paginator="true" rows="20" rowIndexVar="index"
+						rowsPerPageTemplate="5,10,15,20,50,100" reflow="true"
+						scrollable="true" styleClass="p-mt-4">
+
+						<!-- HEADER -->
+						<f:facet name="header">
+							<p:outputPanel layout="block"
+								styleClass="p-d-flex p-jc-end p-ac-center">
+								<h:outputText value="Buscar:" styleClass="p-mt-1 p-mr-2" />
+								<p:inputText id="globalFilter"
+									onkeyup="PF('sofia-table-update').filter()" />
+							</p:outputPanel>
+							<p:outputPanel layout="block"
+								styleClass="p-d-flex p-jc-center p-ac-center p-p-3">
+								<h2>Proveedores</h2>
+								<h4 class="p-as-end">(#{reporte.proveedores.size()}
+									resultados)</h4>
+							</p:outputPanel>
+						</f:facet>
+
+						<!--        -->
+						<!-- COLUMN -->
+						<!--        -->
+						<p:column style="width:50px">
+							<h:panelGroup layout="block"
+								styleClass="p-d-flex p-jc-center p-ac-center">
+								<h:outputLabel value="#{index + 1}" />
+							</h:panelGroup>
+						</p:column>
+
+						<!-- DOCUMENTO -->
+						<p:column filterBy="#{p.documento}" sortBy="#{p.documento}"
+							footerText="ID" filterMatchMode="contains">
+							<f:facet name="header">
+								<h:outputText value="Documento" />
+							</f:facet>
+							<h:panelGroup layout="block"
+								styleClass="p-d-flex p-jc-center p-ac-center">
+								<h:outputText value="#{p.documento}" />
+							</h:panelGroup>
+						</p:column>
+
+						<!-- NAME -->
+						<p:column filterBy="#{p.persona.nombre}" footerText="Nombre"
+							sortBy="#{p.persona.nombre}" filterMatchMode="contains">
+							<f:facet name="header">
+								<h:outputText value="Nombre" />
+							</f:facet>
+							<h:panelGroup layout="block"
+								styleClass="p-d-flex p-jc-center p-ac-center">
+								<h:outputText value="#{p.persona.nombre}" />
+							</h:panelGroup>
+						</p:column>
+
+						<!-- FECHA DE CREACION -->
+						<p:column sortBy="${p.fechaCreacion}"
+							footerText="Feha de Creacion" filterMatchMode="contains">
+							<f:facet name="header">
+								<h:outputText value="Feha de Creacion" />
+							</f:facet>
+							<h:panelGroup layout="block"
+								styleClass="p-d-flex p-jc-center p-ac-center">
+								<h:outputText value="#{p.fechaCreacion}">
+									<f:convertDateTime pattern="dd/MM/yyyy HH:mm:ss" />
+								</h:outputText>
+							</h:panelGroup>
+						</p:column>
+
+						<!-- detalleProductos -->
+						<p:column filterBy="${p.detalleProductos.size()}"
+							footerText="Cantidad">
+							<f:facet name="header">
+								<h:outputText value="Cantidad" />
+							</f:facet>
+							<h:panelGroup layout="block"
+								styleClass="p-d-flex p-jc-center p-ac-center">
+								<h:outputText value="#{p.detalleProductos.size()}" />
+							</h:panelGroup>
+						</p:column>
+					</p:dataTable>
+
+					<!--        -->
+					<!-- BUTTON -->
+					<!--        -->
+					<h:panelGroup layout="block"
+						rendered="#{fn:length(reporte.proveedores) gt 0}">
+						<p:separator styleClass="p-mt-3 p-mb-3" />
+						<h:panelGroup layout="block"
+							styleClass="p-d-flex p-jc-center p-ac-center p-mb-3 p-mt-4">
+							<p:commandButton update="@(.sofia-container-main-update)"
+								ajax="false" icon="fa fa-fw fa-download"
+								styleClass="sofia-button-succes" value="Descargar"
+								actionListener="#{reporte.exportarPDF}" />
+							<p:commandButton update="@(.sofia-container-main-update)"
+								ajax="false" icon="fa fa-fw fa-eye"
+								styleClass="sofia-button-primary" value="Ver en PDF"
+								actionListener="#{reporte.verPDF}" />
+						</h:panelGroup>
+						<p:separator styleClass="p-mt-3 p-mb-3" />
+					</h:panelGroup>
+				</p:tab>
+
+				<!--         -->
+				<!-- REPORST -->
+				<!--         -->
+				<p:tab title="Productos">
+					<h:panelGroup layout="block" styleClass="p-mt-4 p-pt-4"
+						rendered="#{chartjs.pie_proveedor_producto.data.labels.size() > 0}">
+						<h:outputLabel styleClass="sofia-subtitle"
+							value="Productos Proveedores:" />
+						<h:panelGroup layout="block">
+							<p:pieChart model="#{chartjs.pie_proveedor_producto}"
+								style="width: 100%; height: 500px;" />
+						</h:panelGroup>
+						<h:panelGroup layout="block"
+							styleClass="p-as-center p-mt-4 p-pt-4 p-text-center p-pb-4">
+							<h:outputLabel
+								value="Representa la cantidad de productos de los proveedores." />
+						</h:panelGroup>
+					</h:panelGroup>
+
+					<h:panelGroup layout="block"
+						styleClass="p-mt-4 p-pt-4 p-text-center"
+						rendered="#{chartjs.pie_proveedor_producto.data.labels.size() == 0}">
+						<h:outputLabel styleClass="sofia-subtitle p-d-block"
+							value="No se ha encontrado ningún producto asosiado a un proveedor." />
+						<h:graphicImage library="img" name="product.png"
+							style="width:30%;heigth:30%" />
+					</h:panelGroup>
+				</p:tab>
+
+				<!--         -->
+				<!-- REPORST -->
+				<!--         -->
+				<p:tab title="Compras">
+					<h:panelGroup layout="block" styleClass="p-mt-4 p-pt-4"
+						rendered="#{chartjs.pie_proveedor_cantidad_compras.data.labels.size() > 0}">
+						<h:outputLabel styleClass="sofia-subtitle"
+							value="Compra Proveedores:" />
+						<h:panelGroup layout="block">
+							<p:pieChart model="#{chartjs.pie_proveedor_cantidad_compras}"
+								style="width: 100%; height: 500px;" />
+						</h:panelGroup>
+						<h:panelGroup layout="block"
+							styleClass="p-as-center p-mt-4 p-pt-4 p-text-center p-pb-4">
+							<h:outputLabel
+								value="Representa la cantidad de productos de los proveedores." />
+						</h:panelGroup>
+					</h:panelGroup>
+
+					<h:panelGroup layout="block"
+						styleClass="p-mt-4 p-pt-4 p-text-center"
+						rendered="#{chartjs.pie_proveedor_cantidad_compras.data.labels.size() == 0}">
+						<h:outputLabel styleClass="sofia-subtitle p-d-block"
+							value="No se ha encontrado ninguna compra asosiada a un proveedor." />
+						<h:graphicImage library="img" name="product.png"
+							style="width:30%;heigth:30%" />
+					</h:panelGroup>
+				</p:tab>
+
+			</p:tabView>
+		</p:fieldset>
+	</ui:define>
+</ui:composition>

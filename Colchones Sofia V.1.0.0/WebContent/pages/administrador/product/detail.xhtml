@@ -1,0 +1,185 @@
+<!--          -->
+<!-- TEMPLATE -->
+<!--          -->
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	template="../../../template/advanced/template-advaced-admi.xhtml">
+
+	<ui:define name="title-advaced">
+			| Productos | Historial
+	</ui:define>
+
+	<ui:define name="component-statu-advaced">
+		<p:menuitem value="Home" url="../index.xhtml" />
+		<p:menuitem value="Productos" url="index.xhtml" disabled="none" />
+		<p:menuitem value="Historial" url="all.xhtml" disabled="none" />
+		<p:menuitem value="Detalle" url="detail.xhtml" disabled="none" />
+	</ui:define>
+
+	<ui:define name="component-title-img-advaced">
+		<h:graphicImage library="img" name="all/product.jpg"
+			styleClass="sofia-image-80 sofia-image-dark" />
+	</ui:define>
+	<ui:define name="component-title-h1-advaced">Productos</ui:define>
+	<ui:define name="component-title-h2-advaced">Registrar Detalle</ui:define>
+
+	<ui:define name="component-other-advaced">
+		<p:fieldset legend="Historial" toggleable="true" toggleSpeed="500">
+
+			<!--        -->
+			<!-- ACTION -->
+			<!--        -->
+			<p:separator styleClass="p-mt-3 p-mb-3" />
+			<h:panelGroup layout="block"
+				styleClass="p-d-flex p-jc-end p-ac-center">
+
+				<p:commandButton icon="fas fa-filter"
+					disabled="#{detalle_producto.filtrar_producto}"
+					action="#{detalle_producto.filtrarProduco()}"
+					title="Filtrar persona"
+					styleClass="sofia-button-icon sofia-button-succes sofia-button-icon-small"
+					update="@(.sofia-container-main-update)" />
+
+				<p:commandButton icon="fa fa-fw fa-brush"
+					disabled="#{(detalle_producto.filtrar_producto == true) ? 'false' : 'true'}"
+					action="#{detalle_producto.limpiarDetalleProducto()}"
+					title="Limpiar datos"
+					styleClass="sofia-button-icon sofia-button-error sofia-button-icon-small"
+					update="@(.sofia-container-main-update)">
+					<p:confirm header="Limpiar Datos" icon="pi pi-exclamation-triangle"
+						message="¿Quieres limpiar la información?" />
+				</p:commandButton>
+			</h:panelGroup>
+			<p:separator styleClass="p-mt-3 p-mb-3" />
+
+			<h:panelGroup layout="block"
+				styleClass="ui-fluid p-formgrid p-grid p-mt-2 p-jc-between">
+				<h:panelGroup layout="block" styleClass="p-field p-col p-md-4">
+					<p:outputLabel for="id-producto" value="ID Producto:" />
+					<p:inputText id="id-producto"
+						value="#{detalle_producto.detalle_producto.productoBean.id}" />
+				</h:panelGroup>
+				<h:panelGroup layout="block" styleClass="p-field p-col p-md-4">
+					<p:outputLabel for="id-detalle-producto" value="ID Detalle:" />
+					<p:inputText id="id-detalle-producto"
+						value="#{detalle_producto.detalle_producto.id}" />
+				</h:panelGroup>
+			</h:panelGroup>
+
+			<h:panelGroup layout="block"
+				styleClass="ui-fluid p-formgrid p-grid p-mt-2 p-jc-between">
+				<h:panelGroup layout="block" styleClass="p-field p-col p-md-4">
+					<p:outputLabel for="nombre-producto" value="Producto:" />
+					<p:inputText id="nombre-producto" disabled="true"
+						value="#{detalle_producto.detalle_producto.productoBean.nombre}" />
+				</h:panelGroup>
+				<h:panelGroup layout="block" styleClass="p-field p-col p-md-4">
+					<p:outputLabel for="categoria-producto" value="Categoria:" />
+					<p:inputText id="categoria-producto" disabled="true"
+						value="#{detalle_producto.detalle_producto.productoBean.categoriaBean.nombre}" />
+				</h:panelGroup>
+			</h:panelGroup>
+
+			<!--        -->
+			<!-- UPLOAD -->
+			<!--        -->
+			<h:panelGroup layout="block"
+				styleClass="p-d-flex p-jc-center p-ac-center p-flex-column p-ai-center">
+
+				<h:panelGroup layout="block" styleClass="p-mt-4 p-mb-4">
+					<p:staticMessage severity="warn" summary="" styleClass="p-p-3"
+						detail="Al agregar la foto debes subirla para que nuestro sistema valide y procese la imagen." />
+				</h:panelGroup>
+
+				<h:panelGroup layout="block" styleClass="p-ai-star">
+					<p:fileUpload listener="#{image.uploadImage}" mode="advanced"
+						dragDropSupport="false" label="Agregar" uploadLabel="Subir"
+						cancelLabel="Cancelar" style="max-width: 700px"
+						disabled="#{compra.hidden_proveedor}" 
+						fileLimitMessage="No se puede incluir mas archivos."
+						invalidFileMessage="El archivo seleccionado no es permitido, solo se permite: (jpe,jpg,jpeg,png)."
+						invalidSizeMessage="El archivo es muy pesado lo maximo es 200000."
+						update="@(.sofia-container-main-update)" sizeLimit="200000"
+						fileLimit="1" allowTypes="/(\.|\/)(jpe?g|png)$/" />
+				</h:panelGroup>
+			</h:panelGroup>
+
+			<h:panelGroup layout="block"
+				styleClass="ui-fluid p-formgrid p-grid p-jc-between p-ac-center p-mt-4">
+
+				<!-- COLOR -->
+				<h:panelGroup layout="block" styleClass="p-field p-col p-md-2">
+					<p:outputLabel for="color-detalle-producto" value="Color:" />
+					<p:inputText id="color-detalle-producto"
+						value="#{detalle_producto.detalle_producto.color}" />
+				</h:panelGroup>
+
+				<!-- DIMENSION -->
+				<h:panelGroup layout="block" styleClass="p-field p-col p-md-4">
+					<p:outputLabel for="medida-detalle-producto" value="Dimensión:" />
+					<p:inputText id="medida-detalle-producto"
+						value="#{detalle_producto.detalle_producto.dimension}" />
+				</h:panelGroup>
+
+				<h:panelGroup layout="block" styleClass="p-field p-col p-md-2">
+					<p:outputLabel for="stock-detalle-producto" value="Stock:" />
+					<p:spinner value="#{detalle_producto.detalle_producto.stock}"
+						min="0" id="stock-detalle-producto" max="999999" rotate="true">
+					</p:spinner>
+				</h:panelGroup>
+
+				<h:panelGroup layout="block" styleClass="p-field p-col p-md-2">
+					<p:outputLabel for="stock-minimo-detalle-producto"
+						value="Stock Minimo:" />
+					<p:spinner value="#{detalle_producto.detalle_producto.stockMinimo}"
+						min="0" id="stock-minimo-detalle-producto" max="999999"
+						rotate="true">
+					</p:spinner>
+				</h:panelGroup>
+			</h:panelGroup>
+
+			<h:panelGroup layout="block"
+				styleClass="ui-fluid p-formgrid p-grid p-jc-between p-ac-center p-mt-4">
+				<h:panelGroup layout="block" styleClass="p-field p-col p-md-3">
+					<p:outputLabel for="descuento-detalle-producto" value="Descuento:" />
+					<p:inputNumber id="descuento-detalle-producto"
+						value="#{detalle_producto.detalle_producto.descuento}" />
+				</h:panelGroup>
+
+				<h:panelGroup layout="block" styleClass="p-field p-col p-md-3">
+					<p:outputLabel for="precio-detalle-producto" value="Precio Venta:" />
+					<p:inputNumber id="precio-detalle-producto"
+						value="#{detalle_producto.detalle_producto.precioVenta}" />
+				</h:panelGroup>
+
+				<h:panelGroup layout="block" styleClass="p-field p-col p-md-3">
+					<p:outputLabel for="precio-compra-detalle-producto"
+						value="Precio Compra:" />
+					<p:inputNumber id="precio-compra-detalle-producto"
+						value="#{detalle_producto.detalle_producto.precioCompra}" />
+				</h:panelGroup>
+			</h:panelGroup>
+
+			<h:panelGroup layout="block"
+				styleClass="ui-fluid p-formgrid p-grid p-jc-between p-ac-center p-mt-4">
+				<h:panelGroup layout="block" styleClass="p-field p-col p-md">
+					<p:outputLabel for="detalle-detalle-producto" value="Stock Minimo:" />
+					<p:inputTextarea id="detalle-detalle-producto"
+						value="#{detalle_producto.detalle_producto.descripcion}" />
+				</h:panelGroup>
+			</h:panelGroup>
+
+			<h:panelGroup layout="block"
+				styleClass="p-mt-3 p-mb-3 p-d-flex p-jc-center p-ac-center">
+				<p:commandButton icon="fa fa-fw fa-check" value="Registrar"
+					update="@(.sofia-container-main-update)"
+					styleClass="sofia-button-succes"
+					action="#{detalle_producto.registrar()}" />
+			</h:panelGroup>
+
+		</p:fieldset>
+	</ui:define>
+</ui:composition>

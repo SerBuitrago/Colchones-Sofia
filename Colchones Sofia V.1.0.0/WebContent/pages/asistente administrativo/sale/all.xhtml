@@ -1,0 +1,368 @@
+
+<!--          -->
+<!-- TEMPLATE -->
+<!--          -->
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	template="../../../template/advanced/template-advaced-asist.xhtml">
+
+	<ui:define name="title-advaced">
+			| Ventas | Historial
+	</ui:define>
+
+	<ui:define name="component-statu-advaced">
+		<p:menuitem value="Home" url="../index.xhtml" />
+		<p:menuitem value="Ventas" url="index.xhtml" disabled="none" />
+		<p:menuitem value="Historial" url="all.xhtml" disabled="none" />
+	</ui:define>
+
+	<ui:define name="component-title-img-advaced">
+		<h:graphicImage library="img" name="all/sale.jpg"
+			styleClass="sofia-image-80 sofia-image-dark" />
+	</ui:define>
+
+	<ui:define name="component-title-h1-advaced">Ventas</ui:define>
+	<ui:define name="component-title-h2-advaced">Historial</ui:define>
+
+	<ui:define name="component-other-advaced">
+		<p:fieldset legend="Historial" toggleable="true" toggleSpeed="500">
+
+			<!--         -->
+			<!-- ACTIONS -->
+			<!--         -->
+			<p:separator styleClass="p-mt-4" />
+			<h:panelGroup layout="block"
+				styleClass="d-p-flex p-jc-star p-ac-center p-m-4">
+				<!--     -->
+				<!-- ADD -->
+				<!--     -->
+				<p:commandButton icon="pi pi-plus" value="Agregar"
+					styleClass="sofia-button-succes" title="Agregar"
+					action="register?faces-redirect=true"
+					update="@(.sofia-container-main-update)" />
+
+				<!--         -->
+				<!-- SPINNER -->
+				<!--         -->
+				<p:commandButton icon="fa fa-fw fa-brush" value="Limpiar"
+					onclick="PF('sofia-table-update').clearFilters()"
+					styleClass="sofia-button-warn p-ml-3"
+					update="@(.sofia-container-main-update)"
+					title="Limpiar filtros tabla."
+					disabled="#{fn:length(table.ventas) gt 0  ? 'false' : 'true'}" />
+			</h:panelGroup>
+			<p:separator styleClass="p-mb-4" />
+
+			<!--           -->
+			<!-- DATA VIEW -->
+			<!--           -->
+			<p:dataTable var="v" value="#{table.ventas}"
+				widgetVar="sofia-table-update" id="sofia-table-update"
+				emptyMessage="No se encontro ninguna venta."
+				filteredValue="#{table.filter_ventas}"
+				paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} 
+				                   {PreviousPageLink} {CurrentPageReport} 
+				                   {NextPageLink} {LastPageLink}"
+				paginator="true" rows="20" rowIndexVar="index"
+				rowsPerPageTemplate="5,10,15,20,50,100" reflow="true"
+				scrollable="true" styleClass="p-mt-4">
+
+				<!-- HEADER -->
+				<f:facet name="header">
+					<p:outputPanel layout="block"
+						styleClass="p-d-flex p-jc-end p-ac-center">
+						<h:outputText value="Buscar:" styleClass="p-mt-1 p-mr-2" />
+						<p:inputText id="globalFilter"
+							onkeyup="PF('sofia-table-update').filter()" />
+					</p:outputPanel>
+					<p:outputPanel layout="block"
+						styleClass="p-d-flex p-jc-center p-ac-center p-p-3">
+						<h2>Ventas</h2>
+						<h4 class="p-as-end">(#{table.ventas.size()} resultados)</h4>
+					</p:outputPanel>
+				</f:facet>
+
+				<!--        -->
+				<!-- COLUMN -->
+				<!--        -->
+				<p:column style="width:50px">
+					<p:rowToggler />
+					<h:panelGroup layout="block"
+						styleClass="p-d-flex p-jc-center p-ac-center">
+						<h:outputLabel value="#{index + 1}" />
+					</h:panelGroup>
+				</p:column>
+
+				<!-- ID -->
+				<p:column filterBy="#{v.id}" sortBy="#{v.id}" footerText="ID"
+					filterMatchMode="contains">
+					<f:facet name="header">
+						<h:outputText value="ID" />
+					</f:facet>
+					<h:panelGroup layout="block"
+						styleClass="p-d-flex p-jc-center p-ac-center">
+						<h:outputText value="#{v.id}" />
+					</h:panelGroup>
+				</p:column>
+
+				<!-- CUSTOMER DOCUMENT -->
+				<p:column filterBy="#{v.usuario1.persona.documento}"
+					footerText="Cliente" filterMatchMode="contains"
+					sortBy="#{v.usuario1.persona.documento}">
+					<f:facet name="header">
+						<h:outputText value="Cliente" />
+					</f:facet>
+					<h:panelGroup layout="block"
+						styleClass="p-d-flex p-jc-center p-ac-center p-ai-center p-text-center">
+						<h:outputText value="#{v.usuario1.persona.documento}" />
+					</h:panelGroup>
+				</p:column>
+
+				<!-- SELLER DOCUMENT -->
+				<p:column filterBy="#{v.usuario2.persona.documento}"
+					footerText="Vendedor" filterMatchMode="contains"
+					sortBy="#{v.usuario2.persona.documento}">
+					<f:facet name="header">
+						<h:outputText value="Vendedor" />
+					</f:facet>
+					<h:panelGroup layout="block"
+						styleClass="p-d-flex p-jc-center p-ac-center p-ai-center p-text-center">
+						<h:outputText
+							value="#{v.usuario2 != null ?  v.usuario2.persona.documento : '----'}"
+							styleClass="sofia-statu #{v.usuario2 != null ? 'null' : 'sofia-statu-warn'}" />
+					</h:panelGroup>
+				</p:column>
+
+				<!-- USER REGISTER -->
+				<p:column
+					filterBy="#{v.usuario3.persona.documento} #{v.usuario3.rolBean.rol}"
+					footerText="Registro" filterMatchMode="contains"
+					sortBy="#{v.usuario3.persona.documento} #{v.usuario3.rolBean.rol}">
+					<f:facet name="header">
+						<h:outputText value="Registro" />
+					</f:facet>
+					<h:panelGroup layout="block"
+						styleClass="p-d-flex p-jc-center p-ac-center p-ai-center p-text-center">
+						<h:outputText
+							value="#{v.usuario3 != null ?  v.usuario3.persona.documento : '----'}"
+							styleClass="sofia-statu #{v.usuario3.rolBean.rol == 'ADMINISTRADOR'  ? 'sofia-statu-succes' : 'sofia-statu-primary'}" />
+					</h:panelGroup>
+				</p:column>
+
+				<!-- REGISTRATION DATE -->
+				<p:column footerText="Fecha Registro" sortBy="#{v.fechaRegistro}">
+					<f:facet name="header">
+						<h:outputText value="Fecha Registro" />
+					</f:facet>
+					<h:panelGroup layout="block"
+						styleClass="p-d-flex p-jc-center p-ac-center p-ai-center p-text-center">
+						<h:outputText value="#{v.fechaRegistro}">
+							<f:convertDateTime pattern="dd/MM/yyyy HH:mm:ss" />
+						</h:outputText>
+					</h:panelGroup>
+				</p:column>
+
+				<!-- PRICE -->
+				<p:column filterBy="#{v.total}" footerText="Total"
+					sortBy="#{v.total}">
+					<f:facet name="header">
+						<h:outputText value="Total" />
+					</f:facet>
+					<h:panelGroup layout="block"
+						styleClass="p-d-flex p-jc-end p-ac-center p-ai-center p-text-center">
+						<h:outputText value="#{v.total}">
+							<f:convertNumber currencySymbol="$" type="currency" />
+						</h:outputText>
+					</h:panelGroup>
+				</p:column>
+
+				<!-- ESTATU -->
+				<p:column filterBy="#{v.estado}" footerText="Estado"
+					headerText="Estado" filterMatchMode="equals">
+					<f:facet name="filter">
+						<p:selectOneButton onchange="PF('sofia-table-update').filter()"
+							styleClass="custom-filter">
+							<f:converter converterId="javax.faces.Boolean" />
+							<f:selectItem itemLabel="D" itemValue="" />
+							<f:selectItem itemLabel="A" itemValue="true" />
+							<f:selectItem itemLabel="B" itemValue="false" />
+						</p:selectOneButton>
+					</f:facet>
+					<h:panelGroup layout="block"
+						styleClass="p-d-flex p-jc-center p-ac-center">
+						<p:commandButton value="#{v.estado ? 'Activo': 'Bloqueado'}"
+							onclick="PF('sofia-table-update').clearFilters()"
+							title="Cambiar estado" action="#{table.estadoVenta()}"
+							update="@(.sofia-container-main-update)"
+							styleClass="#{v.estado ? 'sofia-statu-succes': 'sofia-statu-error'} sofia-statu">
+							<f:param name="id-venta" value="#{v.id}" />
+						</p:commandButton>
+					</h:panelGroup>
+				</p:column>
+
+				<!--        -->
+				<!-- EXPANT -->
+				<!--        -->
+				<p:rowExpansion>
+					<p:dataGrid var="ve" value="#{v.detalleCompraVentas}"
+						styleClass="p-mt-4 p-mb-4" columns="3" layout="grid" rows="12"
+						paginator="true" id="cliente-venta"
+						paginatorTemplate="{CurrentPageReport}  {FirstPageLink} 
+						                   {PreviousPageLink} {PageLinks} 
+						                   {NextPageLink} {LastPageLink} 
+						                   {RowsPerPageDropdown}"
+						rowsPerPageTemplate="3,6,9,12,15,50,100">
+
+						<f:facet name="header">
+				            	ID Venta #{v.id}
+				        </f:facet>
+
+						<p:panel header="ID #{ve.id}" style="text-align:center; ">
+							<h:panelGrid columns="1" style="width:100%;height:200px">
+								<p:graphicImage style="width:100px;height:100px"
+									rendered="#{ve.detalleProducto.foto != null}"
+									value="#{image.detalle_producto}">
+									<f:param name="id-detalle-producto"
+										value="#{ve.detalleProducto.id}"></f:param>
+								</p:graphicImage>
+								<h:graphicImage style="width:100px;height:100px"
+									rendered="#{ve.detalleProducto.foto == null}" library="img"
+									name="product.png" />
+
+								<h:outputText value="#{ve.detalleProducto.productoBean.nombre}" />
+
+								<p:commandLink update="@(.sofia-container-main-update)"
+									oncomplete="PF('ventaProducto').show()" title="Ver Datos">
+									<h:outputText styleClass="pi pi-search" style="margin:0 auto;" />
+									<f:setPropertyActionListener value="#{ve}"
+										target="#{seleccionar}" />
+								</p:commandLink>
+							</h:panelGrid>
+						</p:panel>
+					</p:dataGrid>
+				</p:rowExpansion>
+			</p:dataTable>
+
+			<!--         -->
+			<!-- ACTIONS -->
+			<!--         -->
+			<p:separator styleClass="p-mt-4" />
+			<h:panelGroup layout="block"
+				styleClass="d-p-flex p-jc-star p-ac-center p-m-4">
+				<!--     -->
+				<!-- ADD -->
+				<!--     -->
+				<p:commandButton icon="pi pi-plus" value="Agregar"
+					styleClass="sofia-button-succes" title="Agregar"
+					action="register?faces-redirect=true"
+					update="@(.sofia-container-main-update)" />
+
+				<!--         -->
+				<!-- SPINNER -->
+				<!--         -->
+				<p:commandButton icon="fa fa-fw fa-brush" value="Limpiar"
+					onclick="PF('sofia-table-update').clearFilters()"
+					styleClass="sofia-button-warn p-ml-3"
+					update="@(.sofia-container-main-update)"
+					title="Limpiar filtros tabla."
+					disabled="#{fn:length(table.ventas) gt 0  ? 'false' : 'true'}" />
+			</h:panelGroup>
+			<p:separator styleClass="p-mb-4" />
+
+			<p:dialog header="Información Venta" widgetVar="ventaProducto"
+				modal="true" showEffect="fade" hideEffect="fade" resizable="false">
+				<p:outputPanel id="ventaP" style="text-align:center;">
+					<p:panelGrid columns="2" rendered="#{seleccionar != null}"
+						columnClasses="label,value">
+
+						<f:facet name="header">
+							<p:graphicImage style="width:100px;heigth:100px"
+								rendered="#{seleccionar.detalleProducto.foto != null}"
+								value="#{image.detalle_producto}">
+								<f:param name="id-detalle-producto"
+									value="#{seleccionar.detalleProducto.id}"></f:param>
+							</p:graphicImage>
+							<h:graphicImage style="width:100px;heigth:100px"
+								rendered="#{seleccionar.detalleProducto.foto == null}"
+								library="img" name="product.png" />
+						</f:facet>
+
+						<h:outputText value="ID Detalle:" />
+						<h:outputText value="#{seleccionar.detalleProducto.id}" />
+
+						<h:outputText value="Nombre Producto:" />
+						<h:outputText
+							value="#{seleccionar.detalleProducto.productoBean.nombre}" />
+
+						<h:outputText value="Color:" />
+						<h:outputText value="#{seleccionar.detalleProducto.color}" />
+
+						<h:outputText value="Dimensión:" />
+						<h:outputText value="#{seleccionar.detalleProducto.dimension}" />
+
+						<h:outputText value="Cantidad:" />
+						<h:outputText value="#{seleccionar.cantidad}"
+							styleClass="sofia-statu sofia-statu-warn" />
+
+						<h:outputText value="Garantía:" />
+						<h:outputText value="#{seleccionar.garantia} Año" />
+
+						<h:outputText value="IVA:" />
+						<h:outputText value="#{seleccionar.ventaBean.iva}" />
+
+						<h:outputText value="Descuento:" />
+						<h:outputText value="#{seleccionar.descuento}"
+							styleClass="sofia-statu #{seleccionar.descuento == 0 ? 'sofia-statu-warn' : 'sofia-statu-succes'}">
+							<f:convertNumber currencySymbol="$" type="currency" />
+						</h:outputText>
+
+						<h:outputText value="Costo Envío:" />
+						<h:outputText value="#{seleccionar.ventaBean.costoEnvio}"
+							styleClass="sofia-statu #{seleccionar.ventaBean.costoEnvio == 0 ? 'sofia-statu-warn' : 'sofia-statu-succes'}">
+							<f:convertNumber currencySymbol="$" type="currency" />
+						</h:outputText>
+
+						<h:outputText value="SubTotal:" />
+						<h:outputText value="#{seleccionar.subtotal}"
+							styleClass="sofia-statu #{seleccionar.subtotal == 0 ? 'sofia-statu-error' : 'sofia-statu-succes'}">
+							<f:convertNumber currencySymbol="$" type="currency" />
+						</h:outputText>
+
+						<h:outputText value="Tipo Pago:" />
+						<h:outputText
+							value="#{seleccionar.ventaBean.metodoPagoBean.tipoPagoBean.nombre}" />
+						<h:outputText value="Cliente:" />
+						<h:outputText
+							value="#{seleccionar.ventaBean.usuario1.persona.nombre} #{seleccionar.ventaBean.usuario1.persona.apellido}" />
+
+						<h:outputText value="Cuenta Cliente:" />
+						<h:outputText
+							value="#{seleccionar.ventaBean.clienteCuenta == null ? '---' :seleccionar.ventaBean.clienteCuenta.numeroCuenta}"
+							styleClass="sofia-statu #{seleccionar.ventaBean.clienteCuenta == null ? 'sofia-statu-warn' : 'null'}" />
+
+						<h:outputText value="Vendedor:" />
+						<h:outputText
+							value="#{seleccionar.ventaBean.usuario2 == null ? '---' : 
+							seleccionar.ventaBean.usuario2.persona.nombre} #{seleccionar.ventaBean.usuario2.persona.apellido}"
+							styleClass="sofia-statu #{seleccionar.ventaBean.usuario2 == null ? 'sofia-statu-warn' : 'null'}" />
+
+						<h:outputText value="Rol Registro:" />
+						<h:outputText
+							value="#{seleccionar.ventaBean.usuario3.rolBean == null ? '---' : 
+							seleccionar.ventaBean.usuario3.rolBean.rol}"
+							styleClass="#{seleccionar.ventaBean.usuario3 == null ? 'sofia-statu sofia-statu-warn' : 'null'}" />
+						<h:outputText value="Registro:" />
+						<h:outputText
+							value="#{seleccionar.ventaBean.usuario3 == null ? '---' : 
+							seleccionar.ventaBean.usuario3.persona.nombre} #{seleccionar.ventaBean.usuario3.persona.apellido}"
+							styleClass="#{seleccionar.ventaBean.usuario3 == null ? 'sofia-statu sofia-statu-warn' : 'null'}" />
+					</p:panelGrid>
+				</p:outputPanel>
+			</p:dialog>
+		</p:fieldset>
+	</ui:define>
+</ui:composition>
