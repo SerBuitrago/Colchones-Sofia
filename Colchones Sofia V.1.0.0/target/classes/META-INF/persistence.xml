@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence version="2.1"
+	xmlns="http://xmlns.jcp.org/xml/ns/persistence"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence http://xmlns.jcp.org/xml/ns/persistence/persistence_2_1.xsd">
+
+	<persistence-unit name="sofia">
+		<class>com.model.Categoria</class>
+		<class>com.model.ClienteCuenta</class>
+		<class>com.model.Compra</class>
+		<class>com.model.DetalleCompraVenta</class>
+		<class>com.model.DetalleProducto</class>
+		<class>com.model.EmpresaInformacion</class>
+		<class>com.model.EstadoVenta</class>
+		<class>com.model.Garantia</class>
+		<class>com.model.Menu</class>
+		<class>com.model.MetodoPago</class>
+		<class>com.model.Persona</class>
+		<class>com.model.Producto</class>
+		<class>com.model.Proveedor</class>
+		<class>com.model.Rol</class>
+		<class>com.model.Submenu</class>
+		<class>com.model.TipoDocumento</class>
+		<class>com.model.TipoPago</class>
+		<class>com.model.Usuario</class>
+		<class>com.model.Venta</class>
+		<class>com.model.Empresa</class>
+		<class>com.model.UsuarioPK</class>
+
+		<!-- -->
+		<!-- Tables -->
+		<!-- -->
+
+		<!-- -->
+		<!-- Properties --> 
+		<!-- -->
+		<properties>
+		
+			<!--<property name="javax.persistence.jdbc.url" value="jdbc:mysql://dbpj4sas.cehwcy24fwlr.us-east-1.rds.amazonaws.com:3306/sofia?zeroDateTimeBehavior=convertToNull" />
+			<property name="javax.persistence.jdbc.driver" 
+				value="com.mysql.jdbc.Driver" />
+			<property name="javax.persistence.jdbc.user" value="admin" /> 
+			<property name="javax.persistence.jdbc.password" value="ko2gBEskJZRAu797mZYR" />		
+			<property name="hibernate.dialect" 
+				value="org.hibernate.dialect.MariaDB53Dialect" />--> 
+ 
+		
+			<property name="javax.persistence.jdbc.url"
+				value="jdbc:mysql://localhost:3306/sofia?zeroDateTimeBehavior=convertToNull" />
+			<property name="javax.persistence.jdbc.user" value="root" />
+			<property name="javax.persistence.jdbc.driver"
+				value="com.mysql.jdbc.Driver" />
+			<property name="hibernate.dialect"
+				value="org.hibernate.dialect.MariaDB53Dialect" />
+
+			<!--            -->
+			<!-- DB Dialect -->
+			<!--            -->
+			<property name="hibernate.show_sql" value="true" />		
+
+			<!-- -->
+			<!-- Show SQL in console -->
+			<!-- -->
+			<property name="hibernate.format_sql" value="true" />
+			<property
+				name="javax.persistence.schema-generation.database.action"
+				value="none" />
+		</properties>
+	</persistence-unit>
+
+</persistence>
