@@ -1,0 +1,30 @@
+/***************************************************
+ ********************** BODY ***********************
+ ***************************************************/
+@import url(''+#{$--project-font-family-url}+'&family=Architects+Daughter');
+
+*,
+*:before,
+*:after {
+   margin: 0;
+   padding: 0;
+   -webkit-box-sizing: border-box;
+   -moz-box-sizing: border-box;
+   box-sizing: border-box;
+}
+
+$--element: getMap($default, ("all", "body"));
+$--element-size: getMap($--element, ("font", "size"));
+
+body{
+   overflow-x: hidden; 
+   font-size: nth($--element-size, 1);
+   font-family: $--project-font-family;
+   background-color: nth(getMap($project, ("color", "body")), 1); 
+   color: nth(getMap($project, ("color", "body")), 2); 
+   &.sofia-body{
+      display: flex; 
+      flex-wrap: wrap; 
+      min-height: 100vh;
+   }
+}

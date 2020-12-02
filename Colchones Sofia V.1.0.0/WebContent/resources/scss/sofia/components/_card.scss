@@ -1,0 +1,278 @@
+/***************************************************
+ ********************* CARD ************************
+ ***************************************************/
+
+/***************************************************
+ * BUDGET
+ ***************************************************/
+
+.sofia-card-budget{
+	$--element: getMap($default, ("all" , "card", "all" , "card-budget"));
+	width: auto;
+	max-width: getMap($--element, ("dimension" , "all", "width"));
+	min-width: getMap($--element, ("dimension" , "all", "width"));
+	margin-right: 1em;
+	margin-bottom: 1em;
+	height: auto;
+	border-radius: .5em;
+	overflow: hidden;
+	
+	&__container{
+		position: relative;
+		
+		&-info{
+			width: 90%;
+			height: 100%;
+			display: flex;
+			justify-content: center;
+			align-content: center;
+			flex-direction: column;
+			
+			&-text, &-value{
+				font-size: 0.7em;
+				width: 100%; 
+				height: auto;
+				overflow: hidden;
+				font-family: $--project-font-family;
+			}
+			
+			&-text{
+				padding-top: 1em;
+				text-transform: uppercase;
+				font-style: italic;
+			}
+			
+			&-value{
+				font-size: 1.5em;
+				font-weight: bolder;
+				text-align: left;
+			}
+		}
+		
+		&-icon{
+			position: absolute;
+			top: 50%;
+			transform: translateY(-50%);
+			right: 10%;
+			z-index: 1;
+			i{
+				transition: all 0.5s linear;
+				font-size: 4em;
+				transform: scale(1.4);
+				color: nth(getMap($color, ("gray", "lighten-3")),1);
+				@include text-shadow(darken(nth(getMap($project, ("color", "primary")), 1), 13));
+				&:hover{
+					animation: sofia-card-budget-movie 1s linear 3;
+				}
+			}
+		}
+		
+		@keyframes sofia-card-budget-movie {
+			0% { 
+          		transform: rotate(2deg) scale(1.4);
+       		 }
+        	50% {
+         		transform: rotate(-3deg) scale(1.4);
+        	}
+        	70% {
+          		transform: rotate(3deg) scale(1.4);
+        	}
+      
+        	100% {
+          		transform: rotate(0deg) scale(1.4); 
+        	}
+		}
+		
+		&-link{
+			filter: brightness(85%);
+			padding: .5em;
+		}
+	}
+	
+	
+	&.sofia-card-budget-info{
+		$--element-color: getMap($project, ("color", "other"));
+		background-color: rgba(nth($--element-color, 1), .9);
+		.sofia-card-budget__container{
+			&-info{
+				&-text, &-value{
+					color: nth($--element-color, 2);
+				}
+			}
+			
+			&-icon{
+				i{
+					@include text-shadow(darken(nth($--element-color, 1), 13));
+				}
+			}
+			
+			&-link{
+				background-color: rgba(nth($--element-color, 1), .9);
+				.sofia-link{
+					color: nth($--element-color, 2) !important;
+				}
+			}
+		}
+	}
+	
+	&.sofia-card-budget-succes{
+		$--element-color: getMap($project, ("color", "succes"));
+		background-color: rgba(nth($--element-color, 1), .9);
+		.sofia-card-budget__container{
+			&-info{
+				&-text, &-value{
+					color: nth($--element-color, 2);
+				}
+			}
+			&-icon{
+				i{
+					@include text-shadow(darken(nth($--element-color, 1), 13));
+				}
+			}
+			&-link{
+				background-color: rgba(nth($--element-color, 1), .9);
+				.sofia-link{
+					color: nth($--element-color, 2) !important;
+				}
+			}
+		}
+	}
+	
+	&.sofia-card-budget-error{
+		$--element-color: getMap($project, ("color", "error"));
+		background-color: rgba(nth($--element-color, 1), .9);
+		.sofia-card-budget__container{
+			&-info{
+				&-text, &-value{
+					color: nth($--element-color, 2);
+				}
+			}
+			&-icon{
+				i{
+					@include text-shadow(darken(nth($--element-color, 1), 13));
+				}
+			}
+			&-link{
+				background-color: rgba(nth($--element-color, 1), .9);
+				.sofia-link{
+					color: nth($--element-color, 2) !important;
+				}
+			}
+		}
+	}
+	
+	&.sofia-card-budget-primary{
+		$--element-color: getMap($project, ("color", "primary"));
+		background-color: rgba(nth($--element-color, 1), .9);
+		.sofia-card-budget__container{
+			&-info{
+				&-text, &-value{
+					color: nth($--element-color, 2);
+				}
+			}
+			&-icon{
+				i{
+					@include text-shadow(darken(nth($--element-color, 1), 13));
+				}
+			}		
+			&-link{
+				background-color: rgba(nth($--element-color, 1), .9);
+				.sofia-link{
+					color: nth($--element-color, 2) !important;
+				}
+			}
+		}
+	}
+	
+	&.sofia-card-budget-warn{
+		$--element-color: getMap($project, ("color", "info"));
+		background-color: rgba(nth($--element-color, 1), .9);
+		.sofia-card-budget__container{
+			&-info{
+				&-text, &-value{
+					color: nth($--element-color, 2);
+				}
+			}
+			&-icon{
+				i{
+					@include text-shadow(darken(nth($--element-color, 1), 13));
+				}
+			}			
+			&-link{
+				background-color: rgba(nth($--element-color, 1), .9);
+				.sofia-link{
+					color: nth($--element-color, 2) !important;
+				}
+			}
+		}
+	}
+	
+	&.sofia-card-budget-fatal{
+		$--element-color: getMap($project, ("color", "fatal"));
+		background-color: rgba(nth($--element-color, 1), .9);
+		.sofia-card-budget__container{
+			&-info{
+				&-text, &-value{
+					color: nth($--element-color, 2);
+				}
+			}
+			&-icon{
+				i{
+					@include text-shadow(darken(nth($--element-color, 1), 13));
+				}
+			}
+			&-link{
+				background-color: rgba(nth($--element-color, 1), .9);
+				.sofia-link{
+					color: nth($--element-color, 2) !important;
+				}
+			}
+		}
+	}
+	
+	&.sofia-card-budget-black{
+		$--element-color: getMap($color, ("black", "base")); 
+		background-color: rgba(nth($--element-color, 1), .9);
+		.sofia-card-budget__container{
+			&-info{
+				&-text, &-value{
+					color: nth($--element-color, 2);
+				}
+			}
+			&-icon{
+				i{
+					@include text-shadow(darken(nth($--element-color, 1), 13));
+				}
+			}
+			&-link{
+				background-color: rgba(nth($--element-color, 1), .9);
+				.sofia-link{
+					color: nth($--element-color, 2) !important;
+				}
+			}
+		}
+	}
+	
+	&.sofia-card-budget-orange{
+		$--element-color: getMap($color, ("orange", "base")); 
+		background-color: rgba(nth($--element-color, 1), .9);
+		.sofia-card-budget__container{
+			&-info{
+				&-text, &-value{
+					color: nth($--element-color, 2);
+				}
+			}
+			&-icon{
+				i{
+					@include text-shadow(darken(nth($--element-color, 1), 13));
+				}
+			}
+			&-link{
+				background-color: rgba(nth($--element-color, 1), .9);
+				.sofia-link{
+					color: nth($--element-color, 2) !important;
+				}
+			}
+		}
+	}
+}

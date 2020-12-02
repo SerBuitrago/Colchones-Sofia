@@ -1,0 +1,103 @@
+//##################################################################################################
+//############################################ TEXT ################################################ 
+//##################################################################################################
+@mixin text($color: #FFFFFF, $text-transform: uppercase, $font-family: '') {
+	color: $color;
+	text-align: center;
+	height: auto;
+	text-transform: $text-transform;
+	width: 100%;
+	font-family: $font-family;
+	overflow: hidden;
+}
+
+@mixin text-shadow($c: black) {
+    text-shadow: $c 1px 0px 0px, 
+                 $c 0.540302px 0.841471px 0px, 
+                 $c -0.416147px 0.909297px 0px, 
+                 $c -0.989992px 0.14112px 0px, 
+                 $c -0.653644px -0.756802px 0px, 
+                 $c 0.283662px -0.958924px 0px, 
+                 $c 0.96017px -0.279415px 0px;          
+}
+
+//##################################################################################################
+//########################################### BUTTON ############################################### 
+//##################################################################################################
+
+/////////////////////////////////////////////////
+//  BUTTON
+/////////////////////////////////////////////////
+@mixin button($color:(transparent, black), $font-family: '', $border: 1px solid transparent,  $font-size: 1em) {
+ 	background: nth($color, 1);
+	color: nth($color, 2);
+	width: auto;
+	height: auto;
+	outline: none;
+	box-shadow: none;
+	transition: all 0.5s linear;
+	text-decoration: none;
+	cursor: pointer;
+	font-size: $font-size;
+	font-weight: 100;
+	text-transform: capitalize;
+	text-align: center;
+    font-family: $font-family;
+    border: $border;
+    padding: 0.5em 1.5em;
+}
+
+//##################################################################################################
+//############################################ INPUT ############################################### 
+//##################################################################################################
+
+/////////////////////////////////////////////////
+//  TEXT
+/////////////////////////////////////////////////
+@mixin input-text($color:(), $border: 1px solid transparent, $font-size: 1em) {
+	font-size: $font-size;
+	display: block;
+	width: 100%;
+	padding: 0.6em 0.625em;
+	background: nth($color, 1);
+	border: none;
+	border: $border;
+	color: nth($color, 2);
+	transition: all 0.5s ease;
+	border-radius: 0.3125em ;
+	outline: none;
+	font-weight: 100;
+	margin-top: 1em;
+}
+
+
+
+//##################################################################################################
+//########################################### DISPLAY ############################################## 
+//##################################################################################################
+
+/////////////////////////////////////////////////
+// FLEX
+/////////////////////////////////////////////////
+@mixin display-flex($jus:center, $ali:center, $dir:row, $wra: wrap) {	
+	display: flex;
+	justify-content: $jus;
+	align-items: $ali;
+	flex-direction: $dir;
+	flex-wrap: $wra; 
+	height: auto;   
+}
+//##################################################################################################
+//########################################## POSITION ############################################## 
+//##################################################################################################
+
+@mixin position($type:relative, $z-indez:-1, $top:none, $left:none, $rigth:none, $botton:none, $height:auto, $width:auto) {
+	position: $type;
+	z-index: $z-indez;
+	top: $top;
+	left: $left;
+	right: $rigth;
+	bottom: $botton;
+	height: $height;
+	width: $width;
+}
