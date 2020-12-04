@@ -82,7 +82,7 @@
 					</p:outputPanel>
 					<p:outputPanel layout="block"
 						styleClass="p-d-flex p-jc-center p-ac-center p-p-3">
-						<h2>vendedores</h2>
+						<h2>Vendedores</h2>
 						<h4 class="p-as-end">(#{table.vendedores.size()} resultados)</h4>
 					</p:outputPanel>
 				</f:facet>
@@ -295,7 +295,7 @@
 						<!-- EDIT -->
 						<p:commandButton icon="fa fa-fw fa-user-edit"
 							title="Editar vendedores"
-							styleClass="sofia-button-info sofia-button-icon"
+							styleClass="sofia-button-info sofia-button-icon sofia-button-icon-small"
 							action="#{vendedores.statuActualizar()}"
 							update="@(.sofia-container-main-update), @(.sofia-dialog-update)">
 							<f:param name="documento-vendedor" value="#{v.persona.documento}" />
@@ -306,7 +306,7 @@
 						<!-- REMOVE -->
 						<p:commandButton icon="fa fa-fw fa-user-times"
 							title="Eliminar vendedores"
-							styleClass="sofia-button-error sofia-button-icon"
+							styleClass="sofia-button-error sofia-button-icon sofia-button-icon-small" 
 							action="#{vendedores.eliminar()}"
 							update="@(.sofia-container-main-update), @(.sofia-dialog-update)"
 							oncomplete="PF('sofia-table-update').clearFilters()">

@@ -150,7 +150,9 @@
 				</h:panelGroup>
 
 				<h:panelGroup layout="block" styleClass="p-field p-col p-md-3">
-					<p:outputLabel for="precio-detalle-producto" value="Precio Venta:" />
+					<p:outputLabel for="precio-detalle-producto" value="Precio Venta:">
+						<h:outputText value="Incluye IVA" styleClass="sofia-statu sofia-statu-succes"/>
+					</p:outputLabel>
 					<p:inputNumber id="precio-detalle-producto"
 						value="#{detalle_producto.detalle_producto.precioVenta}" />
 				</h:panelGroup>
@@ -166,7 +168,7 @@
 			<h:panelGroup layout="block"
 				styleClass="ui-fluid p-formgrid p-grid p-jc-between p-ac-center p-mt-4">
 				<h:panelGroup layout="block" styleClass="p-field p-col p-md">
-					<p:outputLabel for="detalle-detalle-producto" value="Stock Minimo:" />
+					<p:outputLabel for="detalle-detalle-producto" value="Descripción:" />
 					<p:inputTextarea id="detalle-detalle-producto"
 						value="#{detalle_producto.detalle_producto.descripcion}" />
 				</h:panelGroup>

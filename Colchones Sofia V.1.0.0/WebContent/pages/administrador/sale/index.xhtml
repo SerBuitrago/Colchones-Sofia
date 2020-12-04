@@ -253,7 +253,7 @@
 						<p:staticMessage severity="warn" summary="" styleClass="p-p-3"
 							detail="Representa el monto de dinero que ingresa en la empresa por cada cliente." />
 					</h:panelGroup>
-					<p:barChart model="#{chartjs.bar_cliente_total_venta}" />
+					<p:barChart model="#{chartjs.horizontal_chart_model_cliente_total_venta}" />
 
 					<p:separator styleClass="p-mt-3 p-mb-3" />
 
@@ -261,7 +261,7 @@
 						<p:staticMessage severity="warn" summary="" styleClass="p-p-3"
 							detail="Representa la cantidad de ventas realizadas por cada cliente." />
 					</h:panelGroup>
-					<p:barChart model="#{chartjs.bar_cliente_cantidad_venta}" />
+					<p:barChart model="#{chartjs.horizontal_chart_model_cliente_cantidad_venta}" />
 				</p:tab>
 			</p:tabView>
 		</p:fieldset>

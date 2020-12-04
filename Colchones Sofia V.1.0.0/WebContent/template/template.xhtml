@@ -48,8 +48,8 @@
 		<h:panelGroup layout="block">
 
 			<h:form styleClass="sofia-container-menu-inicio">
-			<p:growl showDetail="true" />
-			
+				<p:growl showDetail="true" />
+
 				<!--       	 -->
 				<!-- MENU UP -->
 				<!--       	 -->
@@ -76,7 +76,9 @@
 							<p:inputText name="txtBuscar" value="#{catalogo.txt_filtrar}" />
 							<p:commandButton icon="pi pi-search" styleClass="white-button"
 								action="#{catalogo.filtrar()}"
-								update="@(.sofia-container-main-template)" />
+								update="@(.sofia-container-main-template)">
+								<ui:insert name="id-view-use-one-search" />	
+							</p:commandButton>
 						</div>
 					</div>
 
@@ -181,330 +183,162 @@
 		<!--        -->
 		<!-- FILTER -->
 		<!--        -->
-		<h:panelGroup layout="block"
+		<h:panelGroup layout="block" style="overflow: auto;"
 			styleClass="#{catalogo.mostrar_resultados == true ? 'sofia-container-filter-main' : 'null' }"
 			rendered="#{catalogo.mostrar_resultados}">
 			<h:form>
-				<h:panelGroup layout="block"
+				<p:commandButton value="X" action="#{catalogo.ocultarFiltro()}"
+					update="@(.sofia-container-main-template)"
+					style="background: none !important; color: #FFFFFF;  position: absolute;top: 10px;right: 10px;margin-bottom: 1em; border: none;outline: none; text-decoration: none;overflow: hidden;">
+					<ui:insert name="id-view-use-close" />
+				</p:commandButton>
+				<h:panelGroup layout="block" style="margin-top: 4em;"
 					styleClass="sofia-container-filter-main-search">
 					<p:inputText name="txtBuscar" value="#{catalogo.txt_filtrar}"
 						styleClass="sofia-container-filter-main-search-input" />
 					<p:commandButton value="Buscar" icon="pi pi-search"
 						styleClass="sofia-button-primary" action="#{catalogo.filtrar()}"
-						update="@(.sofia-container-main-template)" />
+						update="@(.sofia-container-main-template)">
+						<ui:insert name="id-view-use-search" />
+					</p:commandButton>
 				</h:panelGroup>
 
 
 				<h:panelGroup layout="block" styleClass="sofia-container-card-main">
-					<div id="grid">
-						<div class="product">
-							<div class="info-large">
-								<h4>FLUTED HEM DRESS</h4>
-								<div class="sku">
-									PRODUCT SKU: <strong>89356</strong>
-								</div>
+					<div id="wrapper" style="width: 100%; background: transparent;">
+						<div id="grid"
+							style="padding: 2em; position: relative !important; left: 0 !important; top: 0 !important; width: 100%; display: flex; align-content: center; flex-direction: row; flex-wrap: wrap; justify-content: space-between; height: auto; height: 100%;">
+							<ui:repeat var="p" value="#{catalogo.filtrar}">
+								<div class="product large"
+									style="background: #FFFF; overflow: hidden; -webkit-box-shadow: 0px 0px 18px -5px rgba(0, 0, 0, 0.75); -moz-box-shadow: 0px 0px 18px -5px rgba(0, 0, 0, 0.75); box-shadow: 0px 0px 18px -5px rgba(0, 0, 0, 0.75); border-radius: .5em;">
+									<div class="info-large" style="display: block;">
+										<h4>#{p.productoBean.nombre}</h4>
+										<div class="sku">
+											ID: <strong>#{p.id}</strong>
+										</div>
 
-								<div class="price-big">
-									<span>$43</span> $39
-								</div>
+										<div class="price-big">
+											<span> <h:outputText value="#{p.precioVenta}">
+													<f:convertNumber currencySymbol="$" type="currency" />
+												</h:outputText>
+											</span>
+											<h:outputText
+												value="#{catalogo.resta(p.precioVenta, p.descuento)}">
+												<f:convertNumber currencySymbol="$" type="currency" />
+											</h:outputText>
+										</div>
 
-								<h3>COLORS</h3>
-								<div class="colors-large">
-									<ul>
-										<li><a href="" style="background: #222"><span></span></a></li>
-										<li><a href="" style="background: #6e8cd5"><span></span></a></li>
-										<li><a href="" style="background: #f56060"><span></span></a></li>
-										<li><a href="" style="background: #44c28d"><span></span></a></li>
-									</ul>
-								</div>
+										<h3>COLORS</h3>
+										<div class="colors-large">
+											<ul>
+												<li><a href=""
+													style="background: #{p.color == 'ROJO' ? 'red' :
+											 p.color == 'AZUL' ? 'blue' :  p.color == 'BLANCO' ? 'white' : p.color == 'GRIS' ? 'gray' : 'black'}"><span></span></a></li>
+											</ul>
+										</div>
 
-								<h3>SIZE</h3>
-								<div class="sizes-large">
-									<span>XS</span> <span>S</span> <span>M</span> <span>L</span> <span>XL</span>
-									<span>XXL</span>
-								</div>
+										<h3>Dimensión</h3>
+										<div class="sizes-large">
+											<span>#{p.dimension}</span>
+										</div>
 
-								<button class="add-cart-large">Add To Cart</button>
+										<h:panelGroup layout="block"
+											styleClass="p-d-flex p-jc-between p-ac-center">
+											<p:commandButton value="Agregar"
+												style="width: auto !important;"
+												action="#{venta_online.addProductosCliente()}"
+												styleClass="add-cart-large"
+												update="@(.sofia-container-main-template)">
+												<f:param name="id-detalle-producto" value="#{p.id}"></f:param>
+											</p:commandButton>
+											<a style="width: auto !important;"
+												href="faces/detail-product.xhtml?detalle-producto=#{p.id}"
+												class="add-cart-large"> Ver </a>
+										</h:panelGroup>
 
-							</div>
-							<div class="make3D">
-								<div class="product-front">
-									<div class="shadow"></div>
-									<img
-										src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/245657/1.jpg"
-										alt="" />
-									<div class="image_overlay"></div>
-									<div class="add_to_cart">Add to cart</div>
-									<div class="view_gallery">View gallery</div>
-									<div class="stats">
-										<div class="stats-container">
-											<span class="product_price">$39</span> <span
-												class="product_name">FLUTED HEM DRESS</span>
-											<p>Summer dress</p>
 
-											<div class="product-options">
-												<strong>SIZES</strong> <span>XS, S, M, L, XL, XXL</span> <strong>COLORS</strong>
-												<div class="colors">
-													<div class="c-blue">
-														<span></span>
-													</div>
-													<div class="c-red">
-														<span></span>
-													</div>
-													<div class="c-white">
-														<span></span>
-													</div>
-													<div class="c-green">
-														<span></span>
+									</div>
+									<div class="make3D"
+										style="height: 460px; transition: all 100ms ease-out 0s;">
+										<div class="product-front" style="display: none;">
+											<div class="shadow" style="display: none; opacity: 1;"></div>
+											<p:graphicImage value="#{image.detalle_producto}"
+												cache="false"
+												style="width: 100%; height: 100%;object-fit: contain;">
+												<f:param name="id-detalle-producto" value="#{p.id}" />
+											</p:graphicImage>
+											<div class="image_overlay"></div>
+											<div class="add_to_cart">Agregar Carrito</div>
+											<div class="view_gallery">Ver</div>
+											<div class="stats">
+												<div class="stats-container">
+													<span class="product_price"><h:outputText
+															value="#{catalogo.resta(p.precioVenta, p.descuento)}">
+															<f:convertNumber currencySymbol="$" type="currency" />
+														</h:outputText></span> <span class="product_name">#{p.productoBean.nombre}</span>
+													<p>#{p.id}</p>
+
+													<div class="product-options">
+														<strong>DIMENSION</strong> <span>#{p.dimension}</span> <strong>COLOR</strong>
+														<div class="colors">
+															<div
+																class="#{p.color == 'ROJO' ? 'c-red' :
+																 p.color == 'AZUL' ? 'c-blue' :  p.color == 'BLANCO' ? 'c-white' : p.color == 'GRIS' ? 'c-gray' : 'c-black'}">
+																<span></span>
+															</div>
+														</div>
 													</div>
 												</div>
 											</div>
 										</div>
-									</div>
-								</div>
 
-								<div class="product-back">
-									<div class="shadow"></div>
-									<div class="carousel">
-										<ul class="carousel-container">
-											<li><img
-												src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/245657/1.jpg"
-												alt="" /></li>
-											<li><img
-												src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/245657/2.jpg"
-												alt="" /></li>
-											<li><img
-												src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/245657/3.jpg"
-												alt="" /></li>
-										</ul>
-										<div class="arrows-perspective">
-											<div class="carouselPrev">
-												<div class="y"></div>
-												<div class="x"></div>
-											</div>
-											<div class="carouselNext">
-												<div class="y"></div>
-												<div class="x"></div>
-											</div>
-										</div>
-									</div>
-									<div class="flip-back">
-										<div class="cy"></div>
-										<div class="cx"></div>
-									</div>
-								</div>
-							</div>
-						</div>
+										<div class="product-back" style="display: block;">
+											<div class="shadow" style="display: none; opacity: 0;"></div>
+											<div class="carousel">
+												<ul class="carousel-container" style="width: 315px;">
+													<li><p:graphicImage value="#{image.detalle_producto}"
+															cache="false"
+															style="width: 100%; height: 100%;object-fit: contain;">
+															<f:param name="id-detalle-producto" value="#{p.id}" />
+														</p:graphicImage></li>
 
-
-						<div class="product">
-							<div class="info-large">
-								<h4>PLEAT PRINTED DRESS</h4>
-								<div class="sku">
-									PRODUCT SKU: <strong>89356</strong>
-								</div>
-
-								<div class="price-big">
-									<span>$43</span> $39
-								</div>
-
-								<h3>COLORS</h3>
-								<div class="colors-large">
-									<ul>
-										<li><a href="" style="background: #222"><span></span></a></li>
-										<li><a href="" style="background: #6e8cd5"><span></span></a></li>
-										<li><a href="" style="background: #f56060"><span></span></a></li>
-										<li><a href="" style="background: #44c28d"><span></span></a></li>
-									</ul>
-								</div>
-
-								<h3>SIZE</h3>
-								<div class="sizes-large">
-									<span>XS</span> <span>S</span> <span>M</span> <span>L</span> <span>XL</span>
-									<span>XXL</span>
-								</div>
-
-								<button class="add-cart-large">Add To Cart</button>
-
-							</div>
-							<div class="make3D">
-								<div class="product-front">
-									<div class="shadow"></div>
-									<img
-										src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/245657/2.jpg"
-										alt="" />
-									<div class="image_overlay"></div>
-									<div class="add_to_cart">Add to cart</div>
-									<div class="view_gallery">View gallery</div>
-									<div class="stats">
-										<div class="stats-container">
-											<span class="product_price">$39</span> <span
-												class="product_name">PLEAT PRINTED DRESS</span>
-											<p>Summer dress</p>
-
-											<div class="product-options">
-												<strong>SIZES</strong> <span>XS, S, M, L, XL, XXL</span> <strong>COLORS</strong>
-												<div class="colors">
-													<div class="c-blue">
-														<span></span>
+												</ul>
+												<div class="arrows-perspective">
+													<div class="carouselPrev">
+														<div class="y"></div>
+														<div class="x"></div>
 													</div>
-													<div class="c-red">
-														<span></span>
-													</div>
-													<div class="c-white">
-														<span></span>
-													</div>
-													<div class="c-green">
-														<span></span>
+													<div class="carouselNext">
+														<div class="y"></div>
+														<div class="x"></div>
 													</div>
 												</div>
 											</div>
-										</div>
-									</div>
-								</div>
-
-								<div class="product-back">
-									<div class="shadow"></div>
-									<div class="carousel">
-										<ul class="carousel-container">
-											<li><img
-												src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/245657/2.jpg"
-												alt="" /></li>
-
-										</ul>
-										<div class="arrows-perspective">
-											<div class="carouselPrev">
-												<div class="y"></div>
-												<div class="x"></div>
-											</div>
-											<div class="carouselNext">
-												<div class="y"></div>
-												<div class="x"></div>
-											</div>
-										</div>
-									</div>
-									<div class="flip-back">
-										<div class="cy"></div>
-										<div class="cx"></div>
-									</div>
-								</div>
-							</div>
-						</div>
-
-						<div class="product">
-							<div class="info-large">
-								<h4>FLOWY SHIRT DRESS</h4>
-								<div class="sku">
-									PRODUCT SKU: <strong>89356</strong>
-								</div>
-
-								<div class="price-big">
-									<span>$43</span> $39
-								</div>
-
-								<h3>COLORS</h3>
-								<div class="colors-large">
-									<ul>
-										<li><a href="" style="background: #222"><span></span></a></li>
-										<li><a href="" style="background: #6e8cd5"><span></span></a></li>
-										<li><a href="" style="background: #f56060"><span></span></a></li>
-										<li><a href="" style="background: #44c28d"><span></span></a></li>
-									</ul>
-								</div>
-
-								<h3>SIZE</h3>
-								<div class="sizes-large">
-									<span>XS</span> <span>S</span> <span>M</span> <span>L</span> <span>XL</span>
-									<span>XXL</span>
-								</div>
-
-								<button class="add-cart-large">Add To Cart</button>
-
-							</div>
-							<div class="make3D">
-								<div class="product-front">
-									<div class="shadow"></div>
-									<img
-										src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/245657/3.jpg"
-										alt="" />
-									<div class="image_overlay"></div>
-									<div class="add_to_cart">Add to cart</div>
-									<div class="view_gallery">View gallery</div>
-									<div class="stats">
-										<div class="stats-container">
-											<span class="product_price">$39</span> <span
-												class="product_name">FLOWY SHIRT DRESS</span>
-											<p>Summer dress</p>
-
-											<div class="product-options">
-												<strong>SIZES</strong> <span>XS, S, M, L, XL, XXL</span> <strong>COLORS</strong>
-												<div class="colors">
-													<div class="c-blue">
-														<span></span>
-													</div>
-													<div class="c-red">
-														<span></span>
-													</div>
-													<div class="c-white">
-														<span></span>
-													</div>
-													<div class="c-green">
-														<span></span>
-													</div>
-												</div>
+											<div class="flip-back">
+												<div class="cy"></div>
+												<div class="cx"></div>
 											</div>
 										</div>
 									</div>
 								</div>
-
-								<div class="product-back">
-									<div class="shadow"></div>
-									<div class="carousel">
-										<ul class="carousel-container">
-											<li><img
-												src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/245657/3.jpg"
-												alt="" /></li>
-											<li><img
-												src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/245657/4.jpg"
-												alt="" /></li>
-											<li><img
-												src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/245657/1.jpg"
-												alt="" /></li>
-										</ul>
-										<div class="arrows-perspective">
-											<div class="carouselPrev">
-												<div class="y"></div>
-												<div class="x"></div>
-											</div>
-											<div class="carouselNext">
-												<div class="y"></div>
-												<div class="x"></div>
-											</div>
-										</div>
-									</div>
-									<div class="flip-back">
-										<div class="cy"></div>
-										<div class="cx"></div>
-									</div>
-								</div>
-							</div>
+							</ui:repeat>
 						</div>
 					</div>
-
 				</h:panelGroup>
 			</h:form>
 
 
 		</h:panelGroup>
 
+		<!--    -->
+		<!-- JS -->
+		<!--    -->
+
+		<h:outputScript library="js" name="index.js" />
+		<h:outputScript library="js" name="card.js" />
+		<ui:insert name="js" />
 	</h:panelGroup>
 
-	<!--    -->
-	<!-- JS -->
-	<!--    -->
 
-	<h:outputScript library="js" name="index.js" />
-	<h:outputScript library="js" name="card.js" />
-	<ui:insert name="js" />
 </h:body>
 </html>

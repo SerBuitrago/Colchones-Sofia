@@ -69,7 +69,8 @@
 				                   {NextPageLink} {LastPageLink}"
 				paginator="true" rows="20" rowIndexVar="index"
 				rowsPerPageTemplate="5,10,15,20,50,100" reflow="true"
-				scrollable="true" styleClass="p-mt-4">
+				scrollable="true" styleClass="p-mt-4"
+				rowStyleClass="#{v.detalleCompraVentas.size() == 0 ? 'sofia-table-color-error-rgba' : null}">
 
 				<!-- HEADER -->
 				<f:facet name="header">

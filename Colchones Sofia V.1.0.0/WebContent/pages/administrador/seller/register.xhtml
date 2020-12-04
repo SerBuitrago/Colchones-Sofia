@@ -91,7 +91,7 @@
 							update="@(.sofia-container-main-update), @(.sofia-container-one-main-update)"
 							title="Filtrar usuario por documento"
 							action="#{vendedores.filtrar()}"
-							styleClass="sofia-button-icon sofia-button-warn p-mr-4" />
+							styleClass="sofia-button-icon sofia-button-warn p-mr-4 sofia-button-icon-small" />
 
 						<!--      -->
 						<!-- EDIT -->
@@ -100,7 +100,7 @@
 							disabled="#{vendedores.search ? 'false' : 'true'}"
 							action="#{vendedores.desactivar()}"
 							update="@(.sofia-container-main-update), @(.sofia-container-one-main-update)"
-							styleClass="sofia-button-icon sofia-button-info">
+							styleClass="sofia-button-icon sofia-button-info sofia-button-icon-small">
 							<p:confirm header="Limpiar Información"
 									icon="pi pi-exclamation-triangle"
 									message="¿Desea limpiar la información?" />
@@ -120,7 +120,7 @@
 				styleClass="p-d-flex p-jc-center p-ac-center">
 				<p:commandButton
 					icon="fa fa-fw #{vendedores.active ? 'fa-arrow-up' : 'fa-arrow-down'}"
-					styleClass="p-mr-4 sofia-button-icon #{vendedores.active ? 'sofia-button-warn' : 'sofia-button-succes'}"
+					styleClass="p-mr-4 sofia-button-icon #{vendedores.active ? 'sofia-button-warn' : 'sofia-button-succes'} sofia-button-icon-small"
 					action="#{vendedores.activar()}"
 					update="@(.sofia-container-main-update), @(.sofia-container-one-main-update)" />
 			</h:panelGroup>
@@ -282,7 +282,7 @@
 						<p:outputLabel for="fecha-nacimiento-vendedores"
 							value="Fecha Nacimiento:" />
 						<p:calendar id="fecha-nacimiento-vendedores" required="true"  yearRange="c-100:c"
-							 navigator="true" pattern="MMM/dd/yyyy"  locale="de" value="#{vendedores.usuario.persona.fechaNacimiento}"
+							 navigator="true" pattern="mm/dd/yyyy"  locale="de" value="#{vendedores.usuario.persona.fechaNacimiento}"
 							requiredMessage="El campo fecha nacimiento no puede estar vacio." />
 					</div>
 				</h:panelGroup>

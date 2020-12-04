@@ -50,10 +50,11 @@
 								<!--           -->
 								<h:panelGroup layout="block" styleClass="p-field p-col p-md-4">
 									<p:outputLabel for="fecha-inicio" value="Fecha Inicio:" />
-									<p:datePicker id="fecha-inicio" required="true"
+									<p:calendar id="fecha-inicio" required="true"
+										pattern="MM/dd/yyyy HH:mm:ss"
 										requiredMessage="El campo fecha inicio no puede estar vacia."
 										value="#{reporte.fecha_inicio}">
-									</p:datePicker>
+									</p:calendar>
 								</h:panelGroup>
 
 								<!--          -->
@@ -61,10 +62,11 @@
 								<!--          -->
 								<h:panelGroup layout="block" styleClass="p-field p-col p-md-4">
 									<p:outputLabel for="fecha-fin" value="Fecha Fin:" />
-									<p:datePicker id="fecha-fin" required="true"
+									<p:calendar id="fecha-fin" required="true"
+										pattern="MM/dd/yyyy HH:mm:ss"
 										requiredMessage="El campo fecha fin no puede estar vacia."
 										value="#{reporte.fecha_fin}">
-									</p:datePicker>
+									</p:calendar>
 								</h:panelGroup>
 							</h:panelGroup>
 
@@ -111,7 +113,7 @@
 							</p:outputPanel>
 							<p:outputPanel layout="block"
 								styleClass="p-d-flex p-jc-center p-ac-center p-p-3">
-								<h2>vendedores</h2>
+								<h2>Vendedores</h2>
 								<h4 class="p-as-end">(#{reporte.vendedores.size()}
 									resultados)</h4>
 							</p:outputPanel>

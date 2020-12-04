@@ -72,7 +72,7 @@
 								<h:panelGroup layout="block"
 									styleClass="p-ai-center p-d-flex p-jc-center p-ac-center">
 									<p:spinner id="rotate" value="#{p.cantidad}" min="1"
-										max="#{p.detalleProducto.stock}" rotate="true">
+										max="#{p.detalleProducto.stock + 1}" rotate="true">
 										<p:ajax listener="#{venta_online.recalcular()}"
 											update="@(.sofia-container-main-template)"></p:ajax>
 										<f:param name="id-detalle-producto"

@@ -29,6 +29,21 @@
 		<p:commandLink value="Inicio"
 			action="/faces/index?faces-redirect=true" />
 	</ui:define>
+	
+	<!--    -->
+	<!-- ID -->
+	<!--    -->
+	<ui:define name="id-view-use-close">
+		<f:param name="detalle-producto" value="#{inicio.detalle_producto.id}" />
+	</ui:define>
+
+	<ui:define name="id-view-use-search">
+		<f:param name="detalle-producto" value="#{inicio.detalle_producto.id}" />
+	</ui:define>
+
+	<ui:define name="id-view-use-one-search">
+		<f:param name="detalle-producto" value="#{inicio.detalle_producto.id}" />
+	</ui:define>
 
 	<!--         -->
 	<!-- SECTION -->

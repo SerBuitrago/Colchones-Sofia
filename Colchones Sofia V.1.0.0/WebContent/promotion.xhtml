@@ -8,18 +8,155 @@
 	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:p="http://primefaces.org/ui">
-	
+
 	<!--      -->
 	<!-- HEAD -->
 	<!--      -->
-	<ui:define name="title"> | Promociones</ui:define> 
+	<ui:define name="title"> | Promociones</ui:define>
 
 	<!--        -->
 	<!-- NAVBAR -->
 	<!--        -->
 	<ui:define name="menu-top">
+		<p:commandLink value="Inicio"
+			action="/faces/index?faces-redirect=true" />
 		<p:commandLink value="Conocenos"
 			action="/faces/know-us?faces-redirect=true" />
-		<a href="#">Contactanos</a>
+	</ui:define>
+
+
+	<!--           -->
+	<!-- COMPONENT -->
+	<!--           -->
+	<ui:define name="component">
+		<h:form>
+			<p:growl showDetail="true" />
+			<h:panelGroup layout="block" styleClass="sofia-container-card-main">
+			
+				<h:panelGroup layout="block" styleClass="sofia-container-text-image">
+					<h1 class="sofia-container-text-image__h1"
+						style="background: url(https://us.123rf.com/450wm/nexusplexus/nexusplexus1803/nexusplexus180301586/97569029-imagen-de-fondo-abstracto-con-planetas-espaciales-y-paisaje-natural-.jpg?ver=6) repeat; background-size: 200%; background-clip: text; font-family: $- -project-font-family; position: relative; text-align: center; line-height: 120px; -webkit-background-clip: text; letter-spacing: -5px; font-weight: 900; font-family: Arial !important; font-size: 100px;">Promociones</h1>
+				</h:panelGroup>
+				
+				<div id="wrapper" style="width: 100%;">
+					<div id="grid"
+						style="padding: 2em; position: relative !important; left: 0 !important; top: 0 !important; width: 100%; display: flex; align-content: center; flex-direction: row; flex-wrap: wrap; justify-content: space-between; height: auto; height: 100%;">
+						<ui:repeat var="p" value="#{catalogo.promocion}">
+							<div class="product large"
+								style="overflow: hidden; -webkit-box-shadow: 0px 0px 18px -5px rgba(0, 0, 0, 0.75); -moz-box-shadow: 0px 0px 18px -5px rgba(0, 0, 0, 0.75); box-shadow: 0px 0px 18px -5px rgba(0, 0, 0, 0.75); border-radius: .5em;">
+								<div class="info-large" style="display: block;">
+									<h4>#{p.productoBean.nombre}</h4>
+									<div class="sku">
+										ID: <strong>#{p.id}</strong>
+									</div>
+
+									<div class="price-big">
+										<span> <h:outputText value="#{p.precioVenta}">
+												<f:convertNumber currencySymbol="$" type="currency" />
+											</h:outputText>
+										</span>
+										<h:outputText
+											value="#{catalogo.resta(p.precioVenta, p.descuento)}">
+											<f:convertNumber currencySymbol="$" type="currency" />
+										</h:outputText>
+									</div>
+
+									<h3>COLORS</h3>
+									<div class="colors-large">
+										<ul>
+											<li><a href=""
+												style="background: #{p.color == 'ROJO' ? 'red' :
+											 p.color == 'AZUL' ? 'blue' :  p.color == 'BLANCO' ? 'white' : p.color == 'GRIS' ? 'gray' : 'black'}"><span></span></a></li>
+										</ul>
+									</div>
+
+									<h3>Dimensión</h3>
+									<div class="sizes-large">
+										<span>#{p.dimension}</span>
+									</div>
+
+									<p:commandButton value="Agregar Carrito"
+										action="#{venta_online.addProductosCliente()}"
+										styleClass="add-cart-large"
+										update="@(.sofia-container-main-template)">
+										<f:param name="id-detalle-producto" value="#{p.id}"></f:param>
+									</p:commandButton>
+
+								</div>
+								<div class="make3D"
+									style="height: 460px; transition: all 100ms ease-out 0s;">
+									<div class="product-front" style="display: none;">
+										<div class="shadow" style="display: none; opacity: 1;"></div>
+										<p:graphicImage value="#{image.detalle_producto}"
+											cache="false"
+											style="width: 100%; height: 100%;object-fit: contain;">
+											<f:param name="id-detalle-producto" value="#{p.id}" />
+										</p:graphicImage>
+										<div class="image_overlay"></div>
+										<div class="add_to_cart">Agregar Carrito</div>
+										<div class="view_gallery">Ver</div>
+										<div class="stats">
+											<div class="stats-container">
+												<span class="product_price"><h:outputText
+														value="#{catalogo.resta(p.precioVenta, p.descuento)}">
+														<f:convertNumber currencySymbol="$" type="currency" />
+													</h:outputText></span> <span class="product_name">#{p.productoBean.nombre}</span>
+												<p>#{p.id}</p>
+
+												<div class="product-options">
+													<strong>DIMENSION</strong> <span>#{p.dimension}</span> <strong>COLOR</strong>
+													<div class="colors">
+														<div
+															class="#{p.color == 'ROJO' ? 'c-red' :
+																 p.color == 'AZUL' ? 'c-blue' :  p.color == 'BLANCO' ? 'c-white' : p.color == 'GRIS' ? 'c-gray' : 'c-black'}">
+															<span></span>
+														</div>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+
+									<div class="product-back" style="display: block;">
+										<div class="shadow" style="display: none; opacity: 0;"></div>
+										<div class="carousel">
+											<ul class="carousel-container" style="width: 315px;">
+												<li><p:graphicImage value="#{image.detalle_producto}"
+														cache="false"
+														style="width: 100%; height: 100%;object-fit: contain;">
+														<f:param name="id-detalle-producto" value="#{p.id}" />
+													</p:graphicImage></li>
+
+											</ul>
+											<div class="arrows-perspective">
+												<div class="carouselPrev">
+													<div class="y"></div>
+													<div class="x"></div>
+												</div>
+												<div class="carouselNext">
+													<div class="y"></div>
+													<div class="x"></div>
+												</div>
+											</div>
+										</div>
+										<div class="flip-back">
+											<div class="cy"></div>
+											<div class="cx"></div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</ui:repeat>
+					</div>
+				</div>
+			</h:panelGroup>
+		</h:form>
+	</ui:define>
+
+
+	<!--    -->
+	<!-- JS -->
+	<!--    -->
+	<ui:define name="js">
 	</ui:define>
 </ui:composition>

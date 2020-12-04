@@ -223,13 +223,13 @@
 				<!-- REPORST -->
 				<!--         -->
 				<p:tab title="Género">
-					<p:barChart model="#{chartjs.char_cliente_genero}" />
+				<p:pieChart model="#{chartjs.pie_cliente_genero}"  style="width: 100%; height: 500px;"/>
 				</p:tab>
-				<p:tab title="Cantidad Compras">
-					<p:barChart model="#{chartjs.bar_cliente_cantidad_venta}" />
+				<p:tab title="Cantidad Venta">
+					<p:barChart model="#{chartjs.horizontal_chart_model_cliente_cantidad_venta}" />
 				</p:tab>
 				<p:tab title="Venta Total">
-					<p:barChart model="#{chartjs.bar_cliente_total_venta}" />
+					<p:barChart model="#{chartjs.horizontal_chart_model_cliente_total_venta}" />
 				</p:tab>
 			</p:tabView>
 		</p:fieldset>

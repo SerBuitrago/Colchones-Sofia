@@ -163,7 +163,7 @@
 						styleClass="p-d-flex p-jc-center p-ac-center">
 						<p:commandButton icon="fa fa-fw fa-user-edit p-ac-center"
 							title="Editar Clientes"
-							styleClass="sofia-button-info sofia-button-icon"
+							styleClass="sofia-button-info sofia-button-icon sofia-button-icon-small"
 							action="#{clientes.statuActualizar()}"
 							update="@(.sofia-container-main-update), @(.sofia-dialog-update)">
 							<f:param name="documento-cliente" value="#{c.persona.documento}" />
@@ -200,14 +200,14 @@
 				        </f:facet>
 
 							<p:panel header="#{cl.ventaBean.id}" style="text-align:center">
-								<h:panelGrid columns="1" style="width:100%;heigth:300px">
-									<p:graphicImage style="width:100px;heigth:100px" cache="false"
+								<h:panelGrid columns="1" style="width:100%;height:300px">
+									<p:graphicImage style="width:100px;height:100px" cache="false"
 										rendered="#{cl.detalleProducto.foto != null}"
 										value="#{image.detalle_producto}">
 										<f:param name="id-detalle-producto"
 											value="#{cl.detalleProducto.id}"></f:param>
 									</p:graphicImage>
-									<h:graphicImage style="width:100px;heigth:100px"
+									<h:graphicImage style="width:100px;height:100px"
 										rendered="#{cl.detalleProducto.foto == null}" library="img"
 										name="product.png" />
 
