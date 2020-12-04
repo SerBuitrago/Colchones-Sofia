@@ -60,8 +60,7 @@ public class Venta implements Serializable {
 	@JoinColumn(name="usuario")
 	private Usuario usuario3;
 	
-	@ManyToMany
-	@JoinColumn(name = "venta")
+	@OneToMany(mappedBy="ventaEstadoVenta")
 	private List<EstadoVenta> estados;
 	
 	///////////////////////////////////////////////////////

@@ -3,6 +3,7 @@ package com.bean.session;
 import java.io.Serializable;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -51,6 +52,9 @@ public class SessionBean implements Serializable {
 
 	@ManagedProperty("#{app}")
 	private AppBean app;
+	
+	@ManagedProperty("#{venta_online}")
+	private VentaOnlineBean online;
 
 	///////////////////////////////////////////////////////
 	// Builders
@@ -92,6 +96,9 @@ public class SessionBean implements Serializable {
 					Usuario auxUsuario = dao.ingresar(this.usuario.getEmail(), this.usuario.getClave(),
 							this.usuario.getTipo());
 					if (auxUsuario != null) {
+						if(this.online.getTabla_venta() != null && this.online.getTabla_venta().size() > 0) {
+							this.online.setTabla_venta(new ArrayList<DetalleCompraVenta>());
+						}
 						this.logeado = auxUsuario;
 						fecha = new Fecha();
 						logeado.setSesion(true);
@@ -304,4 +311,14 @@ public class SessionBean implements Serializable {
 	public void setApp(AppBean app) {
 		this.app = app;
 	}
+
+	public VentaOnlineBean getOnline() {
+		return online;
+	}
+
+	public void setOnline(VentaOnlineBean online) {
+		this.online = online;
+	}
+	
+	
 }

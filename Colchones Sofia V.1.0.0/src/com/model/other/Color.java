@@ -42,6 +42,7 @@ public class Color implements Serializable {
 		this.colores.add("rgba(153, 102, 255, 0.2)");
 		this.colores.add("rgba(201, 203, 207, 0.2)");
 		this.colores.add("rgba(199, 149, 149, 0.2)");
+		this.colores.add("rgba(247, 52, 10, 0.2)");
 	}
 
 	/**
@@ -57,6 +58,7 @@ public class Color implements Serializable {
 		this.bordes.add("rgb(153, 102, 255)");
 		this.bordes.add("rgb(201, 203, 207)");
 		this.bordes.add("rgb(199, 149, 149)");
+		this.bordes.add("rgba(247, 52, 10, 0.2)");
 	}
 
 	///////////////////////////////////////////////////////

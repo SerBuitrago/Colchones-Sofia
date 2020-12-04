@@ -71,9 +71,7 @@ public class DetalleProductoBean implements Serializable {
 	@PostConstruct
 	public void init() {
 		initDetalleProducto();
-		this.detalle_producto = new DetalleProducto();
 		this.modificar = new DetalleProducto();
-
 		this.insert = false;
 		this.remove = false;
 		this.hidden = false;
@@ -247,14 +245,26 @@ public class DetalleProductoBean implements Serializable {
 				if (Convertidor.isCadena(this.detalle_producto.getColor())) {
 					if (!Convertidor.containsNumber(this.detalle_producto.getColor())) {
 						if (Convertidor.isCadena(this.detalle_producto.getDimension())) {
-							if (!Convertidor.containsNumber(this.detalle_producto.getDimension())) {
-								if (this.detalle_producto.getDescuento() != null) {
-									if (this.detalle_producto.getStock() > 0) {
-										if (this.detalle_producto.getStockMinimo() >= 0) {
+							if (this.detalle_producto.getDescuento() != null) {
+								if (this.detalle_producto.getStock() > 0) {
+									if (this.detalle_producto.getStockMinimo() >= 0) {
+										if (this.detalle_producto.getStock() >= this.detalle_producto
+												.getStockMinimo()) {
 											if (this.detalle_producto.getDescuento() != null) {
 												if (this.detalle_producto.getPrecioVenta() != null) {
 													if (this.detalle_producto.getPrecioCompra() != null) {
-
+														if (this.detalle_producto.getDescuento().compareTo(
+																this.detalle_producto.getPrecioVenta()) <= 0) {
+															if (this.detalle_producto.getPrecioCompra().compareTo(
+																	this.detalle_producto.getPrecioVenta()) <= 0) {
+															} else {
+																aux = new FacesMessage(FacesMessage.SEVERITY_WARN, "",
+																		"El precio de veta no puede ser menor al precio compra.");
+															}
+														} else {
+															aux = new FacesMessage(FacesMessage.SEVERITY_WARN, "",
+																	"El precio de veta no puede ser menor al descuento del producto.");
+														}
 													} else {
 														aux = new FacesMessage(FacesMessage.SEVERITY_WARN, "",
 																"El campo precio compra es obligatorio.");
@@ -269,23 +279,25 @@ public class DetalleProductoBean implements Serializable {
 											}
 										} else {
 											aux = new FacesMessage(FacesMessage.SEVERITY_WARN, "",
-													"El campo stock minimo debe ser mayor a cero.");
+													"El campo stock debe ser mayor o igual a stock minimo.");
 										}
+
 									} else {
 										aux = new FacesMessage(FacesMessage.SEVERITY_WARN, "",
-												"El campo stock debe ser mayor a cero.");
+												"El campo stock minimo debe ser mayor a cero.");
 									}
 								} else {
 									aux = new FacesMessage(FacesMessage.SEVERITY_WARN, "",
-											"El campo descuento es obligatorio.");
+											"El campo stock debe ser mayor a cero.");
 								}
 							} else {
 								aux = new FacesMessage(FacesMessage.SEVERITY_WARN, "",
-										"El campo color no puede contener caracteres numericos.");
+										"El campo descuento es obligatorio.");
 							}
+
 						} else {
 							aux = new FacesMessage(FacesMessage.SEVERITY_WARN, "",
-									"El campo dimesión es obligatorio.");
+									"El campo dimensión es obligatorio.");
 						}
 					} else {
 						aux = new FacesMessage(FacesMessage.SEVERITY_WARN, "",
@@ -328,65 +340,21 @@ public class DetalleProductoBean implements Serializable {
 	public FacesMessage actualizar() {
 		this.update = false;
 		this.modificar = this.detalle_producto;
-		FacesMessage message = null;
-		if (this.modificar.getId() > 0 && this.modificar != null) {
-			if (Convertidor.isCadena(this.modificar.getColor())) {
-				if (Convertidor.isCadena(this.modificar.getDescripcion())) {
-					if (this.modificar.getDescuento().bitLength() > 0) {
-						if (this.modificar.getStock() >= 0) {
-							if (this.modificar.getStockMinimo() > 0) {
-								if (this.modificar.getPrecioCompra().bitLength() > 0) {
-									if (this.modificar.getPrecioVenta().bitLength() > 0) {
-										if (Convertidor.isCadena(this.modificar.getDimension())) {
-
-											DetalleProductoController pD = new DetalleProductoController();
-											pD.update(this.modificar);
-											this.update = true;
-											this.modificar = new DetalleProducto();
-
-											if (this.image.getImage() != null) {
-												this.modificar.setFoto(this.image.getImage());
-											}
-
-											message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Success",
-													"Se ha Actualizado el producto.");
-
-										} else {
-											message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error",
-													"El campo Dimension es obligatorio..");
-										}
-									} else {
-										message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error",
-												"El campo Precio de Venta es obligatorio..");
-									}
-
-								} else {
-									message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error",
-											"El campo precio de compra es obligatorio..");
-								}
-
-							} else {
-								message = new FacesMessage(FacesMessage.SEVERITY_WARN, "Warn",
-										"El campo Stock minimo es obligatorio.");
-							}
-						} else {
-							message = new FacesMessage(FacesMessage.SEVERITY_WARN, "Warn",
-									"El campo Stock es obligatorio.");
-						}
-					} else {
-						message = new FacesMessage(FacesMessage.SEVERITY_WARN, "Warn",
-								"El campo Descuento es obligatorio.");
-					}
-				} else {
-					message = new FacesMessage(FacesMessage.SEVERITY_WARN, "Warn",
-							"El campo Descripcion minimo es obligatorio.");
-				}
-			} else {
-				message = new FacesMessage(FacesMessage.SEVERITY_WARN, "Warn", "El campo color es obligatorio.");
+		FacesMessage message = validarCampos();
+		if (message == null) {
+			DetalleProductoController pD = new DetalleProductoController();
+			if (this.image.getImage() != null) {
+				this.modificar.setFoto(this.image.getImage());
+				this.image.setImage(null); 
 			}
-
-		} else {
-			message = new FacesMessage(FacesMessage.SEVERITY_WARN, "Warn", "El campo Id es obligatorio.");
+			pD.update(this.modificar);
+			this.update = true;
+			message = new FacesMessage(FacesMessage.SEVERITY_INFO, "", "Se ha Actualizado el detalle producto con ID "+this.modificar.getId()+".");
+			this.modificar = new DetalleProducto();
+			this.initDetalleProducto();
+		}
+		if (message != null) {
+			FacesContext.getCurrentInstance().addMessage(null, message);
 		}
 
 		return message;
@@ -401,11 +369,11 @@ public class DetalleProductoBean implements Serializable {
 		this.initDetalleProducto();
 		this.message = null;
 		this.error = true;
-		
+
 		String idDetalle_producto = Face.get("id-detalle");
 		if (Convertidor.isCadena(idDetalle_producto)) {
 			if (Convertidor.isNumber(idDetalle_producto)) {
-				int aux=Integer.parseInt(idDetalle_producto);
+				int aux = Integer.parseInt(idDetalle_producto);
 				DetalleProductoController dao = new DetalleProductoController();
 				this.detalle_producto = dao.find(aux);
 				this.idDetalle = this.detalle_producto.getId();

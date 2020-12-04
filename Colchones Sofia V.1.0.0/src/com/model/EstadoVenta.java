@@ -1,6 +1,7 @@
 package com.model;
 
 import java.io.Serializable;
+import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -25,17 +26,21 @@ public class EstadoVenta implements Serializable{
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@Column (name="venta")
-	private int id_venta;
+	@Column (name="venta",nullable=false)
+	private int venta;
 	
 	private String descripcion;
 	
+	@Column (name="fecha_creacion")
+	private Date fechaCreacion;
+	
+	private boolean estado;
 	///////////////////////////////////////////////////////
 	// Map
 	///////////////////////////////////////////////////////
 	@ManyToOne
-	@JoinColumn (name="id")
-	private Venta venta;
+	@JoinColumn (name="venta",insertable=false, updatable=false)
+	private Venta ventaEstadoVenta;
 
 	///////////////////////////////////////////////////////
 	// Builders
@@ -48,24 +53,45 @@ public class EstadoVenta implements Serializable{
 	///////////////////////////////////////////////////////
 	@Override
 	public String toString() {
-		return "EstadoVenta [id_venta=" + id_venta + ", descripcion=" + descripcion + "]";
+		return "EstadoVenta [id=" + venta + ", descripcion=" + descripcion + "]";
 	}
 	
 	///////////////////////////////////////////////////////
 	// Getter and Setters
 	///////////////////////////////////////////////////////
-	public int getId_venta() {
-		return id_venta;
-	}
-	public void setId_venta(int id_venta) {
-		this.id_venta = id_venta;
-	}
-	public Venta getVenta() {
+	
+	
+	public int getVenta() {
 		return venta;
 	}
-	public void setVenta(Venta venta) {
-		this.venta = venta;
+	public Date getFechaCreacion() {
+		return fechaCreacion;
 	}
+
+	public void setFechaCreacion(Date fechaCreacion) {
+		this.fechaCreacion = fechaCreacion;
+	}
+
+	public boolean isEstado() {
+		return estado;
+	}
+
+	public void setEstado(boolean estado) {
+		this.estado = estado;
+	}
+
+	public void setVenta(int venta) {
+		this.venta= venta;
+	}
+	
+	public Venta getVentaEstadoVenta() {
+		return ventaEstadoVenta;
+	}
+
+	public void setVentaEstadoVenta(Venta ventaEstadoVenta) {
+		this.ventaEstadoVenta = ventaEstadoVenta;
+	}
+
 	public String getDescripcion() {
 		return descripcion;
 	}
