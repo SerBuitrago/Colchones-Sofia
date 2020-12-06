@@ -1,6 +1,7 @@
 package com.bean.session;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Date;
@@ -67,6 +68,8 @@ public class VentaBean implements Serializable {
 	private boolean continuar_detalle_venta;
 	private boolean hidden_detalle_venta;
 
+	private BigInteger subtotal_sin_iva;
+
 	///////////////////////////////////////////////////////
 	// Managed
 	///////////////////////////////////////////////////////
@@ -75,9 +78,9 @@ public class VentaBean implements Serializable {
 
 	@ManagedProperty("#{mail}")
 	private EmailBean email;
-	
+
 	@ManagedProperty("#{image}")
-	private ImageBean image; 
+	private ImageBean image;
 
 	@ManagedProperty("#{app}")
 	private AppBean app;
@@ -98,6 +101,7 @@ public class VentaBean implements Serializable {
 		initDetalleVenta();
 		this.contador_detalle_venta = 0;
 		this.cantidad_actualizar = 0;
+		this.subtotal_sin_iva = BigInteger.ZERO;
 	}
 
 	///////////////////////////////////////////////////////
@@ -110,11 +114,12 @@ public class VentaBean implements Serializable {
 		this.venta = new Venta();
 		this.venta.setId(this.generarKEY());
 		this.venta.setTotal(BigInteger.ZERO);
+		this.venta.setTotalSinIva(BigInteger.ZERO);
 		this.initCliente();
 		this.initVendedor();
 		this.venta.setUsuario2(null);
 		this.venta.setMetodoPagoBean(new MetodoPago());
-		this.venta.setUsuario3(this.sesion.getLogeado()); 
+		this.venta.setUsuario3(this.sesion.getLogeado());
 		this.venta.setIva(this.app.getEmpresa().getIva());
 		this.venta.setCostoEnvio(BigInteger.ZERO);
 	}
@@ -303,29 +308,29 @@ public class VentaBean implements Serializable {
 			FacesContext.getCurrentInstance().addMessage(null, this.message);
 		}
 	}
-	
+
 	/**
 	 * Metodo que permite cambiar el estado a una venta.
 	 */
 	public void estadoVenta() {
 		this.message = null;
 		String id = Face.get("id-venta");
-		if(Convertidor.isCadena(id)) {
+		if (Convertidor.isCadena(id)) {
 			VentaController dao = new VentaController();
 			Venta aux = dao.find(Integer.parseInt(id));
-			if(aux != null) {
+			if (aux != null) {
 				boolean estado = (!aux.getEstado());
 				aux.setEstado(estado);
 				dao.update(aux);
 				this.message = new FacesMessage(FacesMessage.SEVERITY_INFO, "",
-						"Se ha cambiado el estado de la venta con ID "+id+", a estado "+(estado ? "Activo" : "Bloqueado")+".");
-			}else {
+						"Se ha cambiado el estado de la venta con ID " + id + ", a estado "
+								+ (estado ? "Activo" : "Bloqueado") + ".");
+			} else {
 				this.message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "",
-						"No existe ninguna venta con el ID "+id+".");
+						"No existe ninguna venta con el ID " + id + ".");
 			}
-		}else {
-			this.message = new FacesMessage(FacesMessage.SEVERITY_WARN, "",
-					"El Id de la venta no es valido.");
+		} else {
+			this.message = new FacesMessage(FacesMessage.SEVERITY_WARN, "", "El Id de la venta no es valido.");
 		}
 	}
 
@@ -404,7 +409,7 @@ public class VentaBean implements Serializable {
 				if (this.venta.getUsuario1() == null) {
 					this.initCliente();
 				}
-				if(aux.getTipoDocumentoBean() == null) {
+				if (aux.getTipoDocumentoBean() == null) {
 					aux.setTipoDocumentoBean(new TipoDocumento());
 				}
 
@@ -511,11 +516,12 @@ public class VentaBean implements Serializable {
 							existe = dao.registrar(this.venta.getUsuario1().getPersona().getEmail(), null);
 						} else if (!Convertidor.equals(numero, this.cliente.getPersona().getTelefono())) {
 							existe = dao.registrar(null, numero);
-						} /*else {
-							existe = dao.registrar(this.venta.getUsuario1().getPersona().getEmail(),
-									this.venta.getUsuario1().getPersona().getTelefono());
-						}*/
-						
+						} /*
+							 * else { existe =
+							 * dao.registrar(this.venta.getUsuario1().getPersona().getEmail(),
+							 * this.venta.getUsuario1().getPersona().getTelefono()); }
+							 */
+
 						if (!existe) {
 							continuar_cliente = true;
 						} else {
@@ -696,12 +702,12 @@ public class VentaBean implements Serializable {
 					aux.getPersona().setFechaNacimiento(cliente.getPersona().getFechaNacimiento());
 					aux.getPersona().setGenero(cliente.getPersona().getGenero());
 					dao.update(aux);
-					
-					if(this.image.getImage() != null) {
+
+					if (this.image.getImage() != null) {
 						aux.getPersona().setFoto(this.image.getImage());
 						this.image.setImage(null);
 					}
-					
+
 					pDao.update(aux.getPersona());
 					FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "",
 							"Se ha actualizado el cliente con documento " + cliente.getPersona().getDocumento() + "."));
@@ -713,8 +719,8 @@ public class VentaBean implements Serializable {
 					cliente.setPuntos(BigInteger.ZERO);
 					cliente.setRolBean(new Rol());
 					cliente.getRolBean().setRol("CLIENTE");
-					
-					if(this.image.getImage() != null) {
+
+					if (this.image.getImage() != null) {
 						cliente.getPersona().setFoto(this.image.getImage());
 						this.image.setImage(null);
 					}
@@ -829,28 +835,27 @@ public class VentaBean implements Serializable {
 			FacesContext.getCurrentInstance().addMessage(null, this.message);
 		}
 	}
-	
+
 	/**
 	 * Metodo que permite seleccionar un detalle producto.
 	 */
 	public void seleccionarDetalleProducto() {
 		String id = Face.get("id-detalle-producto");
 		FacesMessage message = null;
-		if(Convertidor.isCadena(id)) {
-			if(Convertidor.isNumber(id)) {
+		if (Convertidor.isCadena(id)) {
+			if (Convertidor.isNumber(id)) {
 				id_detalle_producto = Integer.parseInt(id);
 				filtrarDetalleProducto();
-				if(this.filter_detalle_venta) {
+				if (this.filter_detalle_venta) {
 					PrimeFaces current = PrimeFaces.current();
 					current.executeScript("PF('sofia-dialog-producto-update').hide();");
 				}
-			}else {
+			} else {
 				message = new FacesMessage(FacesMessage.SEVERITY_WARN, "",
 						"El campo ID detalle producto solo debe contener caracteres numericos.");
 			}
-		}else {
-			message = new FacesMessage(FacesMessage.SEVERITY_WARN, "",
-					"El campo ID detalle producto es obligatorio.");
+		} else {
+			message = new FacesMessage(FacesMessage.SEVERITY_WARN, "", "El campo ID detalle producto es obligatorio.");
 		}
 		if (message != null) {
 			FacesContext.getCurrentInstance().addMessage(null, message);
@@ -917,10 +922,10 @@ public class VentaBean implements Serializable {
 
 			aux.setPrecio(dp.getDetalleProducto().getPrecioVenta());
 			aux.setDescuento(dp.getDetalleProducto().getDescuento());
-			
+
 			DetalleProducto x = detalleProducto(dp.getDetalleProducto());
 			aux.setDetalleProducto(x);
-			
+
 			aux.setGarantia(x.getProductoBean().getGarantia());
 		}
 		return aux;
@@ -1017,17 +1022,24 @@ public class VentaBean implements Serializable {
 					DetalleCompraVentaController dao = new DetalleCompraVentaController();
 					DetalleCompraVenta aux = dao.find(dv.getId());
 					if (aux == null) {
-						dv.setVentaBean(this.venta);
-						dv.setSubtotal(subTotal(dv));
-						dao.insert(dv);
-						DetalleProductoController dpDao = new DetalleProductoController();
-						DetalleProducto dp = dpDao.find(dv.getDetalleProducto().getId());
-						if (dp != null) {
-							int resta = dp.getStock() - dv.getCantidad();
-							dp.setStock(resta);
-							dpDao.update(dp);
+						ProductoController g = new ProductoController();
+						Producto a = g.findByField("nombre", dv.getDetalleProducto().getProductoBean().getNombre());
+						if (a != null) {
+							dv.setGarantia(a.getGarantia());
+							dv.setVentaBean(this.venta);
+							dv.setSubtotal(subTotal(dv));
+							dv.setSubtotalSinIva(this.subtotal_sin_iva);
+							this.subtotal_sin_iva = BigInteger.ZERO;
+							dao.insert(dv);
+							DetalleProductoController dpDao = new DetalleProductoController();
+							DetalleProducto dp = dpDao.find(dv.getDetalleProducto().getId());
+							if (dp != null) {
+								int resta = dp.getStock() - dv.getCantidad();
+								dp.setStock(resta);
+								dpDao.update(dp);
+							}
+							contador++;
 						}
-						contador++;
 					} else {
 						error += "El detalle venta con ID " + dv.getId() + " ya se encuentra registrado. \n";
 					}
@@ -1202,11 +1214,11 @@ public class VentaBean implements Serializable {
 	 */
 	public boolean addDetalleProductoCliente(DetalleCompraVenta dcv) {
 		boolean respuesta = false;
-		
-		if(this.tabla_venta == null) {
+
+		if (this.tabla_venta == null) {
 			this.tabla_venta = new ArrayList<DetalleCompraVenta>();
 		}
-		
+
 		if (dcv != null && dcv.getDetalleProducto() != null && dcv.getDetalleProducto().getId() > 0
 				&& dcv.getCantidad() > 0) {
 			respuesta = true;
@@ -1219,6 +1231,8 @@ public class VentaBean implements Serializable {
 				int suma = aux.getCantidad() + cantidad;
 				aux.setCantidad(suma);
 				aux.setSubtotal(subTotal(aux));
+				aux.setSubtotalSinIva(this.subtotal_sin_iva);
+				this.subtotal_sin_iva = BigInteger.ZERO;
 				aux.getDetalleProducto().setStock(dcv.getDetalleProducto().getStock());
 				this.tabla_venta.set(index, aux);
 			} else {
@@ -1233,6 +1247,8 @@ public class VentaBean implements Serializable {
 				aux3.setDescuento(aux2.getDescuento());
 				aux3.setPrecio(aux2.getPrecio());
 				aux3.setSubtotal(subTotal(aux2));
+				aux3.setSubtotalSinIva(this.subtotal_sin_iva);
+				this.subtotal_sin_iva = BigInteger.ZERO;
 				aux3.setDetalleProducto(detalleProducto(dcv.getDetalleProducto()));
 
 				this.tabla_venta.add(aux3);
@@ -1346,13 +1362,27 @@ public class VentaBean implements Serializable {
 	 */
 	public BigInteger subTotal(DetalleCompraVenta dp) {
 		BigInteger valor = BigInteger.ZERO;
+		this.subtotal_sin_iva = BigInteger.ZERO;
 		if (dp != null) {
 			DetalleCompraVenta venta = dp;
 			BigInteger cantidad = new BigInteger(String.valueOf(venta.getCantidad()));
 			valor = cantidad.multiply(venta.getPrecio());
-			valor = valor.subtract(venta.getDescuento());
+			valor = valor.subtract(cantidad.multiply(venta.getDescuento()));
+			subtotalSinIva(venta.getPrecio(),cantidad,venta.getDescuento());
 		}
 		return valor;
+	}
+
+	public void subtotalSinIva(BigInteger valor, BigInteger cantidad, BigInteger descuento) {
+		// SIN IVA
+		int iva = Integer.parseInt(this.venta.getIva());
+		double per =  (double) (iva / 100d);
+		BigDecimal precio = new BigDecimal(valor);
+		precio = precio.multiply(new BigDecimal(per));
+		BigInteger valorIva= precio.toBigInteger();
+		BigInteger valorProducto = valor.subtract(valorIva);
+		this.subtotal_sin_iva = cantidad.multiply(valorProducto);
+		this.subtotal_sin_iva = this.subtotal_sin_iva.subtract(cantidad.multiply(descuento));
 	}
 
 	/**
@@ -1362,10 +1392,14 @@ public class VentaBean implements Serializable {
 	 */
 	public BigInteger total() {
 		BigInteger valor = BigInteger.ZERO;
+		BigInteger valor2 = BigInteger.ZERO;
 		for (DetalleCompraVenta v : this.tabla_venta) {
 			valor = valor.add(subTotal(v));
+			valor2 = valor2.add(this.subtotal_sin_iva);
+			this.subtotal_sin_iva = BigInteger.ZERO;
 		}
 		this.venta.setTotal(valor);
+		this.venta.setTotalSinIva(valor2);
 		return valor;
 	}
 
@@ -1622,5 +1656,13 @@ public class VentaBean implements Serializable {
 
 	public void setFilter_all_detalle_venta(List<DetalleCompraVenta> filter_all_detalle_venta) {
 		this.filter_all_detalle_venta = filter_all_detalle_venta;
+	}
+
+	public BigInteger getSubtotal_sin_iva() {
+		return subtotal_sin_iva;
+	}
+
+	public void setSubtotal_sin_iva(BigInteger subtotal_sin_iva) {
+		this.subtotal_sin_iva = subtotal_sin_iva;
 	}
 }

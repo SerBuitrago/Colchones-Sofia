@@ -32,6 +32,9 @@ public class Compra implements Serializable {
 	@Column(name="fecha_creacion")
 	private Date fechaCreacion;
 	
+	@Column(name="total_sin_iva")
+	private BigInteger totalSinIva;
+	
 	///////////////////////////////////////////////////////
 	// Map
 	///////////////////////////////////////////////////////
@@ -145,5 +148,13 @@ public class Compra implements Serializable {
 
 	public void setUsuario(Usuario usuario) {
 		this.usuario = usuario;
+	}
+
+	public BigInteger getTotalSinIva() {
+		return totalSinIva;
+	}
+
+	public void setTotalSinIva(BigInteger totalSinIva) {
+		this.totalSinIva = totalSinIva;
 	}
 }

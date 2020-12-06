@@ -31,6 +31,9 @@ public class DetalleCompraVenta implements Serializable {
 	private BigInteger precio;
 	private BigInteger subtotal;
 	
+	@Column(name="	subtotal_sin_iva")
+	private BigInteger subtotalSinIva;
+	
 	///////////////////////////////////////////////////////
 	// Map
 	///////////////////////////////////////////////////////
@@ -198,5 +201,13 @@ public class DetalleCompraVenta implements Serializable {
 
 	public void setGarantias(List<Garantia> garantias) {
 		this.garantias = garantias;
+	}
+
+	public BigInteger getSubtotalSinIva() {
+		return subtotalSinIva;
+	}
+
+	public void setSubtotalSinIva(BigInteger subtotalSinIva) {
+		this.subtotalSinIva = subtotalSinIva;
 	}
 }

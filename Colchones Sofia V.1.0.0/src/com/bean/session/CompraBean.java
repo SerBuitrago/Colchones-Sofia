@@ -1,6 +1,7 @@
 package com.bean.session;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Date;
@@ -12,6 +13,8 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
+
+import org.primefaces.PrimeFaces;
 
 import com.controller.*;
 import com.model.*;
@@ -47,6 +50,7 @@ public class CompraBean implements Serializable {
 
 	private int index;
 	private List<DetalleCompraVenta> all_detalle_compra;
+	private List<DetalleCompraVenta> filter_all_detalle_compra;
 
 	private Proveedor proveedor;
 	private String documento;
@@ -62,6 +66,8 @@ public class CompraBean implements Serializable {
 	private boolean filter_detalle_compra;
 	private boolean continuar_detalle_compra;
 	private boolean hidden_detalle_compra;
+
+	private BigInteger subtotal_sin_iva;
 
 	///////////////////////////////////////////////////////
 	// Managed
@@ -80,6 +86,7 @@ public class CompraBean implements Serializable {
 		initCompra();
 		this.error = false;
 		this.presupuesto = BigInteger.ZERO;
+		this.subtotal_sin_iva = BigInteger.ZERO;
 	}
 
 	///////////////////////////////////////////////////////
@@ -91,6 +98,10 @@ public class CompraBean implements Serializable {
 	public void initCompra() {
 		this.compra = new Compra();
 		this.compra.setId(this.generarKey());
+		this.compra.setTotal(BigInteger.ZERO);
+		this.compra.setTotalSinIva(BigInteger.ZERO);
+		this.compra.setIva(this.app.getEmpresa().getIva());
+		this.compra.setUsuario(this.sesion.getLogeado());
 		initProveedor();
 		this.tabla_compra = null;
 		this.editar = false;
@@ -701,7 +712,7 @@ public class CompraBean implements Serializable {
 					pdao.insertProveedorProducto(proveedor.getDocumento(),
 							String.valueOf(dp.getDetalleProducto().getId()));
 				}
-			} 
+			}
 		} else {
 			this.message = new FacesMessage(FacesMessage.SEVERITY_WARN, "",
 					"No se ha recibido el proveedor  a registrar.");
@@ -755,6 +766,7 @@ public class CompraBean implements Serializable {
 				this.initDetalleCompra();
 				this.index = -1;
 				DetalleCompraVenta aux = indexDetalleProducto(this.all_detalle_compra, id, 0, true, false);
+				System.out.println("INDEX: " + this.index);
 				if (this.index >= 0 && aux != null) {
 					if (aux != null && this.index >= 0 && id > 0 && aux.getDetalleProducto() != null
 							&& aux.getDetalleProducto().getId() > 0) {
@@ -766,7 +778,7 @@ public class CompraBean implements Serializable {
 						this.id_detalle_producto = id;
 					} else {
 						this.message = new FacesMessage(FacesMessage.SEVERITY_WARN, "",
-								"No se ha encontrado ningun detalle producto con ese ID " + id + ".");
+								"Ha ocurrido un error al buscar el detalle producto con ese ID " + id + ".");
 					}
 				} else {
 					this.message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "",
@@ -805,9 +817,10 @@ public class CompraBean implements Serializable {
 	 */
 	public DetalleCompraVenta indexDetalleProducto(List<DetalleCompraVenta> list, int detalle, int cantidad,
 			boolean isCantidad, boolean isVenta) {
-		this.index = -1;
+		this.index = -2;
 		if (list != null && list.size() > 0 && detalle > 0) {
 			int i = 0;
+			this.index = -1;
 			for (DetalleCompraVenta dp : list) {
 				if (dp.getDetalleProducto().getId() > 0 && dp.getDetalleProducto().getId() == detalle) {
 					this.index = i;
@@ -844,11 +857,13 @@ public class CompraBean implements Serializable {
 				aux.setCantidad(dp.getCantidad());
 			}
 
-			aux.setGarantia(dp.getDetalleProducto().getProductoBean().getGarantia());
 			aux.setPrecio(dp.getDetalleProducto().getPrecioVenta());
 			aux.setDescuento(dp.getDetalleProducto().getDescuento());
 
-			aux.setDetalleProducto(detalleProducto(dp.getDetalleProducto()));
+			DetalleProducto x = detalleProducto(dp.getDetalleProducto());
+			aux.setDetalleProducto(x);
+
+			aux.setGarantia(x.getProductoBean().getGarantia());
 		}
 		return aux;
 	}
@@ -870,18 +885,42 @@ public class CompraBean implements Serializable {
 			aux.setColor(dp.getColor());
 			aux.setDimension(dp.getDimension());
 			aux.setPrecioVenta(dp.getPrecioVenta());
-			aux.setPrecioCompra(dp.getPrecioCompra());
 			aux.setDescuento(dp.getDescuento());
 			aux.setFoto(dp.getFoto());
 			aux.setStock(dp.getStock());
 			aux.setStockMinimo(dp.getStockMinimo());
 
 			aux.getProductoBean().setNombre(dp.getProductoBean().getNombre());
-
+			aux.getProductoBean().setGarantia(dp.getProductoBean().getGarantia());
 			aux.getProductoBean().getCategoriaBean().setNombre(dp.getProductoBean().getCategoriaBean().getNombre());
-
 		}
 		return aux;
+	}
+
+	/**
+	 * Metodo que permite seleccionar un detalle producto.
+	 */
+	public void seleccionarDetalleProducto() {
+		String id = Face.get("id-detalle-producto");
+		FacesMessage message = null;
+		if (Convertidor.isCadena(id)) {
+			if (Convertidor.isNumber(id)) {
+				id_detalle_producto = Integer.parseInt(id);
+				filtrarDetalleProducto();
+				if (this.filter_detalle_compra) {
+					PrimeFaces current = PrimeFaces.current();
+					current.executeScript("PF('sofia-dialog-producto-update').hide();");
+				}
+			} else {
+				message = new FacesMessage(FacesMessage.SEVERITY_WARN, "",
+						"El campo ID detalle producto solo debe contener caracteres numericos.");
+			}
+		} else {
+			message = new FacesMessage(FacesMessage.SEVERITY_WARN, "", "El campo ID detalle producto es obligatorio.");
+		}
+		if (message != null) {
+			FacesContext.getCurrentInstance().addMessage(null, message);
+		}
 	}
 
 	/**
@@ -942,44 +981,55 @@ public class CompraBean implements Serializable {
 						if (detalle_compra.getDescuento() == null) {
 							detalle_compra.setDescuento(BigInteger.ZERO);
 						}
-						BigInteger mult = this.detalle_compra.getPrecio()
-								.multiply(new BigInteger(String.valueOf(detalle_compra.getCantidad())));
-						if (mult.compareTo(detalle_compra.getDescuento()) >= 0) {
-							mult = Operacion.resta(mult, this.detalle_compra.getDescuento());
-							BigInteger aux = Operacion.resta(this.presupuesto, mult);
-							if (Operacion.mayorIgualZero(aux)) {
-								this.detalle_compra.setSubtotal(mult);
-								this.presupuesto = aux;
-								this.continuar_detalle_compra = true;
-								DetalleCompraVenta fp = indexDetalleProducto(this.tabla_compra,
-										this.detalle_compra.getDetalleProducto().getId(), 0, false, false);
-								int index = this.index;
-								if (fp != null) {
-									fp.setDescuento(this.detalle_compra.getDescuento());
-									int cantidad = fp.getCantidad() + this.detalle_compra.getCantidad();
-									fp.setCantidad(cantidad);
-									fp.setPrecio(this.detalle_compra.getPrecio());
-									fp.getDetalleProducto().setPrecioCompra(fp.getPrecio());
-									mult = fp.getPrecio().multiply(new BigInteger(String.valueOf(fp.getCantidad())));
-									mult = Operacion.resta(mult, fp.getDescuento());
-									fp.setSubtotal(mult);
-									this.detalle_compra = fp;
-									this.tabla_compra.set(index, fp);
+						if (detalle_compra.getPrecio().compareTo(detalle_compra.getDescuento()) >= 0) {
+							BigInteger mult = this.detalle_compra.getPrecio()
+									.multiply(new BigInteger(String.valueOf(detalle_compra.getCantidad())));
+							if (mult.compareTo(detalle_compra.getDescuento()) >= 0) {
+								mult = Operacion.resta(mult, this.detalle_compra.getDescuento());
+								BigInteger aux = Operacion.resta(this.presupuesto, mult);
+								if (Operacion.mayorIgualZero(aux)) {
+									this.detalle_compra.setSubtotal(mult);
+									this.presupuesto = aux;
+									this.continuar_detalle_compra = true;
+									DetalleCompraVenta fp = indexDetalleProducto(this.tabla_compra,
+											this.detalle_compra.getDetalleProducto().getId(), 0, false, false);
+									int index = this.index;
+									if (fp != null) {
+										fp.setDescuento(this.detalle_compra.getDescuento());
+										int cantidad = fp.getCantidad() + this.detalle_compra.getCantidad();
+										fp.setCantidad(cantidad);
+										fp.setPrecio(this.detalle_compra.getPrecio());
+										fp.getDetalleProducto().setPrecioCompra(fp.getPrecio());
+										mult = fp.getPrecio()
+												.multiply(new BigInteger(String.valueOf(fp.getCantidad())));
+										mult = Operacion.resta(mult, fp.getDescuento());
+										fp.setSubtotal(subTotal(fp));
+										fp.setSubtotalSinIva(this.subtotal_sin_iva);
+										this.subtotal_sin_iva = BigInteger.ZERO;
+										this.detalle_compra = fp;
+										this.tabla_compra.set(index, fp);
+									} else {
+										this.detalle_compra.setSubtotal(subTotal(this.detalle_compra));
+										this.detalle_compra.setSubtotalSinIva(subtotal_sin_iva);
+										this.subtotal_sin_iva = BigInteger.ZERO;
+										this.tabla_compra.add(this.detalle_compra);
+									}
+									this.compra.setTotal(this.total(this.tabla_compra));
+									this.initDetalleCompra();
+									this.index = -1;
+									message = new FacesMessage(FacesMessage.SEVERITY_INFO, "",
+											"Se ha agregado el presupuesto disponible es " + presupuesto + ".");
 								} else {
-									this.tabla_compra.add(this.detalle_compra);
+									message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "",
+											"No hay presupuesto para comprar ese producto con esa cantidad, vuelva a intentarlo.");
 								}
-								this.compra.setTotal(this.total(this.tabla_compra));
-								this.initDetalleCompra();
-								this.index = -1;
-								message = new FacesMessage(FacesMessage.SEVERITY_INFO, "",
-										"Se ha agregado el presupuesto disponible es " + presupuesto + ".");
 							} else {
-								message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "",
-										"No hay presupuesto para comprar ese producto con esa cantidad, vuelva a intentarlo.");
+								message = new FacesMessage(FacesMessage.SEVERITY_WARN, "",
+										"El campo descuento no puede ser mayor a subtotal de precio unidad por la cantidad.");
 							}
-						} else {
+						}else {
 							message = new FacesMessage(FacesMessage.SEVERITY_WARN, "",
-									"El campo descuento no puede ser mayor a subtotal de precio unidad por la cantidad.");
+									"El campo descuento no puede ser mayor al precio de compra del producto.");
 						}
 					} else {
 						message = new FacesMessage(FacesMessage.SEVERITY_WARN, "",
@@ -1006,19 +1056,51 @@ public class CompraBean implements Serializable {
 	// Method Operation
 	///////////////////////////////////////////////////////
 	/**
-	 * Metodo que permite calcular el total de la venta.
+	 * Metodo que calcula un subtotal de los productos seleccionados.
 	 * 
-	 * @param list representa la lista de detalle de venta.
+	 * @return representa el valor obtenido.
+	 */
+	public BigInteger subTotal(DetalleCompraVenta dp) {
+		BigInteger valor = BigInteger.ZERO;
+		this.subtotal_sin_iva = BigInteger.ZERO;
+		if (dp != null) {
+			DetalleCompraVenta venta = dp;
+			BigInteger cantidad = new BigInteger(String.valueOf(venta.getCantidad()));
+			valor = cantidad.multiply(venta.getPrecio());
+			valor = valor.subtract(cantidad.multiply(venta.getDescuento()));
+			subtotalSinIva(venta.getPrecio(), cantidad, venta.getDescuento());
+		}
+		return valor;
+	}
+
+	public void subtotalSinIva(BigInteger valor, BigInteger cantidad, BigInteger descuento) {
+		// SIN IVA
+		int iva = Integer.parseInt(this.compra.getIva());
+		double per = (double) (iva / 100d);
+		BigDecimal precio = new BigDecimal(valor);
+		precio = precio.multiply(new BigDecimal(per));
+		BigInteger valorIva = precio.toBigInteger();
+		BigInteger valorProducto = valor.subtract(valorIva);
+		this.subtotal_sin_iva = cantidad.multiply(valorProducto);
+		this.subtotal_sin_iva = this.subtotal_sin_iva.subtract(cantidad.multiply(descuento));
+	}
+
+	/**
+	 * Metodo que permite calular el total a pagar.
+	 * 
 	 * @return el total a pagar.
 	 */
 	public BigInteger total(List<DetalleCompraVenta> list) {
-		BigInteger aux = BigInteger.ZERO;
-		if (list != null && list.size() > 0) {
-			for (DetalleCompraVenta dcv : list) {
-				aux = aux.add(dcv.getSubtotal());
-			}
+		BigInteger valor = BigInteger.ZERO;
+		BigInteger valor2 = BigInteger.ZERO;
+		for (DetalleCompraVenta v : list) {
+			valor = valor.add(subTotal(v));
+			valor2 = valor2.add(this.subtotal_sin_iva);
+			this.subtotal_sin_iva = BigInteger.ZERO;
 		}
-		return aux;
+		this.compra.setTotal(valor);
+		this.compra.setTotalSinIva(valor2);
+		return valor;
 	}
 
 	///////////////////////////////////////////////////////
@@ -1242,5 +1324,21 @@ public class CompraBean implements Serializable {
 
 	public void setDetalle_seleccionado_ver(DetalleCompraVenta detalle_seleccionado_ver) {
 		this.detalle_seleccionado_ver = detalle_seleccionado_ver;
+	}
+
+	public List<DetalleCompraVenta> getFilter_all_detalle_compra() {
+		return filter_all_detalle_compra;
+	}
+
+	public void setFilter_all_detalle_compra(List<DetalleCompraVenta> filter_all_detalle_compra) {
+		this.filter_all_detalle_compra = filter_all_detalle_compra;
+	}
+
+	public BigInteger getSubtotal_sin_iva() {
+		return subtotal_sin_iva;
+	}
+
+	public void setSubtotal_sin_iva(BigInteger subtotal_sin_iva) {
+		this.subtotal_sin_iva = subtotal_sin_iva;
 	}
 }

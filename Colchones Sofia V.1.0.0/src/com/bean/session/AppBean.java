@@ -57,6 +57,8 @@ public class AppBean implements Serializable {
 
 	private int index_telefono;
 	private int index_mail;
+	private String statu_email;
+	private String statu_phone;
 
 	private boolean error;
 	private byte[] image;
@@ -200,6 +202,7 @@ public class AppBean implements Serializable {
 	 * Metodo que permite activar el formulario de agregar telefono.
 	 */
 	public void activarAddTelefono() {
+		empresaInformacion = new EmpresaInformacion();
 		this.agregar_telefono_empresa = (!agregar_telefono_empresa);
 	}
 
@@ -235,7 +238,7 @@ public class AppBean implements Serializable {
 			FacesContext.getCurrentInstance().addMessage(null, aviso);
 		}
 	}
-	
+
 	/**
 	 * Metodo que permite eliminar un telefono.
 	 */
@@ -245,24 +248,25 @@ public class AppBean implements Serializable {
 			if (this.empresaInformacion != null && this.empresaInformacion.getId() > 0) {
 				EmpresaInformacionController e = new EmpresaInformacionController();
 				this.empresaInformacion = e.find(this.empresaInformacion.getId());
-				if(this.empresaInformacion != null) {
+				if (this.empresaInformacion != null) {
 					e.delete(this.empresaInformacion);
 					aviso = new FacesMessage(FacesMessage.SEVERITY_INFO, "",
 							"Se ha eliminado el telefono con ID " + this.empresaInformacion.getId() + ".");
 					this.renderizar_empresa_informacion_telefono = 0;
-					empresaInformacion = new EmpresaInformacion(); 
+					empresaInformacion = new EmpresaInformacion();
 					this.index_telefono = -1;
 					this.agregar_telefono_empresa = false;
 					this.app();
-				}else {
-					this.aviso = new FacesMessage(FacesMessage.SEVERITY_ERROR, "", "No existe ningun telefono con el ID "+this.empresaInformacion.getId()+".");
+				} else {
+					this.aviso = new FacesMessage(FacesMessage.SEVERITY_ERROR, "",
+							"No existe ningun telefono con el ID " + this.empresaInformacion.getId() + ".");
 				}
-			}else {
+			} else {
 				this.aviso = new FacesMessage(FacesMessage.SEVERITY_WARN, "", "No se recibio el ID del telefono.");
 			}
 		}
-		
-		if(this.aviso != null) {
+
+		if (this.aviso != null) {
 			FacesContext.getCurrentInstance().addMessage(null, aviso);
 		}
 	}
@@ -275,23 +279,23 @@ public class AppBean implements Serializable {
 		if (Convertidor.isCadena(id)) {
 			int idInt = Integer.parseInt(id);
 			EmpresaInformacionController e = new EmpresaInformacionController();
-			EmpresaInformacion aux= e.find(idInt);
-			if(aux != null) {
+			EmpresaInformacion aux = e.find(idInt);
+			if (aux != null) {
 				boolean estado = (!aux.getEstado());
 				aux.setEstado(estado);
 				e.update(aux);
-				aviso = new FacesMessage(FacesMessage.SEVERITY_INFO, "",
-						"Se ha cambiado el estado del telefono con ID " + aux.getId() + " a estado "
-								+ ((estado) ? " Activo." : " Bloqueado.") + ".");
+				aviso = new FacesMessage(FacesMessage.SEVERITY_INFO, "", "Se ha cambiado el estado del telefono con ID "
+						+ aux.getId() + " a estado " + ((estado) ? " Activo." : " Bloqueado.") + ".");
 				this.renderizar_empresa_informacion_telefono = 0;
 				this.agregar_telefono_empresa = false;
-			}else {
-				this.aviso = new FacesMessage(FacesMessage.SEVERITY_ERROR, "", "No existe ningun telefono con ID "+idInt+".");
+			} else {
+				this.aviso = new FacesMessage(FacesMessage.SEVERITY_ERROR, "",
+						"No existe ningun telefono con ID " + idInt + ".");
 			}
 		} else {
 			this.aviso = new FacesMessage(FacesMessage.SEVERITY_WARN, "", "No se recibio el ID del telefono.");
 		}
-		if(this.aviso != null) {
+		if (this.aviso != null) {
 			FacesContext.getCurrentInstance().addMessage(null, aviso);
 		}
 	}
@@ -301,27 +305,44 @@ public class AppBean implements Serializable {
 	 */
 	public void editarTelefono() {
 		this.aviso = null;
-		if (this.empresaInformacion != null && this.empresaInformacion.getId() > 0 && this.index_telefono >= 0) {
-			EmpresaInformacionController e = new EmpresaInformacionController();
-			String numero = Convertidor.telefono(empresaInformacion.getTelefono());
-			EmpresaInformacion aux = e.findByField("telefono", numero);
-			if (aux == null) {
-				this.empresaInformacion.setTelefono(numero);
-				e.update(empresaInformacion);
-				aviso = new FacesMessage(FacesMessage.SEVERITY_INFO, "",
-						"Se ha actualizado el telefono con ID " + this.empresaInformacion.getId() + ".");
-				this.empresa_informacion_telefono.set(this.index_telefono, empresaInformacion);
-				empresaInformacion = new EmpresaInformacion();
-				initDialogTelefonoForm(2);
-				this.index_telefono = -1;
-				this.agregar_telefono_empresa = false;
+		if (this.statu_phone != null) {
+			if (this.empresaInformacion != null && this.empresaInformacion.getId() > 0 && this.index_telefono >= 0) {
+				EmpresaInformacionController e = new EmpresaInformacionController();
+				String numero = Convertidor.telefono(empresaInformacion.getTelefono());
+				boolean entrar = false;
+				EmpresaInformacion aux = null;
+				if (this.statu_phone.equals(numero)) {
+					entrar = true;
+				} else {
+					aux = e.findByField("telefono", numero);
+					if (aux != null) {
+						entrar = true;
+					}
+				}
+				if (entrar) {
+					this.empresaInformacion.setEmpresaBean(this.empresa);
+					this.empresaInformacion.setTelefono(numero);
+					e.update(empresaInformacion);
+					aviso = new FacesMessage(FacesMessage.SEVERITY_INFO, "",
+							"Se ha actualizado el telefono con ID " + this.empresaInformacion.getId() + ".");
+					this.empresa_informacion_telefono.set(this.index_telefono, empresaInformacion);
+					empresaInformacion = new EmpresaInformacion();
+					initDialogTelefonoForm(2);
+					this.index_telefono = -1;
+					this.agregar_telefono_empresa = false;
+					this.statu_phone = null;
+				} else {
+					aviso = new FacesMessage(FacesMessage.SEVERITY_ERROR, "", "El telefono ya esta registrado.");
+				}
 			} else {
-				aviso = new FacesMessage(FacesMessage.SEVERITY_ERROR, "", "El telefono ya esta registrado.");
+				aviso = new FacesMessage(FacesMessage.SEVERITY_WARN, "", "El telefono no puede estar vacio.");
 			}
 		} else {
-			aviso = new FacesMessage(FacesMessage.SEVERITY_WARN, "", "El telefono no puede estar vacio.");
+			aviso = new FacesMessage(FacesMessage.SEVERITY_WARN, "", "No has seleccionado ningun telefono.");
 		}
-		FacesContext.getCurrentInstance().addMessage(null, aviso);
+		if (aviso != null) {
+			FacesContext.getCurrentInstance().addMessage(null, aviso);
+		}
 	}
 
 	///////////////////////////////////////////////////////
@@ -352,11 +373,12 @@ public class AppBean implements Serializable {
 			this.aviso = new FacesMessage(FacesMessage.SEVERITY_WARN, "", "No se recibio el ID del correo.");
 		}
 	}
-	
+
 	/**
 	 * Metodo que permite activar el formulario de agregar email.
 	 */
 	public void activarAddEmail() {
+		this.empresaInformacion = new EmpresaInformacion();
 		this.agregar_email_empresa = (!agregar_email_empresa);
 	}
 
@@ -387,7 +409,7 @@ public class AppBean implements Serializable {
 		}
 		FacesContext.getCurrentInstance().addMessage(null, aviso);
 	}
-	
+
 	/**
 	 * Metodo que permite eliminar un telefono.
 	 */
@@ -404,12 +426,12 @@ public class AppBean implements Serializable {
 				this.index_mail = -1;
 				this.agregar_email_empresa = false;
 				this.app();
-			}else {
+			} else {
 				this.aviso = new FacesMessage(FacesMessage.SEVERITY_WARN, "", "No se recibio el ID del email.");
 			}
 		}
-		
-		if(this.aviso != null) {
+
+		if (this.aviso != null) {
 			FacesContext.getCurrentInstance().addMessage(null, aviso);
 		}
 	}
@@ -420,7 +442,7 @@ public class AppBean implements Serializable {
 	public void estadoMail() {
 		consultarMail();
 		if (this.aviso == null && index_mail >= 0) {
-			if (this.empresaInformacion != null &&  this.empresaInformacion.getId() > 0) {
+			if (this.empresaInformacion != null && this.empresaInformacion.getId() > 0) {
 				EmpresaInformacionController e = new EmpresaInformacionController();
 				boolean estado = (!this.empresaInformacion.getEstado());
 				this.empresaInformacion.setEstado(estado);
@@ -444,25 +466,43 @@ public class AppBean implements Serializable {
 	 */
 	public void editarMail() {
 		this.aviso = null;
-		if (this.empresaInformacion != null && this.empresaInformacion.getId() > 0 && this.index_mail >= 0) {
-			EmpresaInformacionController e = new EmpresaInformacionController();
-			EmpresaInformacion aux = e.findByField("email", empresaInformacion.getEmail());
-			if (aux == null) {
-				e.update(empresaInformacion);
-				aviso = new FacesMessage(FacesMessage.SEVERITY_INFO, "",
-						"Se ha actualizado el correo con ID " + this.empresaInformacion.getId() + ".");
-				this.empresa_informacion_mail.set(this.index_mail, empresaInformacion);
-				empresaInformacion = new EmpresaInformacion();
-				initDialogMailForm(2);
-				this.index_mail = -1;
+		if (this.statu_email != null) {
+			if (this.empresaInformacion != null && this.empresaInformacion.getId() > 0 && this.index_mail >= 0) {
+				EmpresaInformacionController e = new EmpresaInformacionController();
+				boolean entrar = false;
+
+				EmpresaInformacion aux = null;
+				if (this.statu_email.equals(empresaInformacion.getEmail())) {
+					entrar = true;
+				} else {
+					aux = e.findByField("email", empresaInformacion.getEmail());
+					if (aux != null) {
+						entrar = true;
+					}
+				}
+				if (entrar) {
+					empresaInformacion.setEmpresaBean(app.getEmpresa());
+					e.update(empresaInformacion);
+					aviso = new FacesMessage(FacesMessage.SEVERITY_INFO, "",
+							"Se ha actualizado el correo con ID " + this.empresaInformacion.getId() + ".");
+					this.empresa_informacion_mail.set(this.index_mail, empresaInformacion);
+					empresaInformacion = new EmpresaInformacion();
+					initDialogMailForm(2);
+					this.index_mail = -1;
+					this.statu_email = null;
+				} else {
+					aviso = new FacesMessage(FacesMessage.SEVERITY_ERROR, "", "El correo ya esta registrado.");
+				}
 			} else {
-				aviso = new FacesMessage(FacesMessage.SEVERITY_ERROR, "", "El correo ya esta registrado.");
+				aviso = new FacesMessage(FacesMessage.SEVERITY_WARN, "", "El correo no puede estar vacio.");
 			}
 		} else {
-			aviso = new FacesMessage(FacesMessage.SEVERITY_WARN, "", "El correo no puede estar vacio.");
+			aviso = new FacesMessage(FacesMessage.SEVERITY_WARN, "", "No has seleccionado ningun correo.");
 		}
 		this.renderizar_empresa_informacion_mail = 0;
-		FacesContext.getCurrentInstance().addMessage(null, aviso);
+		if (this.aviso != null) {
+			FacesContext.getCurrentInstance().addMessage(null, aviso);
+		}
 	}
 
 	///////////////////////////////////////////////////////
@@ -485,8 +525,10 @@ public class AppBean implements Serializable {
 	 */
 	public void statuEditarTelefono() {
 		this.index_telefono = -1;
+		this.statu_phone = null;
 		consultarTelefono();
 		if (this.aviso == null && index_telefono >= 0) {
+			this.statu_phone = Convertidor.telefono(this.empresaInformacion.getTelefono());
 			this.initDialogTelefonoForm(1);
 		} else {
 			FacesContext.getCurrentInstance().addMessage(null, aviso);
@@ -498,8 +540,10 @@ public class AppBean implements Serializable {
 	 */
 	public void statuEditarMail() {
 		this.index_mail = -1;
+		this.statu_email = null;
 		consultarMail();
 		if (this.aviso == null && index_mail >= 0) {
+			this.statu_email = this.empresaInformacion.getEmail();
 			this.initDialogMailForm(1);
 		} else {
 			FacesContext.getCurrentInstance().addMessage(null, aviso);
@@ -889,5 +933,21 @@ public class AppBean implements Serializable {
 
 	public void setNIT(String nIT) {
 		NIT = nIT;
+	}
+
+	public String getStatu_email() {
+		return statu_email;
+	}
+
+	public void setStatu_email(String statu_email) {
+		this.statu_email = statu_email;
+	}
+
+	public String getStatu_phone() {
+		return statu_phone;
+	}
+
+	public void setStatu_phone(String statu_phone) {
+		this.statu_phone = statu_phone;
 	}
 }
