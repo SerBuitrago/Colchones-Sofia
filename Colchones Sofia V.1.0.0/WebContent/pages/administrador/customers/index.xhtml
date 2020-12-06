@@ -59,10 +59,11 @@
 								<!--           -->
 								<h:panelGroup layout="block" styleClass="p-field p-col p-md-4">
 									<p:outputLabel for="fecha-inicio" value="Fecha Inicio:" />
-									<p:datePicker id="fecha-inicio" required="true"
+									<p:calendar id="fecha-inicio" required="true"
+										pattern="MM/dd/yyyy HH:mm:ss"
 										requiredMessage="El campo fecha inicio no puede estar vacia."
 										value="#{reporte.fecha_inicio}">
-									</p:datePicker>
+									</p:calendar>
 								</h:panelGroup>
 
 								<!--          -->
@@ -70,10 +71,11 @@
 								<!--          -->
 								<h:panelGroup layout="block" styleClass="p-field p-col p-md-4">
 									<p:outputLabel for="fecha-fin" value="Fecha Fin:" />
-									<p:datePicker id="fecha-fin" required="true"
+									<p:calendar id="fecha-fin" required="true"
+										pattern="MM/dd/yyyy HH:mm:ss"
 										requiredMessage="El campo fecha fin no puede estar vacia."
 										value="#{reporte.fecha_fin}">
-									</p:datePicker>
+									</p:calendar>
 								</h:panelGroup>
 							</h:panelGroup>
 
@@ -223,13 +225,16 @@
 				<!-- REPORST -->
 				<!--         -->
 				<p:tab title="Género">
-				<p:pieChart model="#{chartjs.pie_cliente_genero}"  style="width: 100%; height: 500px;"/>
+					<p:pieChart model="#{chartjs.pie_cliente_genero}"
+						style="width: 100%; height: 500px;" />
 				</p:tab>
 				<p:tab title="Cantidad Venta">
-					<p:barChart model="#{chartjs.horizontal_chart_model_cliente_cantidad_venta}" />
+					<p:barChart
+						model="#{chartjs.horizontal_chart_model_cliente_cantidad_venta}" />
 				</p:tab>
 				<p:tab title="Venta Total">
-					<p:barChart model="#{chartjs.horizontal_chart_model_cliente_total_venta}" />
+					<p:barChart
+						model="#{chartjs.horizontal_chart_model_cliente_total_venta}" />
 				</p:tab>
 			</p:tabView>
 		</p:fieldset>

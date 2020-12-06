@@ -25,7 +25,7 @@
 	</ui:define>
 
 	<!--       -->
-	<!-- IMAGE --> 
+	<!-- IMAGE -->
 	<!--       -->
 	<ui:define name="component-title-img-advaced">
 		<h:graphicImage library="img" name="all/buy.jpeg"
@@ -79,7 +79,7 @@
 				emptyMessage="No se encontro ninguna venta." reflow="true"
 				paginator="true" rows="20" rowIndexVar="index"
 				rowsPerPageTemplate="5,10,15,20,50,100"
-				rowStyleClass="#{v.detalleCompraVentas.size() == 0 ? 'sofia-table-color-error-rgba' : null}">
+				rowStyleClass="#{v.detalleCompraVentas.size() == 0 ? 'sofia-table-color-error-rgba' : v.totalSinIva le 0 or v.total le 0 ? 'sofia-table-color-warn-rgba' : 'null'}">
 
 				<!-- HEADER -->
 				<f:facet name="header">
@@ -116,11 +116,38 @@
 					</h:panelGroup>
 				</p:column>
 
+				<!-- PROVIDER -->
+				<p:column headerText="Proveedor" footerText="Proveedor"
+					filterBy="#{v.proveedorBean.documento}"
+					sortBy="#{v.proveedorBean.documento}" filterMatchMode="contains">
+					<h:panelGroup layout="block"
+						styleClass="p-d-flex p-jc-center p-ac-center">
+						<h:outputLabel value="#{v.proveedorBean.documento}"
+							styleClass="p-as-center" />
+					</h:panelGroup>
+				</p:column>
+
+				<!-- USER REGISTER -->
+				<p:column
+					filterBy="#{v.usuario.persona.documento} #{v.usuario.rolBean.rol}"
+					footerText="Registro" filterMatchMode="contains"
+					sortBy="#{v.usuario.persona.documento} #{v.usuario.rolBean.rol}">
+					<f:facet name="header">
+						<h:outputText value="Registro" />
+					</f:facet>
+					<h:panelGroup layout="block"
+						styleClass="p-d-flex p-jc-center p-ac-center p-ai-center p-text-center">
+						<h:outputText
+							value="#{v.usuario != null ?  v.usuario.persona.documento : '----'}"
+							styleClass="sofia-statu #{v.usuario.rolBean.rol == 'ADMINISTRADOR'  ? 'sofia-statu-succes' : 'sofia-statu-primary'}" />
+					</h:panelGroup>
+				</p:column>
+
 				<!-- DATE -->
 				<p:column headerText="Fecha" footerText="Fecha"
 					sortBy="#{v.fechaCreacion}">
 					<h:panelGroup layout="block"
-						styleClass="p-d-flex p-jc-center p-ac-center">
+						styleClass="p-d-flex p-jc-center p-ac-center p-text-center">
 						<h:outputLabel value="#{v.fechaCreacion}" styleClass="p-as-center">
 							<f:convertDateTime pattern="dd/MM/yyyy HH:mm:ss" />
 						</h:outputLabel>
@@ -141,10 +168,21 @@
 				<!-- TOTAL -->
 				<p:column headerText="Total" footerText="Total" sortBy="#{v.total}">
 					<h:panelGroup layout="block"
-						styleClass="p-d-flex p-jc-end p-ac-center">
-						<h:outputLabel value="#{v.total}" styleClass="p-as-center">
-							<f:convertNumber currencySymbol="$" type="currency" />
-						</h:outputLabel>
+						styleClass="p-d-flex p-jc-center p-ac-center p-flex-column">
+						<h:panelGroup layout="block"
+							styleClass="p-d-flex p-jc-star p-ac-center p-ai-center p-text-center">
+							<h:outputText value="#{v.totalSinIva}"
+								styleClass="sofia-statu sofia-statu-succes">
+								<f:convertNumber currencySymbol="$" type="currency" />
+							</h:outputText>
+						</h:panelGroup>
+						<h:panelGroup layout="block"
+							styleClass="p-d-flex p-jc-end p-ac-center p-ai-center p-text-center p-mt-1">
+							<h:outputText value="#{v.total}"
+								styleClass="sofia-statu sofia-statu-info">
+								<f:convertNumber currencySymbol="$" type="currency" />
+							</h:outputText>
+						</h:panelGroup>
 					</h:panelGroup>
 				</p:column>
 
@@ -203,7 +241,7 @@
 									<h:panelGroup layout="block">
 										<!-- IMAGE -->
 										<h:panelGroup layout="block"
-											style="width:100px; heigth:100px; display:block; margin:auto">
+											style="width:100px; height:100px; display:block; margin:auto">
 											<h:graphicImage
 												rendered="#{vdp.detalleProducto.foto == null}" library="img"
 												name="product.png"
@@ -309,18 +347,23 @@
 						value="#{compra.detalle_seleccionado_ver.detalleProducto.id}" />
 
 					<h:outputText value="Garantia:" />
-					<h:outputText value="#{compra.detalle_seleccionado_ver.garantia}" />
+					<h:outputText
+						value="#{compra.detalle_seleccionado_ver.garantia} Año"
+						styleClass="sofia-statu sofia-statu-succes" />
 
 					<h:outputText value="Cantidad:" />
 					<h:outputText value="#{compra.detalle_seleccionado_ver.cantidad}" />
 
 					<h:outputText value="Precio U/C:" />
-					<h:outputText value="#{compra.detalle_seleccionado_ver.precio}">
+					<h:outputText value="#{compra.detalle_seleccionado_ver.precio}"
+						styleClass="sofia-statu sofia-statu-succes">
 						<f:convertNumber currencySymbol="$" type="currency" />
 					</h:outputText>
 
 					<h:outputText value="Descuento:" />
-					<h:outputText value="#{compra.detalle_seleccionado_ver.descuento}">
+					<h:outputText value="#{compra.detalle_seleccionado_ver.descuento}"
+						styleClass="sofia-statu 
+					   #{compra.detalle_seleccionado_ver.descuento gt 0 ? 'sofia-statu-succes' : 'sofia-statu-warn'}">
 						<f:convertNumber currencySymbol="$" type="currency" />
 					</h:outputText>
 

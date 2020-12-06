@@ -151,7 +151,7 @@
 
 				<h:panelGroup layout="block" styleClass="p-field p-col p-md-3">
 					<p:outputLabel for="precio-detalle-producto" value="Precio Venta:">
-						<h:outputText value="Incluye IVA" styleClass="sofia-statu sofia-statu-succes"/>
+						<h:outputText value="INCLUYE IVA #{app.app.empresa.iva}%" styleClass="sofia-statu sofia-statu-succes" style="margin-left:0.4em"/>
 					</p:outputLabel>
 					<p:inputNumber id="precio-detalle-producto"
 						value="#{detalle_producto.detalle_producto.precioVenta}" />

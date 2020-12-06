@@ -35,38 +35,43 @@
 			<p:growl showDetail="true" />
 
 			<h:panelGroup layout="block" styleClass="sofia-container-card-main">
-				<div id="wrapper"
-					style="overflow: hidden !important; padding-bottom: 1em;">
+				<div id="wrapper" class="p-d-flex p-jc-star p-ac-center"
+					style="overflow: hidden !important; padding-bottom: 1em; width: 100%;">
+
 					<div id="sidebar">
-						<h3>CARRITO</h3>
-						<div id="cart2">
-							<h:outputText rendered="#{venta_online.tabla_venta.size() == 0}">
-								<span class="empty">No has agregado.</span>
-							</h:outputText>
-							<ui:repeat var="c" value="#{venta_online.tabla_venta}">
-								<div class="cart-item" style="width: auto;">
-									<div class="img-wrap">
-										<h:graphicImage rendered="#{c.detalleProducto.foto == null}"
-											library="img" styleClass="product.png"
-											style="object-fit: contain;width: 100%;height: 100%;position: none !important;top: 0!important;" />
-										<p:graphicImage rendered="#{c.detalleProducto.foto != null}"
-											value="#{image.detalle_producto}" cache="false"
-											style="object-fit: contain;width: 100%;height: 100%;position: none !important;top: 0!important;">
-											<f:param name="id-detalle-producto"
-												value="#{c.detalleProducto.id}" />
-										</p:graphicImage>
+						<h:panelGroup layout="block" styleClass="update-car-sofia-main"
+							id="update-car-sofia-main">
+							<h3>CARRITO</h3>
+							<div id="cart2" style="overflow: hidden;">
+								<h:outputText rendered="#{venta_online.tabla_venta.size() == 0}">
+									<span class="empty">No has agregado.</span>
+								</h:outputText>
+								<ui:repeat var="c" value="#{venta_online.tabla_venta}">
+									<div class="cart-item" style="width: auto;">
+										<div class="img-wrap">
+											<h:graphicImage rendered="#{c.detalleProducto.foto == null}"
+												library="img" styleClass="product.png"
+												style="object-fit: contain;width: 100%;height: 100%;position: none !important;top: 0!important;" />
+											<p:graphicImage rendered="#{c.detalleProducto.foto != null}"
+												value="#{image.detalle_producto}" cache="false"
+												style="object-fit: contain;width: 100%;height: 100%;position: none !important;top: 0!important;">
+												<f:param name="id-detalle-producto"
+													value="#{c.detalleProducto.id}" />
+											</p:graphicImage>
+										</div>
+										<span class="sofia-statu sofia-statu-primary"
+											style="position: absolute; bottom: 2px; right: 10px; /* border: 2px solid black!important; */ font-size: 10px !important;">#{c.cantidad}</span>
+										<span>#{c.detalleProducto.productoBean.nombre}</span> <strong>
+											<h:outputText value="#{c.subtotal}">
+												<f:convertNumber currencySymbol="$" type="currency" />
+											</h:outputText>
+										</strong>
+										<div class="cart-item-border" style="margin-top: .2em"></div>
 									</div>
-									<span class="sofia-statu sofia-statu-primary"
-										style="position: absolute; bottom: 2px; right: 10px; /* border: 2px solid black!important; */ font-size: 10px !important;">#{c.cantidad}</span>
-									<span>#{c.detalleProducto.productoBean.nombre}</span> <strong>
-										<h:outputText value="#{c.subtotal}">
-											<f:convertNumber currencySymbol="$" type="currency" />
-										</h:outputText>
-									</strong>
-									<div class="cart-item-border" style="margin-top: .2em"></div>
-								</div>
-							</ui:repeat>
-						</div>
+								</ui:repeat>
+							</div>
+						</h:panelGroup>
+
 
 						<h3>CATEGORIAS</h3>
 						<div class="checklist categories">
@@ -91,7 +96,9 @@
 									<li><p:commandLink>
 											<span
 												style="background: #{c.nombre == 'ROJO' ? 'red' :
-											 c.nombre == 'AZUL' ? 'blue' :  c.nombre == 'BLANCO' ? 'white' : c.nombre == 'GRIS' ? 'gray' : 'black'}"></span>#{c.nombre} (#{c.cantidad})
+											 c.nombre == 'AZUL' ? 'blue' :  c.nombre == 'BLANCO' ? 'white' : c.nombre == 'GRIS' ? 'gray' : c.nombre == 'NEGRO' ? 'black' : 
+											 c.nombre == 'AMARRILLO' ? 'yellow' : c.nombre =='MORADO' ? 'purple' : c.nombre =='ROSADO' ? 'pink' : 
+											 c.nombre == 'VERDE' ? 'green' : 'black'}"></span>#{c.nombre} (#{c.cantidad})
 												<f:param name="color" value="#{c.nombre}"></f:param>
 										</p:commandLink></li>
 								</ui:repeat>
@@ -135,130 +142,147 @@
 
 					</div>
 
-					<div id="grid-selector">
-						<div id="grid-menu">
-							View:
-							<ul>
-								<li class="largeGrid"><a href=""></a></li>
-								<li class="smallGrid"><a class="active" href=""></a></li>
-							</ul>
+					<div class="p-d-flex p-jc-star p-ac-center p-flex-column">
+						<div id="grid-selector"
+							style="width: 100%; padding: 40px 40px 40px 30px;">
+							<div id="grid-menu">
+								View:
+								<ul>
+									<li class="largeGrid"><a href=""></a></li>
+									<li class="smallGrid"><a class="active" href=""></a></li>
+								</ul>
+							</div>
+
+							Se han encontrado
+							#{fn:length(catalogo.detalles_productos_inicio)} resultados.
 						</div>
 
-						Se han encontrado #{fn:length(catalogo.detalles_productos_inicio)}
-						resultados.
-					</div>
+						<div id="grid"
+							style="width: 90%; margin: 1em auto; position: relative; left: 50%; top: 50%; transform: translate(-50%, -50%);; padding: 1em;">
+							<h:panelGroup layout="block"
+								styleClass="sofia-range-preci-update"
+								id="sofia-range-preci-update">
+								<ui:repeat var="p" value="#{catalogo.detalles_productos_inicio}">
+									<div class="product">
+										<div class="info-large">
+											<h4>#{p.productoBean.nombre}</h4>
+											<div class="sku">
+												ID: <strong>#{p.id}</strong>
+											</div>
 
-					<div id="grid"
-						style="width: 100%; position: relative; left: 0; height: auto; top: 0;">
-						<h:panelGroup layout="block" styleClass="sofia-range-preci-update"
-							id="sofia-range-preci-update">
-							<ui:repeat var="p" value="#{catalogo.detalles_productos_inicio}">
-								<div class="product">
-									<div class="info-large">
-										<h4>#{p.productoBean.nombre}</h4>
-										<div class="sku">
-											ID: <strong>#{p.id}</strong>
-										</div>
-
-										<div class="price-big">
-											<span> <h:outputText value="#{p.precioVenta}">
+											<div class="price-big">
+												<span> <h:outputText value="#{p.precioVenta}">
+														<f:convertNumber currencySymbol="$" type="currency" />
+													</h:outputText>
+												</span>
+												<h:outputText
+													value="#{catalogo.resta(p.precioVenta, p.descuento)}">
 													<f:convertNumber currencySymbol="$" type="currency" />
 												</h:outputText>
-											</span>
-											<h:outputText
-												value="#{catalogo.resta(p.precioVenta, p.descuento)}">
-												<f:convertNumber currencySymbol="$" type="currency" />
-											</h:outputText>
+											</div>
+
+											<h3>COLORS</h3>
+											<div class="colors-large">
+												<ul>
+													<li><a href=""
+														style="background: #{p.color == 'ROJO' ? 'red' :
+											 p.color == 'AZUL' ? 'blue' :  p.color == 'BLANCO' ? 'white' : p.color == 'GRIS' ? 'gray' : p.color == 'NEGRO' ? 'black' : 
+											 p.color == 'AMARRILLO' ? 'yellow' : p.color =='MORADO' ? 'purple' : p.color =='ROSADO' ? 'pink' : 
+											 p.color == 'VERDE' ? 'green' : 'black'}"><span></span></a></li>
+												</ul>
+											</div>
+
+											<h3>Dimensión</h3>
+											<div class="sizes-large">
+												<span>#{p.dimension}</span>
+											</div>
+
+											<p:commandButton value="Agregar Carrito"
+												action="#{venta_online.addProductosCliente()}"
+												styleClass="add-cart-large"
+												update="@(.sofia-container-main-template)">
+												<f:param name="id-detalle-producto" value="#{p.id}"></f:param>
+											</p:commandButton>
+
 										</div>
+										<div class="make3D" style="height: 460px;">
+											<div class="product-front">
+												<div class="shadow"></div>
+												<p:graphicImage value="#{image.detalle_producto}"
+													cache="false"
+													style="width: 100%; height: 100%;object-fit: contain;">
+													<f:param name="id-detalle-producto" value="#{p.id}" />
+												</p:graphicImage>
+												<div class="image_overlay"></div>
 
-										<h3>COLORS</h3>
-										<div class="colors-large">
-											<ul>
-												<li><a href=""
-													style="background: #{p.color == 'ROJO' ? 'red' :
-											 p.color == 'AZUL' ? 'blue' :  p.color == 'BLANCO' ? 'white' : p.color == 'GRIS' ? 'gray' : 'black'}"><span></span></a></li>
-											</ul>
-										</div>
+												<p:commandButton value="Agregar Carrito"
+													action="#{venta_online.addProductosCliente()}"
+													styleClass="add_to_cart"
+													style="background-image:none !important" ajax="true"
+													update="@(.update-car-sofia-main)">
+													<f:param name="id-detalle-producto" value="#{p.id}"></f:param>
+												</p:commandButton>
 
-										<h3>Dimensión</h3>
-										<div class="sizes-large">
-											<span>#{p.dimension}</span>
-										</div>
+												<div class="view_gallery">Ver</div>
+												<div class="stats">
+													<div class="stats-container">
+														<span class="product_price"><h:outputText
+																value="#{catalogo.resta(p.precioVenta, p.descuento)}">
+																<f:convertNumber currencySymbol="$" type="currency" />
+															</h:outputText></span> <span class="product_name">#{p.productoBean.nombre}</span>
+														<p>#{p.id}</p>
 
-										<p:commandButton value="Agregar Carrito"
-											action="#{venta_online.addProductosCliente()}"
-											styleClass="add-cart-large"
-											update="@(.sofia-container-main-template)">
-											<f:param name="id-detalle-producto" value="#{p.id}"></f:param>
-										</p:commandButton>
-
-									</div>
-									<div class="make3D" style="height: 460px;">
-										<div class="product-front">
-											<div class="shadow"></div>
-											<p:graphicImage value="#{image.detalle_producto}"
-												cache="false"
-												style="width: 100%; height: 100%;object-fit: contain;">
-												<f:param name="id-detalle-producto" value="#{p.id}" />
-											</p:graphicImage>
-											<div class="image_overlay"></div>
-											<div class="add_to_cart">Agregar Carrito</div>
-											<div class="view_gallery">Ver</div>
-											<div class="stats">
-												<div class="stats-container">
-													<span class="product_price"><h:outputText
-															value="#{catalogo.resta(p.precioVenta, p.descuento)}">
-															<f:convertNumber currencySymbol="$" type="currency" />
-														</h:outputText></span> <span class="product_name">#{p.productoBean.nombre}</span>
-													<p>#{p.id}</p>
-
-													<div class="product-options">
-														<strong>DIMENSION</strong> <span>#{p.dimension}</span> <strong>COLOR</strong>
-														<div class="colors">
-															<div
-																class="#{p.color == 'ROJO' ? 'c-red' :
+														<div class="product-options">
+															<strong>DIMENSION</strong> <span>#{p.dimension}</span> <strong>COLOR</strong>
+															<div class="colors">
+																<div
+																	class="#{p.color == 'ROJO' ? 'c-red' :
 																 p.color == 'AZUL' ? 'c-blue' :  p.color == 'BLANCO' ? 'c-white' : p.color == 'GRIS' ? 'c-gray' : 'c-black'}">
-																<span></span>
+																	<span></span>
+																</div>
 															</div>
 														</div>
 													</div>
 												</div>
 											</div>
-										</div>
 
-										<div class="product-back">
-											<div class="shadow"></div>
-											<div class="carousel">
-												<ul class="carousel-container">
-													<li><p:graphicImage value="#{image.detalle_producto}"
-															cache="false"
-															style="width: 100%; height: 100%;object-fit: contain;">
-															<f:param name="id-detalle-producto" value="#{p.id}" />
-														</p:graphicImage></li>
+											<div class="product-back">
+												<div class="shadow"></div>
+												<div class="carousel">
+													<ul class="carousel-container">
+														<li><p:graphicImage value="#{image.detalle_producto}"
+																cache="false"
+																style="width: 100%; height: 100%;object-fit: contain;">
+																<f:param name="id-detalle-producto" value="#{p.id}" />
+															</p:graphicImage></li>
 
-												</ul>
-												<div class="arrows-perspective">
-													<div class="carouselPrev">
-														<div class="y"></div>
-														<div class="x"></div>
-													</div>
-													<div class="carouselNext">
-														<div class="y"></div>
-														<div class="x"></div>
+													</ul>
+													<div class="arrows-perspective">
+														<div class="carouselPrev">
+															<div class="y"></div>
+															<div class="x"></div>
+														</div>
+														<div class="carouselNext">
+															<div class="y"></div>
+															<div class="x"></div>
+														</div>
 													</div>
 												</div>
-											</div>
-											<div class="flip-back">
-												<div class="cy"></div>
-												<div class="cx"></div>
+												<div class="flip-back">
+													<div class="cy"></div>
+													<div class="cx"></div>
+												</div>
 											</div>
 										</div>
 									</div>
-								</div>
-							</ui:repeat>
+								</ui:repeat>
 
-						</h:panelGroup>
+							</h:panelGroup>
+						</div>
+
 					</div>
+
+
 				</div>
 			</h:panelGroup>
 		</h:form>
@@ -278,10 +302,8 @@
 			styleClass="sofia-container-slider-main-one-index">
 			<h:panelGroup layout="block" styleClass="sofia-container-text-image">
 				<h1 class="sofia-container-text-image__h1"
-					style="background: url(https://www.pngfind.com/pngs/m/618-6188512_rayas-blanco-tumblr-portadas-png-portadas-tumblr-fondo.png) 
-					repeat; background-size: 200%; background-clip: text; font-family: $- -project-font-family; position: relative;
-					 text-align: center; line-height: 120px; -webkit-background-clip: text; letter-spacing: -5px; font-weight: 900; 
-					 font-family: Arial !important; font-size: 100px;">LO NUEVO</h1>
+					style="background: url(https://www.pngfind.com/pngs/m/618-6188512_rayas-blanco-tumblr-portadas-png-portadas-tumblr-fondo.png) repeat; background-size: 200%; background-clip: text; font-family: $- -project-font-family; position: relative; text-align: center; line-height: 120px; -webkit-background-clip: text; letter-spacing: -5px; font-weight: 900; font-family: Arial !important; font-size: 100px;">LO
+					NUEVO</h1>
 			</h:panelGroup>
 			<div class="content-product" style="margin-top: 0px !important">
 				<!--Container das imagens do slide-->
@@ -316,18 +338,19 @@
 						<ui:repeat var="i" value="#{catalogo.promocion}" varStatus="j">
 							<div class="product-slider-item swiper-slide"
 								data-target="img#{j.index + 1}">
-								<div class="product-slider-item-card">
+								<div class="product-slider-item-card" style="margin-left: 2em;">
 									<div class="product-slider-item-content">
 										<!--Titulo do produto-->
 										<h1 class="product-slider-title">#{i.productoBean.nombre}
 											- #{i.id}</h1>
 										<!--Preço do produto-->
-										<span class="product-slider-price" 
-											style="text-decoration-line: line-through;margin-bottom: .3em;"><h:outputText
+										<span class="product-slider-price"
+											style="text-decoration-line: line-through; margin-bottom: .3em;"><h:outputText
 												styleClass="sofia-statu sofia-statu-warn"
 												value="#{i.precioVenta}">
 												<f:convertNumber currencySymbol="$" type="currency" />
-											</h:outputText> </span> <span class="product-slider-price" style="margin-bottom: .3em;"><h:outputText
+											</h:outputText> </span> <span class="product-slider-price"
+											style="margin-bottom: .3em;"><h:outputText
 												styleClass="sofia-statu sofia-statu-succes"
 												value="#{catalogo.resta(i.precioVenta, i.descuento)}">
 												<f:convertNumber currencySymbol="$" type="currency" />
@@ -339,12 +362,12 @@
 
 										<div class="product-ctr"></div>
 										<div class="product-slider__bottom">
-										<p:commandButton value="COMPRAR AHORA"
-											action="#{venta_online.addProductosCliente()}"
-											styleClass="product-slider__cart"
-											update="@(.sofia-container-main-template)">
-											<f:param name="id-detalle-producto" value="#{i.id}"></f:param>
-										</p:commandButton>
+											<p:commandButton value="COMPRAR AHORA"
+												action="#{venta_online.addProductosCliente()}"
+												styleClass="product-slider__cart"
+												update="@(.sofia-container-main-template)">
+												<f:param name="id-detalle-producto" value="#{i.id}"></f:param>
+											</p:commandButton>
 										</div>
 									</div>
 								</div>

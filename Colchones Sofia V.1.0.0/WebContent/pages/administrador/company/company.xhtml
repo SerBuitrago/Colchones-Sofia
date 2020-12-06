@@ -76,10 +76,15 @@
 						</h:panelGroup>
 
 						<h:panelGroup layout="block"
-							styleClass="p-mt-3 p-mb-3 ui-fluid p-formgrid p-d-flex p-jc-center">
-							<h:panelGroup layout="block" styleClass="p-field p-col p-md-4">
+							styleClass="p-mt-3 p-mb-3 ui-fluid p-formgrid p-d-flex p-jc-between">
+							<h:panelGroup layout="block" styleClass="p-field p-col p-md">
 								<h:outputLabel value="Presupuesto:" for="presupuesto" />
 								<p:inputText value="#{app.empresa.presupuesto}" id="presupuesto" />
+							</h:panelGroup>
+							
+							<h:panelGroup layout="block" styleClass="p-field p-col p-md-3">
+								<h:outputLabel value="IVA:" for="iva" />
+								<p:inputText value="#{app.empresa.iva}" id="iva" />
 							</h:panelGroup>
 						</h:panelGroup>
 

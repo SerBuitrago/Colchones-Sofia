@@ -37,17 +37,17 @@
 
 					<h:panelGroup layout="block" styleClass="p-mt-3 p-mb-3">
 						<p:commandButton
-							icon="fa fa-fw #{app.agregar_telefono_empresa ? 'fa-brush' : 'fa-plus'}"
+							icon="fa fa-fw #{app.agregar_telefono_empresa ? 'fa-close' : 'fa-plus'}"
 							action="#{app.activarAddTelefono()}"
 							update="@(.sofia-update-generic)"
-							styleClass="sofia-button-icon sofia-button-icon-small #{app.agregar_telefono_empresa ? 'sofia-button-warn' : 'sofia-button-succes'}" />
+							styleClass="sofia-button-icon sofia-button-icon-small #{app.agregar_telefono_empresa ? 'sofia-button-error' : 'sofia-button-succes'}" />
 					</h:panelGroup>
 
 
 					<p:panel header="Agregar Telefono" styleClass="p-mb-3 p-mt-3"
 						rendered="#{app.agregar_telefono_empresa}">
 						<h:panelGroup layout="block"
-							styleClass="p-mt-3 p-mb-3 ui-fluid p-formgrid p-d-flex p-jc-center">
+							styleClass="p-mt-3 p-mb-3 ui-fluid p-formgrid p-d-flex p-jc-star">
 							<h:panelGroup layout="block" styleClass="p-field p-col p-md-4">
 								<h:outputLabel value="Telefono:" for="telefono" />
 								<p:inputText value="#{app.empresaInformacion.telefono}"
@@ -189,22 +189,22 @@
 					<p:staticMessage severity="warn" summary="" styleClass="p-p-3"
 						detail="Email de #{app.empresa.nombre}." />
 				</h:panelGroup>
-				<p:fieldset legend="Información correos" toggleable="true"
-					toggleSpeed="500">
+				<p:fieldset legend="Información Correos" toggleable="true"
+					toggleSpeed="500" >
 
 					<h:panelGroup layout="block" styleClass="p-mt-3 p-mb-3">
 						<p:commandButton
-							icon="fa fa-fw #{app.agregar_email_empresa ? 'fa-brush' : 'fa-plus'}"
+							icon="fa fa-fw #{app.agregar_email_empresa ? 'fa-close' : 'fa-plus'}"
 							action="#{app.activarAddEmail()}"
 							update="@(.sofia-update-generic)"
-							styleClass="sofia-button-icon sofia-button-icon-small #{app.agregar_email_empresa ? 'sofia-button-warn' : 'sofia-button-succes'}" />
+							styleClass="sofia-button-icon sofia-button-icon-small #{app.agregar_email_empresa ? 'sofia-button-error' : 'sofia-button-succes'}" />
 					</h:panelGroup>
 
 					<p:panel header="Agregar Correo"
-						rendered="#{app.agregar_email_empresa}">
+						rendered="#{app.agregar_email_empresa}" styleClass="p-mb-4">
 						<h:panelGroup layout="block"
-							styleClass="p-mt-3 p-mb-3 ui-fluid p-formgrid p-d-flex p-jc-center">
-							<h:panelGroup layout="block" styleClass="p-field p-col p-md-4">
+							styleClass="p-mt-3 p-mb-3 ui-fluid p-formgrid p-d-flex p-jc-star">
+							<h:panelGroup layout="block" styleClass="p-field p-col p-md">
 								<h:outputLabel value="Correo:" for="correo" />
 								<p:inputText value="#{app.empresaInformacion.email}" id="mail"
 									validator="#{validator.isEmail}" />
@@ -339,17 +339,17 @@
 			</h:form>
 		</h:panelGroup>
 
-		<!--                            -->
-		<!-- DIALOG UPDATE AND REGISTER -->
-		<!--                            -->
+		<!--                      -->
+		<!-- DIALOG UPDATE PHONE  -->
+		<!--                      -->
 		<p:dialog header="Actualizar Telefono" widgetVar="sofia-dialog-update"
 			id="sofia-dialog-update" resizable="false" showEffect="explode"
-			styleClass="sofia-dialog-update" modal="true">
-			<h:form>
+			styleClass="sofia-dialog-update" modal="true" width="80%">
+			<h:form style="padding:1em">
 				<h:panelGroup layout="block">
 					<h:panelGroup layout="block"
-						styleClass="p-mt-3 p-mb-3 ui-fluid p-formgrid p-d-flex p-jc-center">
-						<h:panelGroup layout="block" styleClass="p-field p-col p-md-4">
+						styleClass="p-mt-3 p-mb-3 ui-fluid p-formgrid p-d-flex p-jc-star">
+						<h:panelGroup layout="block" styleClass="p-field p-col p-md">
 							<h:outputLabel value="Telefono:" for="telefono-editar" />
 							<p:inputText value="#{app.empresaInformacion.telefono}"
 								id="telefono-editar" />
@@ -374,18 +374,18 @@
 			</h:form>
 		</p:dialog>
 
-		<!--                            -->
-		<!-- DIALOG UPDATE AND REGISTER -->
-		<!--                            -->
+		<!--                     -->
+		<!-- DIALOG UPDATE EMAIL -->
+		<!--                     -->
 		<p:dialog header="Actualizar Correo"
 			widgetVar="sofia-dialog-mail-update" id="sofia-dialog-mail-update"
-			resizable="false" showEffect="explode"
+			resizable="false" showEffect="explode" width="80%"
 			styleClass="sofia-dialog-mail-update" modal="true">
-			<h:form>
+			<h:form style="padding:1em">
 				<h:panelGroup layout="block">
 					<h:panelGroup layout="block"
-						styleClass="p-mt-3 p-mb-3 ui-fluid p-formgrid p-d-flex p-jc-center">
-						<h:panelGroup layout="block" styleClass="p-field p-col p-md-4">
+						styleClass="p-mt-3 p-mb-3 ui-fluid p-formgrid p-d-flex p-jc-star">
+						<h:panelGroup layout="block" styleClass="p-field p-col p-md">
 							<h:outputLabel value="Correo:" for="mail-editar" />
 							<p:inputText value="#{app.empresaInformacion.email}"
 								id="mail-editar" />

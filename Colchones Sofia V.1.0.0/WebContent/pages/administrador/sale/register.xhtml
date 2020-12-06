@@ -904,6 +904,18 @@
 						<!-- TOTAL -->
 						<!--       -->
 						<h:panelGroup layout="block"
+							styleClass="p-d-flex p-jc-end p-ac-center sofia-table-color-primary-rgba p-p-2 p-mt-3">
+							<h:outputLabel value="VALOR SIN IVA:" styleClass="p-mr-4" />
+							<h:outputLabel value="#{venta.venta.totalSinIva}"
+								styleClass="sofia-statu sofia-statu-primary">
+								<f:convertNumber currencySymbol="$" type="currency" />
+							</h:outputLabel>
+						</h:panelGroup>
+
+						<!--       -->
+						<!-- TOTAL -->
+						<!--       -->
+						<h:panelGroup layout="block"
 							styleClass="p-d-flex p-jc-end p-ac-center sofia-table-color-warn-rgba p-p-2 p-mt-3">
 							<h:outputLabel value="TOTAL PAGAR:" styleClass="p-mr-4" />
 							<h:outputLabel value="#{venta.venta.total}"
@@ -1026,8 +1038,8 @@
 		<!--                -->
 		<p:dialog header="Productos" widgetVar="sofia-dialog-producto-update"
 			id="sofia-dialog-producto-update" resizable="false"
-			showEffect="explode" style="max-heigth:50vh" width="70%"
-			styleClass="sofia-dialog-producto-update" modal="true">
+			showEffect="explode" 
+			styleClass="sofia-dialog-producto-update" modal="true" width="70%" >
 			<h:form>
 				<h:panelGroup layout="block">
 					<p:dataTable id="sofia-table-all-2-products" var="v"
@@ -1039,6 +1051,8 @@
 					                       {FirstPageLink} {PreviousPageLink} 
 								           {CurrentPageReport} {NextPageLink} 
 								           {LastPageLink} {Exporters}"
+						scrollRows="20" scrollable="true" virtualScroll="true"
+						scrollHeight="200"
 						paginator="true" rows="20" rowIndexVar="index"
 						rowsPerPageTemplate="5,10,15,20,50,100"
 						rowKey="#{v.detalleProducto.productoBean.id}"
@@ -1108,13 +1122,12 @@
 									styleClass="p-as-center" />
 							</h:panelGroup>
 						</p:column>
-						
+
 						<p:column headerText="Color" footerText="Color"
 							sortBy="#{v.detalleProducto.color}">
 							<h:panelGroup layout="block"
 								styleClass="p-d-flex p-jc-center p-ac-center ">
-								<h:outputText
-									value="#{v.detalleProducto.color}" />
+								<h:outputText value="#{v.detalleProducto.color}" />
 							</h:panelGroup>
 						</p:column>
 

@@ -58,10 +58,11 @@
 								<!--           -->
 								<h:panelGroup layout="block" styleClass="p-field p-col p-md-4">
 									<p:outputLabel for="fecha-inicio" value="Fecha Inicio:" />
-									<p:datePicker id="fecha-inicio" required="true"
+									<p:calendar id="fecha-inicio" required="true"
+										pattern="MM/dd/yyyy HH:mm:ss"
 										requiredMessage="El campo fecha inicio no puede estar vacia."
 										value="#{reporte.fecha_inicio}">
-									</p:datePicker>
+									</p:calendar>
 								</h:panelGroup>
 
 								<!--          -->
@@ -69,17 +70,18 @@
 								<!--          -->
 								<h:panelGroup layout="block" styleClass="p-field p-col p-md-4">
 									<p:outputLabel for="fecha-fin" value="Fecha Fin:" />
-									<p:datePicker id="fecha-fin" required="true"
+									<p:calendar id="fecha-fin" required="true"
+										pattern="MM/dd/yyyy HH:mm:ss"
 										requiredMessage="El campo fecha fin no puede estar vacia."
 										value="#{reporte.fecha_fin}">
-									</p:datePicker>
+									</p:calendar>
 								</h:panelGroup>
 							</h:panelGroup>
 
 							<h:panelGroup layout="block"
 								styleClass="p-d-flex p-jc-between p-ac-center p-mb-3">
-								
-								<p:commandButton update="@(.sofia-container-main-update)"	
+
+								<p:commandButton update="@(.sofia-container-main-update)"
 									styleClass="sofia-button-succes"
 									action="#{reporte.consultarCompra()}" value="Consultar" />
 
@@ -140,8 +142,8 @@
 						</p:column>
 
 						<!-- FECHA DE CREACION-->
-						<p:column sortBy="${c.fechaCreacion}"
-							footerText="Fecha Creación" headerText="Fecha Creación">
+						<p:column sortBy="${c.fechaCreacion}" footerText="Fecha Creación"
+							headerText="Fecha Creación">
 							<h:panelGroup layout="block"
 								styleClass="p-d-flex p-jc-center p-ac-center">
 								<h:outputText value="#{c.fechaCreacion}">
@@ -151,7 +153,8 @@
 						</p:column>
 
 						<!-- NOMBRE PROVEEDOR -->
-						<p:column filterBy="#{c.proveedorBean.persona.nombre}" sortBy="${c.proveedorBean.persona.nombre}"
+						<p:column filterBy="#{c.proveedorBean.persona.nombre}"
+							sortBy="${c.proveedorBean.persona.nombre}"
 							footerText="Nombre Proveedor" headerText="Nombre Proveedor">
 							<h:panelGroup layout="block"
 								styleClass="p-d-flex p-jc-center p-ac-center">
@@ -160,7 +163,8 @@
 						</p:column>
 
 						<!-- DOCUEMNTO PROVEEDOR -->
-						<p:column filterBy="#{c.proveedorBean.persona.documento}" sortBy="${c.proveedorBean.persona.documento}"
+						<p:column filterBy="#{c.proveedorBean.persona.documento}"
+							sortBy="${c.proveedorBean.persona.documento}"
 							footerText="Documento Proveedor" headerText="Documento Proveedor">
 							<h:panelGroup layout="block"
 								styleClass="p-d-flex p-jc-center p-ac-center">
@@ -182,9 +186,10 @@
 					</p:dataTable>
 
 					<!--        -->
-					<!-- BUTTON --> 
+					<!-- BUTTON -->
 					<!--        -->
-					<h:panelGroup layout="block" rendered="#{fn:length(reporte.compras) gt 0}" 
+					<h:panelGroup layout="block"
+						rendered="#{fn:length(reporte.compras) gt 0}"
 						styleClass="p-d-flex p-jc-center p-ac-center p-mb-3 p-mt-4">
 						<p:commandButton update="@(.sofia-container-main-update)"
 							ajax="false" icon="fa fa-fw fa-download"

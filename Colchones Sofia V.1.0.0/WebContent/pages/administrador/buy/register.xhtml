@@ -81,7 +81,7 @@
 							title="#{compra.hidden_proveedor? 'Editar' : 'Bloquear'} Cliente"
 							icon="fa fa-fw #{compra.hidden_proveedor ? 'fa-edit' : 'fa-lock'}"
 							action="#{compra.estadoEditarProveedor()}"
-							update="@(.sofia-container-main-update)"
+							update="@(.sofia-container-main-update), @(.sofia-dialog-producto-update)"
 							styleClass="sofia-button-icon #{compra.hidden_proveedor ? 'sofia-button-primary' : 'sofia-button-error'} 
 						 sofia-button-icon-small" />
 					</h:panelGroup>
@@ -177,7 +177,7 @@
 					<h:panelGroup layout="block"
 						styleClass="p-d-flex p-jc-center p-ac-center p-mt-3 p-mb-3">
 						<p:commandButton icon="fa fa-fw fa-check" value="Validar"
-							update="@(.sofia-container-main-update)"
+							update="@(.sofia-container-main-update), @(.sofia-dialog-producto-update)"
 							styleClass="sofia-button-succes"
 							action="#{compra.validarProveedor()}" />
 					</h:panelGroup>
@@ -203,12 +203,19 @@
 							styleClass="sofia-button-icon sofia-button-succes sofia-button-icon-small"
 							update="@(.sofia-container-main-update)" />
 
+						<p:commandButton icon="fas fa-eye"
+							disabled="#{compra.active_filert_detalle_compra ? 'false' : 'true'}"
+							title="Ver productos"
+							oncomplete="PF('sofia-dialog-producto-update').show();"
+							styleClass="sofia-button-icon sofia-button-primary sofia-button-icon-small"
+							update="@(.sofia-container-main-update)" />
+
 						<p:commandButton icon="fa fa-fw fa-brush"
 							disabled="#{compra.filter_detalle_compra  ? 'false' : 'true'}"
 							action="#{compra.limpiarFiltroDetalleCompra()}"
 							title="Limpiar datos"
 							styleClass="sofia-button-icon sofia-button-error sofia-button-icon-small"
-							update="@(.sofia-container-main-update)">
+							update="@(.sofia-container-main-update), @(.sofia-dialog-producto-update)">
 							<p:confirm header="Limpiar Datos"
 								icon="pi pi-exclamation-triangle"
 								message="¿Quieres limpiar la información?" />
@@ -569,6 +576,18 @@
 						<!-- TOTAL -->
 						<!--       -->
 						<h:panelGroup layout="block"
+							styleClass="p-d-flex p-jc-end p-ac-center sofia-table-color-primary-rgba p-p-2 p-mt-3">
+							<h:outputLabel value="VALOR SIN IVA:" styleClass="p-mr-4" />
+							<h:outputLabel value="#{compra.compra.totalSinIva}"
+								styleClass="sofia-statu sofia-statu-primary">
+								<f:convertNumber currencySymbol="$" type="currency" />
+							</h:outputLabel>
+						</h:panelGroup>
+
+						<!--       -->
+						<!-- TOTAL -->
+						<!--       -->
+						<h:panelGroup layout="block"
 							styleClass="p-d-flex p-jc-end p-ac-center sofia-table-color-warn-rgba p-p-2 p-mt-3">
 							<h:outputLabel value="TOTAL PAGAR:" styleClass="p-mr-4" />
 							<h:outputLabel value="#{compra.compra.total}"
@@ -582,13 +601,140 @@
 						styleClass="p-d-flex p-jc-center p-ac-center p-mt-4 p-mb-4">
 						<p:commandButton value="Registrar" icon="fa fa fa-fw fa-plus"
 							styleClass="sofia-button-succes"
-							action="#{compra.registrarCompra()}"  
-							update="@(.sofia-container-main-update)"
+							action="#{compra.registrarCompra()}"
+							update="@(.sofia-container-main-update),@(.sofia-dialog-producto-update)"
 							disabled="#{(compra.continuar_proveedor and fn:length(compra.tabla_compra) gt 0) ? 'false' : 'true'}" />
 					</h:panelGroup>
 				</p:tab>
 			</p:tabView>
 		</p:fieldset>
+	</ui:define>
+
+	<ui:define name="component-dialog-advaced">
+		<!--                -->
+		<!-- DIALOG PRODUCT -->
+		<!--                -->
+		<p:dialog header="Productos" widgetVar="sofia-dialog-producto-update"
+			id="sofia-dialog-producto-update" resizable="false"
+			showEffect="explode" style="max-heigth:50vh;overflow-y:auto"
+			width="70%" styleClass="sofia-dialog-producto-update" modal="true">
+			<h:form>
+				<h:panelGroup layout="block">
+					<p:dataTable id="sofia-table-all-2-products" var="v"
+						widgetVar="sofia-table-all-2-products"
+						styleClass="sofia-table-all-products sofia-table-all-2-products"
+						filteredValue="#{compra.filter_all_detalle_compra}"
+						value="#{compra.all_detalle_compra}"
+						paginatorTemplate="{CurrentPageReport} {RowsPerPageDropdown} 
+					                       {FirstPageLink} {PreviousPageLink} 
+								           {CurrentPageReport} {NextPageLink} 
+								           {LastPageLink} {Exporters}"
+						scrollRows="20" scrollable="true" virtualScroll="true"
+						scrollHeight="200" paginator="true" rows="20" rowIndexVar="index"
+						rowsPerPageTemplate="5,10,15,20,50,100"
+						rowKey="#{v.detalleProducto.productoBean.id}"
+						sortBy="#{v.detalleProducto.productoBean.nombre}"
+						expandableRowGroups="true"
+						emptyMessage="No se encontro ningun producto.">
+
+						<!--        -->
+						<!-- HEADER -->
+						<!--        -->
+						<f:facet name="header">
+							<p:outputPanel layout="block"
+								styleClass="p-d-flex p-jc-end p-ac-center">
+								<h:outputText value="Buscar:" styleClass="p-mt-1 p-mr-2" />
+								<p:inputText id="globalFilter"
+									onkeyup="PF('sofia-table-all-2-products').filter()" />
+							</p:outputPanel>
+							<p:outputPanel layout="block"
+								styleClass="p-d-flex p-jc-center p-ac-center p-p-3">
+								<h2>Productos</h2>
+								<h4 class="p-as-end">(#{compra.all_detalle_compra.size()}
+									resultados)</h4>
+							</p:outputPanel>
+						</f:facet>
+
+						<!--         -->
+						<!-- PRODUCT -->
+						<!--         -->
+						<p:headerRow>
+							<p:column colspan="5">
+								<h:outputText value="#{v.detalleProducto.productoBean.nombre}" />
+							</p:column>
+						</p:headerRow>
+
+						<!--        -->
+						<!-- COLUMN -->
+						<!--        -->
+						<p:column style="width:50px">
+							<p:rowToggler />
+							<h:panelGroup layout="block"
+								styleClass="p-d-flex p-jc-center p-ac-center">
+								<h:outputLabel value="#{index + 1}" />
+							</h:panelGroup>
+						</p:column>
+
+						<!-- IMAGE -->
+						<p:column headerText="Detalle Producto"
+							footerText="Detalle Producto" filterBy="#{v.detalleProducto.id}"
+							sortBy="#{v.detalleProducto.id}">
+							<h:panelGroup layout="block"
+								styleClass="p-d-flex p-jc-between p-ac-center">
+								<h:panelGroup layout="block"
+									styleClass="sofia-container-img-small">
+									<h:graphicImage rendered="#{v.detalleProducto.foto == null}"
+										library="img" name="product.png"
+										styleClass="sofia-container-img-small-img" />
+
+									<p:graphicImage rendered="#{v.detalleProducto.foto != null}"
+										styleClass="sofia-container-img-small-img" cache="false"
+										value="#{image.detalle_producto}">
+										<f:param name="id-detalle-producto"
+											value="#{v.detalleProducto.id}" />
+									</p:graphicImage>
+								</h:panelGroup>
+
+								<h:outputLabel value="#{v.detalleProducto.id}"
+									styleClass="p-as-center" />
+							</h:panelGroup>
+						</p:column>
+
+						<p:column headerText="Color" footerText="Color"
+							sortBy="#{v.detalleProducto.color}">
+							<h:panelGroup layout="block"
+								styleClass="p-d-flex p-jc-center p-ac-center ">
+								<h:outputText value="#{v.detalleProducto.color}" />
+							</h:panelGroup>
+						</p:column>
+
+						<p:column headerText="Garantia" footerText="Garantia"
+							sortBy="#{v.detalleProducto.productoBean.garantia}">
+							<h:panelGroup layout="block"
+								styleClass="p-d-flex p-jc-center p-ac-center ">
+								<h:outputText
+									value="#{v.detalleProducto.productoBean.garantia } Año"
+									styleClass="sofia-statu #{(v.detalleProducto.productoBean.garantia == 0 ? 'sofia-statu-warn' : 'sofia-statu-succes')}" />
+							</h:panelGroup>
+						</p:column>
+
+						<p:column headerText="" footerText="" style="width:60px">
+							<h:panelGroup layout="block"
+								styleClass="p-d-flex p-jc-center p-ac-center ">
+								<p:commandButton icon="fa fa-fw fa-plus"
+									action="#{compra.seleccionarDetalleProducto()}"
+									update="@(.sofia-dialog-producto-update), @(.sofia-container-main-update)"
+									styleClass="sofia-button-succes sofia-button-icon sofia-button-icon-small">
+									<f:param name="id-detalle-producto"
+										value="#{v.detalleProducto.id}" />
+								</p:commandButton>
+							</h:panelGroup>
+						</p:column>
+					</p:dataTable>
+				</h:panelGroup>
+			</h:form>
+		</p:dialog>
+
 	</ui:define>
 
 </ui:composition>

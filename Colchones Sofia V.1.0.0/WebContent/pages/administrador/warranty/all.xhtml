@@ -78,7 +78,7 @@
 								   {CurrentPageReport} {NextPageLink} {LastPageLink}"
 				paginator="true" rows="20" rowIndexVar="index"
 				rowsPerPageTemplate="5,10,15,20,50,100" reflow="true"
-				scrollable="true" styleClass="p-mt-4">
+				scrollable="true" styleClass="p-mt-4" rowStyleClass="#{g.estado ? 'sofia-table-color-succes-rgba' : 'null'}">
 
 				<!-- HEADER -->
 				<f:facet name="header">
@@ -174,7 +174,7 @@
 						styleClass="p-d-flex p-jc-center p-ac-center">
 						<p:commandButton icon="fa fa-fw fa-edit"
 							action="#{garantia.statuEditarGarantia()}"
-							styleClass="sofia-button-icon sofia-button-primary"
+							styleClass="sofia-button-icon sofia-button-icon-small sofia-button-primary" 
 							update="@(.sofia-dialog-update)">
 							<f:param name="id-garantia" value="#{g.id}" />
 						</p:commandButton>

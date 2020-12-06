@@ -148,7 +148,7 @@
 					</f:facet>
 					<h:panelGroup layout="block"
 						styleClass="p-d-flex p-jc-center p-ac-center">
-						<h:outputText value="#{p.stockMinimo }" />
+						<h:outputText value="#{p.stockMinimo }" styleClass="sofia-statu sofia-statu-warn" />
 					</h:panelGroup>
 				</p:column>
 
@@ -226,7 +226,7 @@
 				        </f:facet>
 						<p:panel header="#{pr.id}" style="text-align:center">
 							<h:panelGrid columns="1" style="width:100%;height:300px">
-								<p:graphicImage style="width:100px;heigth:100px" cache="false"
+								<p:graphicImage style="width:100px;height:100px" cache="false"
 									rendered="#{pr.foto != null}" value="#{image.detalle_producto}">
 									<f:param name="id-detalle-producto" value="#{pr.id}"></f:param>
 								</p:graphicImage>
@@ -474,7 +474,7 @@
 		</p:dialog>
 
 
-		<p:dialog header="#{detalle_producto} Detalle"
+		<p:dialog header="#{detalle_producto.estado} Detalle"
 			widgetVar="sofia-dialog-detalle-update"
 			id="sofia-dialog-detalle-update" resizable="false"
 			showEffect="explode" styleClass="sofia-dialog-detalle-update"
@@ -570,7 +570,7 @@
 					<!--       -->
 					<h:panelGroup layout="block"
 						styleClass="ui-fluid p-formgrid p-grid">
-						<h:panelGroup layout="block" styleClass="p-field p-col-12 p-md-5">
+						<h:panelGroup layout="block" styleClass="p-field p-col-12 p-md">
 							<p:outputLabel for="descuento-detalle" value="Descuento:" />
 							<p:inputText id="descuento-detalle"
 								value="#{detalle_producto.detalle_producto.descuento}" />
@@ -582,7 +582,7 @@
 					<!--       -->
 					<h:panelGroup layout="block"
 						styleClass="ui-fluid p-formgrid p-grid">
-						<h:panelGroup layout="block" styleClass="p-field p-col-12 p-md-5">
+						<h:panelGroup layout="block" styleClass="p-field p-col-12 p-md">
 							<p:outputLabel for="medida-detalle" value="Descuento:" />
 							<p:inputText id="medida-detalle"
 								value="#{detalle_producto.detalle_producto.dimension}" />
