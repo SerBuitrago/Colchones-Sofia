@@ -69,11 +69,20 @@ public class CompraBean implements Serializable {
 
 	private BigInteger subtotal_sin_iva;
 
+	private DetalleProducto detalle_registrar;
+	private String id_detalle_register;
+	private int id_detalle_2_register;
+	private boolean registro_detalle_registrar;
+	private boolean filter_detalle_registrar;
+
 	///////////////////////////////////////////////////////
 	// Managed
 	///////////////////////////////////////////////////////
 	@ManagedProperty("#{sesion}")
 	private SessionBean sesion;
+
+	@ManagedProperty("#{image}")
+	private ImageBean image;
 
 	@ManagedProperty("#{app}")
 	private AppBean app;
@@ -106,6 +115,28 @@ public class CompraBean implements Serializable {
 		this.tabla_compra = null;
 		this.editar = false;
 		this.inserto_detalles_compra = null;
+	}
+
+	/**
+	 * Metodo que inicializa un detalle a registrar.
+	 */
+	public void initDetalleRegistrar() {
+		this.id_detalle_register = "";
+		this.registro_detalle_registrar = false;
+		this.detalle_registrar = new DetalleProducto();
+		this.id_detalle_2_register = generarIDRegistrar();
+		this.detalle_registrar.setId(id_detalle_2_register);
+		initDetalleProductoRegistrar();
+
+	}
+
+	/**
+	 * Metodo que inicializa un detalle producto a registrar.
+	 */
+	public void initDetalleProductoRegistrar() {
+		this.filter_detalle_registrar = false;
+		this.detalle_registrar.setProductoBean(new Producto());
+		this.detalle_registrar.getProductoBean().setCategoriaBean(new Categoria());
 	}
 
 	/**
@@ -171,6 +202,223 @@ public class CompraBean implements Serializable {
 		this.detalle_compra.setDetalleProducto(new DetalleProducto());
 		this.detalle_compra.getDetalleProducto().setProductoBean(new Producto());
 		this.detalle_compra.getDetalleProducto().getProductoBean().setCategoriaBean(new Categoria());
+		this.initDetalleRegistrar();
+	}
+
+	///////////////////////////////////////////////////////
+	// Method Detail Register
+	///////////////////////////////////////////////////////
+	/**
+	 * Metodo que genera ID del detalle producto a registrar.
+	 * 
+	 * @return el id generado.
+	 */
+	public int generarIDRegistrar() {
+		DetalleProductoController dao = new DetalleProductoController();
+		DetalleProducto dp = dao.addUltimo();
+		if (dp != null) {
+			return dp.getId() + 1;
+		}
+		return 1;
+	}
+
+	/**
+	 * Metodo que permite filtrar un detalle.
+	 */
+	public void filterDetalleProductoRegistrar() {
+		this.message = null;
+		this.filter_detalle_registrar = false;
+		this.registro_detalle_registrar = false;
+		if (Convertidor.isCadena(this.id_detalle_register)) {
+			ProductoController p = new ProductoController();
+			Producto aux = p.find(id_detalle_register);
+			if (aux != null) {
+				initDetalleRegistrar();
+				this.detalle_registrar.setProductoBean(aux);
+				this.id_detalle_register = aux.getId();
+				this.filter_detalle_registrar = true;
+				this.message = new FacesMessage(FacesMessage.SEVERITY_INFO, "",
+						"Se ha filtrado el producto con ID " + this.id_detalle_register + ".");
+			} else {
+				this.message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "",
+						"No existe ningun producto con ID " + this.id_detalle_register + ".");
+			}
+		} else {
+			this.message = new FacesMessage(FacesMessage.SEVERITY_WARN, "", "El campo ID producto es obligatorio.");
+		}
+		if (this.message != null) {
+			FacesContext.getCurrentInstance().addMessage(null, message);
+		}
+	}
+
+	/**
+	 * Metodo que permit limpirar filtro detalle venta.
+	 */
+	public void limpiarFiltroDetalleProductoRegistrar() {
+		initDetalleRegistrar();
+		FacesContext.getCurrentInstance().addMessage(null,
+				new FacesMessage(FacesMessage.SEVERITY_INFO, "", "Se ha limpiado el filtro."));
+	}
+
+	/**
+	 * 
+	 */
+	@SuppressWarnings("deprecation")
+	public void registrarDetalleProductoDialogo() {
+		DetalleProducto dp = this.detalle_registrar;
+		dp.setId(id_detalle_2_register);
+		ProductoController pD = new ProductoController();
+		Producto p = dp.getProductoBean();
+		p.setId(this.id_detalle_register);
+		this.message = null;
+		boolean seguir = false;
+		boolean insertar = false;
+		if (!this.filter_detalle_registrar) {
+			if (Convertidor.isCadena(p.getId())) {
+				if (Convertidor.isCadena(p.getNombre())) {
+					Producto aux1 = pD.find(p.getId());
+					if (aux1 == null) {
+						Fecha fecha = new Fecha();
+						p.setFechaCreacion(new Date(fecha.fecha()));
+						p.setEstado(true);
+						insertar = true;
+						FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO,
+								"Success", "Se ha registrado el producto."));
+						seguir = true;
+					} else {
+						message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error",
+								"Ya existe un producto con ese ID.");
+					}
+				} else {
+					message = new FacesMessage(FacesMessage.SEVERITY_WARN, "Warn", "El campo nombre es obligatorio.");
+				}
+			} else {
+				message = new FacesMessage(FacesMessage.SEVERITY_WARN, "Warn", "El campo id producto es obligatorio.");
+			}
+		} else {
+			seguir = true;
+		}
+		if (seguir) {
+			if (dp.getId() > 0) {
+				if (Convertidor.isCadena(dp.getColor())) {
+					if (!Convertidor.containsNumber(dp.getColor())) {
+						if (Convertidor.isCadena(dp.getDimension())) {
+							if (dp.getStock() >= 0) {
+								if (dp.getStockMinimo() >= 0) {
+									if (dp.getStock() >= dp.getStockMinimo()) {
+										if (Operacion.mayorZero(dp.getDescuento())) {
+											if (Operacion.mayorZero(dp.getPrecioVenta())) {
+												if (Operacion.mayorZero(dp.getPrecioCompra())) {
+													if (dp.getPrecioVenta().compareTo(dp.getDescuento()) >= 0) {
+														if (dp.getPrecioVenta().compareTo(dp.getPrecioCompra()) >= 0) {
+
+															if (insertar) {
+																p.setStock(dp.getStock());
+																p.setStockMinimo(dp.getStockMinimo());
+																pD = new ProductoController();
+																pD.insert(p);
+																dp.setProductoBean(p);
+															}
+
+															DetalleProductoController dao = new DetalleProductoController();
+															DetalleProducto aux = dao.existe(dp.getColor(),
+																	dp.getDimension());
+
+															if (aux == null) {
+																if (this.image.getImage() != null) {
+																	dp.setFoto(this.image.getImage());
+																	this.image.setImage(null);
+																}
+																dao.insert(dp);
+																message = new FacesMessage(FacesMessage.SEVERITY_INFO,
+																		"", "Se ha registrado el detalle venta.");
+
+															} else {
+																int suma = dp.getStock() + aux.getStock();
+																aux.setStock(suma);
+
+																if (this.image.getImage() != null) {
+																	dp.setFoto(this.image.getImage());
+																	this.image.setImage(null);
+																	aux.setFoto(dp.getFoto());
+																}
+
+																if (dp.getPrecioCompra()
+																		.compareTo(BigInteger.ZERO) > 0) {
+																	aux.setPrecioCompra(dp.getPrecioCompra());
+																}
+																if (dp.getPrecioVenta()
+																		.compareTo(BigInteger.ZERO) > 0) {
+																	aux.setPrecioVenta(dp.getPrecioVenta());
+																}
+																if (dp.getStockMinimo() > 0) {
+																	aux.setStockMinimo(dp.getStockMinimo());
+																}
+																if (Convertidor.isCadena(dp.getDescripcion())) {
+																	aux.setDescripcion(dp.getDescripcion());
+																}
+																dao.update(aux);
+																message = new FacesMessage(FacesMessage.SEVERITY_INFO,
+																		"",
+																		"El detalle producto ya existia se ha actualizado la información.");
+															}
+															int id = dp.getId();
+															initDetalleRegistrar();
+															initAllDetalleCompra();
+															this.id_detalle_producto = id;
+															filtrarDetalleProducto();
+														} else {
+															this.message = new FacesMessage(FacesMessage.SEVERITY_WARN,
+																	"",
+																	"El campo el precio compra no puede ser mayor al precio venta.");
+														}
+													} else {
+														this.message = new FacesMessage(FacesMessage.SEVERITY_WARN, "",
+																"El campo descuento no puede ser mayor al precio venta.");
+													}
+												} else {
+													this.message = new FacesMessage(FacesMessage.SEVERITY_WARN, "",
+															"El campo precio compra es obligatorio.");
+												}
+											} else {
+												this.message = new FacesMessage(FacesMessage.SEVERITY_WARN, "",
+														"El campo precio venta es obligatorio.");
+											}
+										} else {
+											this.message = new FacesMessage(FacesMessage.SEVERITY_WARN, "",
+													"El campo descuento es obligatorio.");
+										}
+									} else {
+										this.message = new FacesMessage(FacesMessage.SEVERITY_WARN, "",
+												"El campo stock minimo no puede ser mayor al stock.");
+									}
+								} else {
+									this.message = new FacesMessage(FacesMessage.SEVERITY_WARN, "",
+											"El campo stock minimo debe ser mayor o igual a cero.");
+								}
+							} else {
+								this.message = new FacesMessage(FacesMessage.SEVERITY_WARN, "",
+										"El campo stock debe ser mayor o igual a cero.");
+							}
+						} else {
+							this.message = new FacesMessage(FacesMessage.SEVERITY_WARN, "",
+									"El campo dimesión es obligatorio.");
+						}
+					} else {
+						this.message = new FacesMessage(FacesMessage.SEVERITY_WARN, "",
+								"El campo color no debe contener numeros.");
+					}
+				} else {
+					this.message = new FacesMessage(FacesMessage.SEVERITY_WARN, "", "El campo color es obligatorio.");
+				}
+			} else {
+				this.message = new FacesMessage(FacesMessage.SEVERITY_WARN, "",
+						"El campo ID del detalle producto es obligatorio.");
+			}
+		}
+		if (this.message != null) {
+			FacesContext.getCurrentInstance().addMessage(null, this.message);
+		}
 	}
 
 	///////////////////////////////////////////////////////
@@ -1027,7 +1275,7 @@ public class CompraBean implements Serializable {
 								message = new FacesMessage(FacesMessage.SEVERITY_WARN, "",
 										"El campo descuento no puede ser mayor a subtotal de precio unidad por la cantidad.");
 							}
-						}else {
+						} else {
 							message = new FacesMessage(FacesMessage.SEVERITY_WARN, "",
 									"El campo descuento no puede ser mayor al precio de compra del producto.");
 						}
@@ -1340,5 +1588,53 @@ public class CompraBean implements Serializable {
 
 	public void setSubtotal_sin_iva(BigInteger subtotal_sin_iva) {
 		this.subtotal_sin_iva = subtotal_sin_iva;
+	}
+
+	public DetalleProducto getDetalle_registrar() {
+		return detalle_registrar;
+	}
+
+	public void setDetalle_registrar(DetalleProducto detalle_registrar) {
+		this.detalle_registrar = detalle_registrar;
+	}
+
+	public boolean isRegistro_detalle_registrar() {
+		return registro_detalle_registrar;
+	}
+
+	public void setRegistro_detalle_registrar(boolean registro_detalle_registrar) {
+		this.registro_detalle_registrar = registro_detalle_registrar;
+	}
+
+	public boolean isFilter_detalle_registrar() {
+		return filter_detalle_registrar;
+	}
+
+	public void setFilter_detalle_registrar(boolean filter_detalle_registrar) {
+		this.filter_detalle_registrar = filter_detalle_registrar;
+	}
+
+	public String getId_detalle_register() {
+		return id_detalle_register;
+	}
+
+	public void setId_detalle_register(String id_detalle_register) {
+		this.id_detalle_register = id_detalle_register;
+	}
+
+	public ImageBean getImage() {
+		return image;
+	}
+
+	public void setImage(ImageBean image) {
+		this.image = image;
+	}
+
+	public int getId_detalle_2_register() {
+		return id_detalle_2_register;
+	}
+
+	public void setId_detalle_2_register(int id_detalle_2_register) {
+		this.id_detalle_2_register = id_detalle_2_register;
 	}
 }

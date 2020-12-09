@@ -36,13 +36,13 @@ public class Venta implements Serializable {
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name="fecha_registro")
 	private Date fechaRegistro;
-
-	@OneToMany(mappedBy="ventaBean")
-	private List<DetalleCompraVenta> detalleCompraVentas;
 	
 	///////////////////////////////////////////////////////
 	// Map
 	///////////////////////////////////////////////////////
+	@OneToMany(mappedBy="ventaBean")
+	private List<DetalleCompraVenta> detalleCompraVentas;
+	
 	@ManyToOne
 	@JoinColumn(name="cuenta_cliente")
 	private ClienteCuenta clienteCuenta;

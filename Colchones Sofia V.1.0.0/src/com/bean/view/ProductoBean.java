@@ -113,49 +113,53 @@ public class ProductoBean implements Serializable {
 				if (Convertidor.isCadena(this.producto.getDescripcion())) {
 					if (this.producto.getStock() > 0) {
 						if (this.producto.getStockMinimo() > 0) {
-							if (this.producto.getGarantia() >= 0) {
-								CategoriaController cDao = new CategoriaController();
-								Categoria aux = cDao.find(this.producto.getCategoriaBean().getId());
-								ProductoController pD = new ProductoController();
-								Producto aux1 = pD.find(this.producto.getId());
-								this.producto.setCategoriaBean(aux);
-								if (aux1 == null) {
-									Fecha fecha = new Fecha();
-									this.producto.setFechaCreacion(new Date(fecha.fecha()));
-									this.producto.setEstado(true);
-									pD.insert(this.producto);
-									this.insert = true;
-									this.producto = new Producto();
-									this.producto.setCategoriaBean(new Categoria());
-									this.table.initProducto();
-									message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Success",
-											"Se ha registrado el producto.");
+							if(this.producto.getStock() >= this.producto.getStockMinimo()) {
+								if (this.producto.getGarantia() >= 0) {
+									CategoriaController cDao = new CategoriaController();
+									Categoria aux = cDao.find(this.producto.getCategoriaBean().getId());
+									ProductoController pD = new ProductoController();
+									Producto aux1 = pD.find(this.producto.getId());
+									this.producto.setCategoriaBean(aux);
+									if (aux1 == null) {
+										Fecha fecha = new Fecha();
+										this.producto.setFechaCreacion(new Date(fecha.fecha()));
+										this.producto.setEstado(true);
+										pD.insert(this.producto);
+										this.insert = true;
+										this.producto = new Producto();
+										this.producto.setCategoriaBean(new Categoria());
+										this.table.initProducto();
+										message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Success",
+												"Se ha registrado el producto.");
+									} else {
+										message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error",
+												"El producto ya existe.");
+									}
 								} else {
-									message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error",
-											"El producto ya existe..");
+									message = new FacesMessage(FacesMessage.SEVERITY_WARN, "Error",
+											"El campo Garantia es obligatorio.");
 								}
 							} else {
-								message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error",
-										"El campo Garantia es obligatorio..");
+								message = new FacesMessage(FacesMessage.SEVERITY_WARN, "Error",
+										"El stock minimo no puede ser mayor al stock.");
 							}
 						} else {
 							message = new FacesMessage(FacesMessage.SEVERITY_WARN, "Warn",
-									"El campo Stock minimo es obligatorio.");
+									"El campo stock minimo es obligatorio.");
 						}
 					} else {
 						message = new FacesMessage(FacesMessage.SEVERITY_WARN, "Warn",
-								"El campo Stock es obligatorio.");
+								"El campo stock es obligatorio.");
 					}
-
 				} else {
 					message = new FacesMessage(FacesMessage.SEVERITY_WARN, "Warn",
-							"El campo Descripcion minimo es obligatorio.");
+							"El campo descripcion minimo es obligatorio.");
 				}
 			} else {
-				message = new FacesMessage(FacesMessage.SEVERITY_WARN, "Warn", "El campo Nombre es obligatorio.");
+				message = new FacesMessage(FacesMessage.SEVERITY_WARN, "Warn", "El campo nombre es obligatorio.");
 			}
 		} else {
-			message = new FacesMessage(FacesMessage.SEVERITY_WARN, "Warn", "El campo Id es obligatorio.");
+			message = new FacesMessage(FacesMessage.SEVERITY_WARN, "Warn", "El campo id es obligatorio.");
 		}
 
 		return message;

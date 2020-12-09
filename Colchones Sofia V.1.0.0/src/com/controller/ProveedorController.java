@@ -74,8 +74,8 @@ public class ProveedorController extends Conexion<Proveedor> {
 	 */
 	public List<ChartJS> cantidadCompras() {
 		List<ChartJS> list = new ArrayList<ChartJS>();
-		Query query = getEm().createQuery("SELECT v.usuario2.persona.nombre, COUNT(v.usuario2) FROM "
-				+ "Venta v WHERE v.usuario2.estado=true GROUP BY v.usuario2 ORDER BY COUNT(v.usuario2)");
+		Query query = getEm().createQuery("SELECT c.proveedorBean.persona.nombre, COUNT(c.proveedorBean) FROM " 
+				+ "Compra c WHERE c.proveedorBean.estado=true GROUP BY c.proveedorBean ORDER BY COUNT(c.proveedorBean)");
 		@SuppressWarnings("rawtypes")
 		List result = query.getResultList();
 		@SuppressWarnings("rawtypes")
