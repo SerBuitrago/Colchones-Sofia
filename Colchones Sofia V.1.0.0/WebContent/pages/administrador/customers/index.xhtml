@@ -103,8 +103,8 @@
 					<p:dataTable rendered="#{reporte.clientes.size() > 0}" var="ve"
 						value="#{reporte.clientes}" widgetVar="sofia-table-update"
 						id="sofia-table-update"
-						emptyMessage="No se encontro ninguna venta."
-						filteredValue="#{reporte.vendedor_filter}"
+						emptyMessage="No se encontro ningun cliente."
+						filteredValue="#{reporte.cliente_filter}"
 						paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} 
 								         {CurrentPageReport} {NextPageLink} {LastPageLink}"
 						paginator="true" rows="20" rowIndexVar="index"
@@ -145,7 +145,7 @@
 						</p:column>
 
 						<!-- DOCUMENTO -->
-						<p:column footerText="Documento">
+						<p:column footerText="Documento" filterBy="#{ve.persona.documento}">
 							<f:facet name="header">
 								<h:outputText value="Documento" />
 							</f:facet>
@@ -156,24 +156,13 @@
 						</p:column>
 
 						<!-- NOMBRE -->
-						<p:column footerText="Nombre">
+						<p:column footerText="Nombre" filterBy="#{ve.persona.nombre} #{ve.persona.apellido}" filterMatchMode="contains">
 							<f:facet name="header">
 								<h:outputText value="Nombre" />
 							</f:facet>
 							<h:panelGroup layout="block"
-								styleClass="p-d-flex p-jc-center p-ac-center">
-								<h:outputText value="#{ve.persona.nombre}" />
-							</h:panelGroup>
-						</p:column>
-
-						<!-- APELLIDO -->
-						<p:column footerText="Apellido">
-							<f:facet name="header">
-								<h:outputText value="Apellido" />
-							</f:facet>
-							<h:panelGroup layout="block"
-								styleClass="p-d-flex p-jc-center p-ac-center">
-								<h:outputText value="#{ve.persona.apellido}" />
+								styleClass="p-d-flex p-jc-center p-ac-center p-text-center">
+								<h:outputText value="#{ve.persona.nombre} #{ve.persona.apellido}" />
 							</h:panelGroup>
 						</p:column>
 
@@ -183,19 +172,21 @@
 								<h:outputText value="Registro" />
 							</f:facet>
 							<h:panelGroup layout="block"
-								styleClass="p-d-flex p-jc-center p-ac-center">
-								<h:outputText value="#{ve.fechaCreacion}" />
+								styleClass="p-d-flex p-jc-center p-ac-center p-text-center">
+								<h:outputText value="#{ve.fechaCreacion}" >
+									<f:convertDateTime pattern="dd/MM/yyyy HH:mm:ss" />
+								</h:outputText>
 							</h:panelGroup>
 						</p:column>
 
 						<!--  VENTAS -->
-						<p:column footerText="Compras">
+						<p:column footerText="Ventas">
 							<f:facet name="header">
-								<h:outputText value="Compras" />
+								<h:outputText value="Ventas" />
 							</f:facet>
 							<h:panelGroup layout="block"
 								styleClass="p-d-flex p-jc-center p-ac-center">
-								<h:outputText value="#{ve.ventas1.size()}" />
+								<h:outputText value="#{ve.ventas1.size()}" styleClass="sofia-statu #{ve.ventas1.size() gt 0 ? 'sofia-statu-succes' : 'sofia-statu-warn'}"/>
 							</h:panelGroup>
 						</p:column>
 					</p:dataTable>
@@ -239,5 +230,4 @@
 			</p:tabView>
 		</p:fieldset>
 	</ui:define>
-
 </ui:composition>

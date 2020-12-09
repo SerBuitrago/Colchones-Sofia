@@ -203,6 +203,13 @@
 							styleClass="sofia-button-icon sofia-button-succes sofia-button-icon-small"
 							update="@(.sofia-container-main-update)" />
 
+						<p:commandButton icon="fas fa-fw fa-plus"
+							disabled="#{compra.filter_detalle_compra}"
+							title="Registrar Producto"
+							oncomplete="PF('sofia-dialog-register-producto-update').show();"
+							styleClass="sofia-button-icon sofia-button-info sofia-button-icon-small"
+							update="@(.sofia-container-main-update)" />
+
 						<p:commandButton icon="fas fa-eye"
 							disabled="#{compra.active_filert_detalle_compra ? 'false' : 'true'}"
 							title="Ver productos"
@@ -735,6 +742,165 @@
 			</h:form>
 		</p:dialog>
 
+		<!--                         -->
+		<!-- DIALOG REGISTER PRODUCT -->
+		<!--                          -->
+		<p:dialog header="Registrar Producto"
+			widgetVar="sofia-dialog-register-producto-update"
+			id="sofia-dialog-register-producto-update" resizable="false"
+			showEffect="explode" style="max-heigth:50vh;overflow-y:auto"
+			width="80%" styleClass="sofia-dialog-register-producto-update"
+			modal="true">
+			<h:form>
+				<h:panelGroup layout="block">
+					<!--        -->
+					<!-- SELECT -->
+					<!--        -->
+					<h:panelGroup layout="block"
+						styleClass="ui-fluid p-formgrid p-d-flex p-jc-between p-ac-center">
+
+						<!--    -->
+						<!-- ID -->
+						<!--    -->
+						<h:panelGroup layout="block" styleClass="p-field p-col p-md-3">
+							<p:outputLabel for="add-id-producto" value="ID Producto:" />
+
+							<p:inputText id="add-id-producto" disabled="#{compra.filter_detalle_registrar}"
+								value="#{compra.id_detalle_register}" />
+						</h:panelGroup>
+
+						<p:commandButton action="#{compra.filterDetalleProductoRegistrar()}" disabled="#{compra.filter_detalle_registrar}"
+							styleClass="sofia-button-icon sofia-button-icon-small sofia-button-succes" oncomplete="PF('sofia-dialog-register-producto-update').show();"
+							icon="fa fa-fw fa-filter" update="@(.sofia-container-main-update), @(.sofia-dialog-register-producto-update)"/>
+						<p:commandButton action="#{compra.limpiarFiltroDetalleProductoRegistrar()}" disabled="#{compra.filter_detalle_registrar ? 'false' : 'true'}"
+							styleClass="sofia-button-icon sofia-button-icon-small sofia-button-error" oncomplete="PF('sofia-dialog-register-producto-update').show();"
+							icon="fa fa-fw fa-brush" update="@(.sofia-container-main-update), @(.sofia-dialog-register-producto-update)"/>
+					</h:panelGroup>
+					<!--      -->
+					<!-- INFO -->
+					<!--      -->
+					<h:panelGroup layout="block"
+						styleClass="ui-fluid p-formgrid p-grid">
+
+						<!--      -->
+						<!-- NAME -->
+						<!--      -->
+						<div class="p-field p-col">
+							<p:outputLabel for="add-nombre-producto" value="Nombre:" />
+							<p:inputText id="add-nombre-producto" disabled="#{compra.filter_detalle_registrar}"
+								value="#{compra.detalle_registrar.productoBean.nombre}" />
+						</div>
+						<h:panelGroup layout="block" styleClass="p-field p-col-12 p-md-5">
+							<h:outputLabel for="categoria" value="Categoria: " />
+							<p:selectOneMenu id="productos" disabled="#{compra.filter_detalle_registrar}"
+								value="#{compra.detalle_registrar.productoBean.categoriaBean.id}"
+								filter="true" filterMatchMode="startsWith">
+								<f:selectItems value="#{selection.categoria}" />
+							</p:selectOneMenu>
+						</h:panelGroup>
+						<h:panelGroup layout="block" styleClass="p-field p-col-12 p-md-2">
+							<p:outputLabel for="Garantia-producto" value="Garantia:" />
+							<p:inputText id="Garantia-producto" disabled="#{compra.filter_detalle_registrar}"
+								value="#{compra.detalle_registrar.productoBean.garantia}" />
+						</h:panelGroup>
+					</h:panelGroup>
+				</h:panelGroup>
+
+				<h:panelGroup layout="block"
+					styleClass="ui-fluid p-formgrid p-grid p-jc-between">
+					<h:panelGroup layout="block" styleClass="p-field p-col p-md-3">
+						<p:outputLabel for="add-id-detalle_producto" value="ID Detalle:" />
+
+						<p:inputText id="add-id-detalle_producto"
+							disabled="#{detalle_producto.hidden}" 
+							value="#{compra.id_detalle_2_register}" />
+					</h:panelGroup>
+					<h:panelGroup layout="block"
+						styleClass="p-d-flex p-jc-center pac-center p-m-5">
+						<p:fileUpload listener="#{image.uploadImage}" mode="advanced"
+							dragDropSupport="false"
+							update="@(.sofia-container-main-detalle-update)"
+							sizeLimit="100000" fileLimit="1"
+							allowTypes="/(\.|\/)(jpe?g|png)$/" />
+					</h:panelGroup>
+				</h:panelGroup>
+
+				<!--      -->
+				<!-- INFO -->
+				<!--      -->
+				<h:panelGroup layout="block"
+					styleClass="ui-fluid p-formgrid p-grid p-jc-between p-ac-center">
+
+					<!--       -->
+					<!-- COLOR -->
+					<!--       -->
+					<div class="p-field p-col p-md-3">
+						<p:outputLabel for="add-color-detalle_producto" value="Color:" />
+						<p:inputText id="add-color-detalle_producto" 
+							value="#{compra.detalle_registrar.color}" />
+					</div>
+
+					<h:panelGroup layout="block" styleClass="p-field p-col-12 p-md-4">
+						<p:outputLabel for="medida-detalle" value="Dimensión:" />
+						<p:inputText id="medida-detalle"
+							value="#{compra.detalle_registrar.dimension}" />
+					</h:panelGroup>
+
+					<!--          -->
+					<!-- STOCK -->
+					<!--          -->
+					<div class="p-field p-col p-md-2">
+						<p:outputLabel for="add-stock-detalle" value="Stock:" />
+						<p:spinner id="add-stock-detalle" min="0"
+							max="99999" rotate="true"
+							value="#{compra.detalle_registrar.stock}" />
+					</div>
+					<div class="p-field p-col p-col-12 p-md-2">
+						<p:outputLabel for="add-stockMinimo-detalle" value="Stock minimo:" />
+						<p:spinner id="add-stockMinimo-detalle" min="0"
+							max="99999" rotate="true"
+							value="#{compra.detalle_registrar.stockMinimo}" /> 
+					</div>
+				</h:panelGroup>
+
+				<!--      -->
+				<!-- INFO -->
+				<!--      -->
+				<h:panelGroup layout="block" styleClass="ui-fluid p-formgrid p-grid">
+					<h:panelGroup layout="block" styleClass="p-field p-col-12 p-md-4">
+						<p:outputLabel for="descuento-detalle" value="Descuento:" />
+						<p:inputNumber id="descuento-detalle"
+							value="#{compra.detalle_registrar.descuento}" />
+					</h:panelGroup>
+					<h:panelGroup layout="block" styleClass="p-field p-col-12 p-md-4">
+						<p:outputLabel for="precio-venta-detalle" value="Precio Venta:" />
+						<p:inputNumber id="precio-venta-detalle"
+							value="#{compra.detalle_registrar.precioVenta}" />
+					</h:panelGroup>
+					<h:panelGroup layout="block" styleClass="p-field p-col-12 p-md-4">
+						<p:outputLabel for="precio-compra-detalle" value="Precio Compra:" />
+						<p:inputNumber id="precio-compra-detalle"
+							value="#{compra.detalle_registrar.precioCompra}" />
+					</h:panelGroup>
+				</h:panelGroup>
+
+				<!--     -->
+				<!-- ADD -->
+				<!--     -->
+				<h:panelGroup layout="block"
+					styleClass="p-d-flex p-jc-center p-mb-lg-6 p-mt-lg-6">
+					<p:commandButton 
+						styleClass="sofia-button sofia-button-primary p-m-0"
+						action="#{compra.registrarDetalleProductoDialogo()}" 
+						title="Registrar detalle producto"
+						value="Registrar"
+						icon="fa fa-fw fa-plus"
+						onclick="PF('sofia-dialog-register-producto-update').show();"
+						update="@(.sofia-dialog-producto-update), @(.sofia-container-main-update), @(.sofia-dialog-register-producto-update)" />
+				</h:panelGroup>
+
+			</h:form>
+		</p:dialog>
 	</ui:define>
 
 </ui:composition>

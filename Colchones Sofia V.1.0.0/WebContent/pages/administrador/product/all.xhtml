@@ -105,7 +105,7 @@
 
 				<!-- ID -->
 				<p:column filterBy="#{p.id}" sortBy="#{p.id}" footerText="ID"
-					filterMatchMode="contains">
+					>
 					<f:facet name="header">
 						<h:outputText value="ID" />
 					</f:facet>
@@ -117,7 +117,7 @@
 
 				<!-- NAMES -->
 				<p:column filterBy="#{p.nombre}" footerText="Nombre"
-					sortBy="#{p.nombre}">
+					sortBy="#{p.nombre}" filterMatchMode="contains">
 					<f:facet name="header">
 						<h:outputText value="Nombre" />
 					</f:facet>
@@ -373,13 +373,6 @@
 								requiredMessage="El campo id no puede estar vacio."
 								value="#{producto.producto.id}" />
 						</h:panelGroup>
-
-
-						<p:selectOneMenu id="add-tipo-documento-asistente"
-							disabled="#{asistente.hidden}"
-							value="#{asistente.usuario.persona.tipoDocumentoBean.tipoDocumento}">
-							<f:selectItems value="#{selection.documentos}" styleClass="info" />
-						</p:selectOneMenu>
 					</h:panelGroup>
 
 					<!--      -->
@@ -484,8 +477,6 @@
 					<!--        -->
 					<!-- SELECT -->
 					<!--        -->
-
-					<!-- MOdificaRRRRRRRR -->
 					<h:panelGroup layout="block"
 						styleClass="ui-fluid p-formgrid p-d-flex p-jc-between p-ac-center">
 
@@ -583,7 +574,7 @@
 					<h:panelGroup layout="block"
 						styleClass="ui-fluid p-formgrid p-grid">
 						<h:panelGroup layout="block" styleClass="p-field p-col-12 p-md">
-							<p:outputLabel for="medida-detalle" value="Descuento:" />
+							<p:outputLabel for="medida-detalle" value="Dimensión:" />
 							<p:inputText id="medida-detalle"
 								value="#{detalle_producto.detalle_producto.dimension}" />
 						</h:panelGroup>

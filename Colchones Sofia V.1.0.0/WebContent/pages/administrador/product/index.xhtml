@@ -59,10 +59,11 @@
 								<!--           -->
 								<h:panelGroup layout="block" styleClass="p-field p-col p-md-4">
 									<p:outputLabel for="fecha-inicio" value="Fecha Inicio:" />
-									<p:datePicker id="fecha-inicio" required="true"
+									<p:calendar id="fecha-inicio" required="true"
+										pattern="MM/dd/yyyy HH:mm:ss"
 										requiredMessage="El campo fecha inicio no puede estar vacia."
 										value="#{reporte.fecha_inicio}">
-									</p:datePicker>
+									</p:calendar>
 								</h:panelGroup>
 
 								<!--          -->
@@ -70,10 +71,11 @@
 								<!--          -->
 								<h:panelGroup layout="block" styleClass="p-field p-col p-md-4">
 									<p:outputLabel for="fecha-fin" value="Fecha Fin:" />
-									<p:datePicker id="fecha-fin" required="true"
+									<p:calendar id="fecha-fin" required="true"
+										pattern="MM/dd/yyyy HH:mm:ss"
 										requiredMessage="El campo fecha fin no puede estar vacia."
 										value="#{reporte.fecha_fin}">
-									</p:datePicker>
+									</p:calendar>
 								</h:panelGroup>
 							</h:panelGroup>
 
@@ -185,14 +187,14 @@
 						</p:column>
 
 						<!-- GARANTIA -->
-						<p:column footerText="Garantia (años)" sortBy="${ve.garantia}"
+						<p:column footerText="Garantia" sortBy="${ve.garantia}"
 							filterBy="#{ve.garantia}">
 							<f:facet name="header">
-								<h:outputText value="Garantia (años)" />
+								<h:outputText value="Garantia" />
 							</f:facet>
 							<h:panelGroup layout="block"
 								styleClass="p-d-flex p-jc-center p-ac-center">
-								<h:outputText value="#{ve.garantia}" />
+								<h:outputText value="#{ve.garantia} Año" styleClass="sofia-statu #{ve.garantia == 0 ? 'sofia-statu-warn' : 'sofia-statu-succes'}"/>
 							</h:panelGroup>
 						</p:column>
 

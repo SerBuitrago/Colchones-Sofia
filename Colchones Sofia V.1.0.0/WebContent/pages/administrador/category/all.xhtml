@@ -157,7 +157,7 @@
 						footerText="Productos" sortBy="#{c.productos.size()}">
 						<h:panelGroup layout="block"
 							styleClass="p-d-flex p-jc-center p-ac-center">
-							<h:outputText value="#{c.productos.size()}" />
+							<h:outputText value="#{c.productos.size()}" styleClass="sofia-statu #{c.productos.size() gt 0 ? 'sofia-statu-succes' : 'sofia-statu-warn'}"/>
 						</h:panelGroup>
 					</p:column>
 
