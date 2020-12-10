@@ -1,4 +1,3 @@
-
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
 	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
@@ -145,12 +144,22 @@
 						</h:outputLabel>
 					</h:panelGroup>
 				</p:column>
+				
+				<!-- IVA -->
+				<p:column footerText="IVA" headerText="IVA" style="width:100px"
+					sortBy="#{v.iva}">
+					<h:panelGroup layout="block"
+						styleClass="p-d-flex p-jc-center p-ac-center p-text-center">
+						<h:outputLabel value="#{v.iva}%">
+						</h:outputLabel>
+					</h:panelGroup>
+				</p:column>
 
 				<!-- TOTAL -->
 				<p:column footerText="Total" headerText="Total" sortBy="#{v.total}">
 					<h:panelGroup layout="block"
 						styleClass="p-d-flex p-jc-end p-ac-center">
-						<h:outputLabel value="#{v.total}">
+						<h:outputLabel value="#{v.total}" styleClass="sofia-statu sofia-statu-succes">
 							<f:convertNumber currencySymbol="$" type="currency" />
 						</h:outputLabel>
 					</h:panelGroup>
@@ -160,7 +169,7 @@
 				<p:column footerText="Pago" headerText="Pago">
 					<h:panelGroup layout="block"
 						styleClass="p-d-flex p-jc-center p-ac-center">
-						<h:outputLabel value="#{v.metodoPagoBean.banco}" />
+						<h:outputLabel value="#{v.metodoPagoBean.banco}"  styleClass="sofia-statu sofia-statu-info"/>
 					</h:panelGroup>
 				</p:column>
 
@@ -614,7 +623,7 @@
 								sortBy="#{vp.precio}">
 								<h:panelGroup layout="block"
 									styleClass="p-d-flex p-jc-end p-ac-center">
-									<h:outputText value="#{vp.precio}">
+									<h:outputText value="#{vp.precio}" styleClass="sofia-statu sofia-statu-succes">
 										<f:convertNumber currencySymbol="$" type="currency" />
 									</h:outputText>
 								</h:panelGroup>
@@ -637,7 +646,7 @@
 								sortBy="#{vp.subtotal}">
 								<h:panelGroup layout="block"
 									styleClass="p-d-flex p-jc-end p-ac-center">
-									<h:outputText value="#{vp.subtotal}">
+									<h:outputText value="#{vp.subtotal}" styleClass="sofia-statu sofia-statu-primary">
 										<f:convertNumber currencySymbol="$" type="currency" />
 									</h:outputText>
 								</h:panelGroup>

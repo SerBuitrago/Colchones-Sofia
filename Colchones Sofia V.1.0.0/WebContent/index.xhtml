@@ -31,7 +31,8 @@
 		<!--         -->
 		<!-- PRODUCT -->
 		<!--         -->
-		<h:form>
+		<h:form styleClass="sofia-container-update-form"
+			id="sofia-container-update-form">
 			<p:growl showDetail="true" />
 
 			<h:panelGroup layout="block" styleClass="sofia-container-card-main">
@@ -76,16 +77,21 @@
 						<h3>CATEGORIAS</h3>
 						<div class="checklist categories">
 							<ul>
-								<h:form>
-									<ui:repeat var="c" value="#{selection.categoria}">
-										<ui:repeat var="l" value="#{c.getSelectItems()}">
-											<li><p:commandLink>
-													<span></span>#{l.label}
-												<f:param name="id-categoria" value="#{l.value}"></f:param>
-												</p:commandLink></li>
-										</ui:repeat>
+								<ui:repeat var="c" value="#{catalogo.categoria}">
+									<ui:repeat var="l" value="#{c.getSelectItems()}" varStatus="ij">
+										<li><p:commandLink update="@form" action="#{catalogo.activarCategoria()}">
+												<span style="background: #{catalogo.estado_categoria.get(ij.index) == true ? 'green' : 'white'}"></span>#{l.label}
+												<f:param name="index-categoria" value="#{ij.index}" />
+											</p:commandLink></li>
 									</ui:repeat>
-								</h:form>
+								</ui:repeat>
+
+								<h:panelGroup layout="block"
+									style="margin-top: .5em;margin-right:1.5em">
+									<p:commandButton action="#{catalogo.filtrarPorCategorias()}"
+										update="@form" icon="fa fa fa-check" style="float:right"
+										styleClass="sofia-button-icon sofia-button-icon-small sofia-button-primary" />
+								</h:panelGroup>
 							</ul>
 						</div>
 
@@ -103,7 +109,6 @@
 										</p:commandLink></li>
 								</ui:repeat>
 							</ul>
-
 						</div>
 
 						<h3>RANGO PRECIO</h3>
@@ -142,9 +147,9 @@
 
 					</div>
 
-					<div class="p-d-flex p-jc-star p-ac-center p-flex-column">
+					<div class="p-d-flex p-jc-star p-ac-center p-flex-column" style="padding-bottom: 3em;">
 						<div id="grid-selector"
-							style="width: 100%; padding: 40px 40px 40px 30px;">
+							style="width: 100%; padding: 40px 40px 40px 30px;min-width: 100%;">
 							<div id="grid-menu">
 								View:
 								<ul>
@@ -158,7 +163,7 @@
 						</div>
 
 						<div id="grid"
-							style="width: 90%; margin: 1em auto; position: relative; left: 50%; top: 50%; transform: translate(-50%, -50%);; padding: 1em;">
+							style="width: 90%; margin: 1em auto; position: relative; left: 50%; top: 40%; transform: translate(-40%, -40%); padding: 1em;min-width: 100%;">
 							<h:panelGroup layout="block"
 								styleClass="sofia-range-preci-update"
 								id="sofia-range-preci-update">
@@ -209,10 +214,13 @@
 											<div class="product-front">
 												<div class="shadow"></div>
 												<p:graphicImage value="#{image.detalle_producto}"
-													cache="false"
+													cache="false" rendered="#{p.foto != null}"
 													style="width: 100%; height: 100%;object-fit: contain;">
 													<f:param name="id-detalle-producto" value="#{p.id}" />
 												</p:graphicImage>
+												<h:graphicImage library="img" name="product.png"
+													rendered="#{p.foto == null}"
+													style="width: 100%; height: 100%;object-fit: contain;" />
 												<div class="image_overlay"></div>
 
 												<p:commandButton value="Agregar Carrito"
@@ -251,10 +259,14 @@
 												<div class="carousel">
 													<ul class="carousel-container">
 														<li><p:graphicImage value="#{image.detalle_producto}"
-																cache="false"
+																cache="false" rendered="#{p.foto != null}"
 																style="width: 100%; height: 100%;object-fit: contain;">
 																<f:param name="id-detalle-producto" value="#{p.id}" />
-															</p:graphicImage></li>
+															</p:graphicImage> <h:graphicImage library="img" name="product.png"
+																rendered="#{p.foto == null}"
+																style="width: 100%; height: 100%;object-fit: contain;" />
+
+														</li>
 
 													</ul>
 													<div class="arrows-perspective">
@@ -302,8 +314,10 @@
 			styleClass="sofia-container-slider-main-one-index">
 			<h:panelGroup layout="block" styleClass="sofia-container-text-image">
 				<h1 class="sofia-container-text-image__h1"
-					style="background: url(https://www.pngfind.com/pngs/m/618-6188512_rayas-blanco-tumblr-portadas-png-portadas-tumblr-fondo.png) repeat; background-size: 200%; background-clip: text; font-family: $- -project-font-family; position: relative; text-align: center; line-height: 120px; -webkit-background-clip: text; letter-spacing: -5px; font-weight: 900; font-family: Arial !important; font-size: 100px;">LO
-					NUEVO</h1>
+					style="background: url(https://www.pngfind.com/pngs/m/618-6188512_rayas-blanco-tumblr-portadas-png-portadas-tumblr-fondo.png) repeat; 
+					background-size: 200%; background-clip: text; font-family: $- -project-font-family; position: relative; text-align: center; 
+					line-height: 120px; -webkit-background-clip: text; letter-spacing: -5px; font-weight: 900; font-family: Arial !important; font-size: 100px;">
+					PROMOCIONES</h1>
 			</h:panelGroup>
 			<div class="content-product" style="margin-top: 0px !important">
 				<!--Container das imagens do slide-->

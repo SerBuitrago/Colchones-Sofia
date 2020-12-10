@@ -7,7 +7,7 @@
 	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:p="http://primefaces.org/ui"
-	template="../../../template/advanced/template-advaced-admi.xhtml">
+	template="../../../template/advanced/template-advaced-asist.xhtml">
 
 	<!--       -->
 	<!-- TITLE -->
@@ -59,8 +59,7 @@
 								<!--           -->
 								<h:panelGroup layout="block" styleClass="p-field p-col p-md-4">
 									<p:outputLabel for="fecha-inicio" value="Fecha Inicio:" />
-									<p:calendar id="fecha-inicio" required="true"
-										pattern="MM/dd/yyyy HH:mm:ss"
+									<p:calendar id="fecha-inicio" required="true" pattern="MM/dd/yyyy HH:mm:ss"
 										requiredMessage="El campo fecha inicio no puede estar vacia."
 										value="#{reporte.fecha_inicio}">
 									</p:calendar>
@@ -71,8 +70,7 @@
 								<!--          -->
 								<h:panelGroup layout="block" styleClass="p-field p-col p-md-4">
 									<p:outputLabel for="fecha-fin" value="Fecha Fin:" />
-									<p:calendar id="fecha-fin" required="true"
-										pattern="MM/dd/yyyy HH:mm:ss"
+									<p:calendar id="fecha-fin" required="true" pattern="MM/dd/yyyy HH:mm:ss"
 										requiredMessage="El campo fecha fin no puede estar vacia."
 										value="#{reporte.fecha_fin}">
 									</p:calendar>
@@ -184,8 +182,7 @@
 							</f:facet>
 							<h:panelGroup layout="block"
 								styleClass="p-d-flex p-jc-center p-ac-center">
-								<h:outputText value="#{p.detalleProductos.size()}"
-									styleClass="sofia-statu #{p.detalleProductos.size() gt 0 ? 'sofia-statu-succes' : 'sofia-statu-warn'}" />
+								<h:outputText value="#{p.detalleProductos.size()}" />
 							</h:panelGroup>
 						</p:column>
 					</p:dataTable>

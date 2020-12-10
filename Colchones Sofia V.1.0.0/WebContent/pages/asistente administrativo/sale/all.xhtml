@@ -69,7 +69,8 @@
 				                   {NextPageLink} {LastPageLink}"
 				paginator="true" rows="20" rowIndexVar="index"
 				rowsPerPageTemplate="5,10,15,20,50,100" reflow="true"
-				scrollable="true" styleClass="p-mt-4">
+				scrollable="true" styleClass="p-mt-4"
+				rowStyleClass="#{v.detalleCompraVentas.size() == 0 ? 'sofia-table-color-error-rgba' : v.totalSinIva le 0 or v.total le 0 ? 'sofia-table-color-warn-rgba' : 'null'}">
 
 				<!-- HEADER -->
 				<f:facet name="header">
@@ -173,11 +174,21 @@
 						<h:outputText value="Total" />
 					</f:facet>
 					<h:panelGroup layout="block"
-						styleClass="p-d-flex p-jc-end p-ac-center p-ai-center p-text-center">
-						<h:outputText value="#{v.total}">
-							<f:convertNumber currencySymbol="$" type="currency" />
-						</h:outputText>
+						styleClass="p-d-flex p-jc-center p-ac-center p-flex-column">
+						<h:panelGroup layout="block"
+							styleClass="p-d-flex p-jc-end p-ac-center p-ai-center p-text-center">
+							<h:outputText value="#{v.totalSinIva}" styleClass="sofia-statu sofia-statu-succes">
+								<f:convertNumber currencySymbol="$" type="currency" />
+							</h:outputText>
+						</h:panelGroup>
+						<h:panelGroup layout="block" 
+							styleClass="p-d-flex p-jc-end p-ac-center p-ai-center p-text-center p-mt-1">
+							<h:outputText value="#{v.total}" styleClass="sofia-statu sofia-statu-info">
+								<f:convertNumber currencySymbol="$" type="currency" />
+							</h:outputText>
+						</h:panelGroup>
 					</h:panelGroup>
+
 				</p:column>
 
 				<!-- ESTATU -->

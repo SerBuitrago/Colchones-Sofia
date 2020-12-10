@@ -1,0 +1,110 @@
+
+<!--          -->
+<!-- TEMPLATE -->
+<!--          -->
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	template="../../../template/advanced/template-advaced-asist.xhtml">
+
+	<!--       -->
+	<!-- TITLE -->
+	<!--       -->
+	<ui:define name="title-advaced">
+			| Garantia | Registrar
+	</ui:define>
+
+	<!--       -->
+	<!-- STATU -->
+	<!--       -->
+	<ui:define name="component-statu-advaced">
+		<p:menuitem value="Home" url="../index.xhtml" />
+		<p:menuitem value="Garantia" url="index.xhtml" disabled="none" />
+		<p:menuitem value="Registrar" url="register.xhtml" disabled="none" />
+	</ui:define>
+
+	<!--       -->
+	<!-- IMAGE -->
+	<!--       -->
+	<ui:define name="component-title-img-advaced">
+		<h:graphicImage library="img" name="all/warranty.png"
+			styleClass="sofia-image-80 sofia-image-dark" />
+	</ui:define>
+	<ui:define name="component-title-h1-advaced">Garantia</ui:define>
+	<ui:define name="component-title-h2-advaced">Registrar</ui:define>
+
+
+	<!--         -->
+	<!-- SECTION -->
+	<!--         -->
+	<ui:define name="component-other-advaced">
+		<p:fieldset legend="Registrar" toggleable="true" toggleSpeed="500">
+
+			<!--      -->
+			<!-- FORM -->
+			<!--      -->
+			<h:panelGroup layout="block">
+
+				<!--          -->
+				<!-- DOCUMENT -->
+				<!--          -->
+				<h:panelGroup layout="block"
+					styleClass="ui-fluid p-formgrid p-d-flex p-jc-end">
+					<h:panelGroup layout="block" styleClass="p-field p-col p-md-3">
+						<p:outputLabel for="id-garantia" value="Codigo Garantia:" />
+						<p:inputText id="id-garantia" title="Generado" required="false"
+							requiredMessage="El campo id no puede estar vacio."
+							value="#{garantia.garantia.id}" />
+					</h:panelGroup>
+				</h:panelGroup>
+
+
+				<h:panelGroup layout="block"
+					styleClass="ui-fluid p-formgrid p-grid p-mb-3">
+					<h:panelGroup layout="block" styleClass="p-field p-col-12 p-md">
+						<p:outputLabel for="detalle-venta" value="Detalle Venta:" />
+
+						<p:selectOneMenu id="detalle-venta"
+							value="#{garantia.garantia.detalleCompraVenta.id}" effect="fold"
+							filter="true">
+							<f:selectItem itemLabel="Seleccionar Detalle Venta" itemValue="" />
+							<f:selectItems value="#{selection.detalles_ventas}"
+								noSelectionOption="true" />
+						</p:selectOneMenu>
+
+					</h:panelGroup>
+				</h:panelGroup>
+
+				<!--      -->
+				<!-- DATA -->
+				<!--      -->
+				<h:panelGroup layout="block" styleClass="ui-fluid p-formgrid p-grid">
+					<!--        -->
+					<!-- MOTIVO -->
+					<!--        -->
+					<h:panelGroup layout="block" styleClass="p-field p-col-12 p-md">
+						<p:outputLabel for="motivo-garantia" value="Motivo" />
+						<p:inputTextarea id="motivo-garantia" required="true"
+							requiredMessage="El campo Motivo no puede estar vacio."
+							value="#{garantia.garantia.motivo}" />
+					</h:panelGroup>
+				</h:panelGroup>
+
+				<!--     -->
+				<!-- ADD -->
+				<!--     -->
+				<h:panelGroup layout="block"
+					styleClass="p-d-flex p-jc-center p-mb-lg-6 p-mt-lg-6">
+					<p:commandButton value="Registrar" title="Registrar Garantia"
+						icon="fa fa-fw fa-plus"
+						styleClass="sofia-button p-m-0 sofia-button-succes"
+						update="@(.sofia-container-main-update)"
+						action="#{garantia.registrar()}" />
+				</h:panelGroup>
+			</h:panelGroup>
+		</p:fieldset>
+	</ui:define>
+
+</ui:composition>
