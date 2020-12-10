@@ -35,6 +35,7 @@ public class SelectionBean implements Serializable {
 	private List<SelectItem> categoria;
 	private List<SelectItem> tipos_pagos;
 
+
 	///////////////////////////////////////////////////////
 	// Builders
 	///////////////////////////////////////////////////////

@@ -10,10 +10,13 @@ import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
+import javax.faces.model.SelectItem;
+import javax.faces.model.SelectItemGroup;
 
 import com.controller.*;
 import com.model.*;
 import com.model.other.*;
+import com.util.Face;
 
 /**
  * Implementation CatalogoBean.
@@ -41,7 +44,13 @@ public class CatalogoBean implements Serializable {
 	private boolean mostrar_resultados;
 
 	private int a, b;
-
+	
+	private List<Boolean> estado_categoria;
+	private List<String> nombre_categoria;
+	
+	private List<SelectItem> categoria;
+	private boolean renderizar_categoria;
+	
 	///////////////////////////////////////////////////////
 	// Builder
 	///////////////////////////////////////////////////////
@@ -57,6 +66,7 @@ public class CatalogoBean implements Serializable {
 	public void init() {
 		initProducto();
 		this.mostrar_resultados = false;
+		this.renderizar_categoria = true;
 	}
 
 	///////////////////////////////////////////////////////
@@ -109,6 +119,35 @@ public class CatalogoBean implements Serializable {
 			}
 		}
 		return null;
+	}
+	
+	/**
+	 * Metodo que permita traer todas las categorias.
+	 * 
+	 * @return una lista con las categorias.
+	 */
+	public List<SelectItem> getCategoria() {
+		if(renderizar_categoria) {
+			setEstado_categoria(new ArrayList<Boolean>());
+			setNombre_categoria(new ArrayList<String>());
+			this.categoria = new ArrayList<SelectItem>();
+			CategoriaController dao = new CategoriaController();
+			List<Categoria> list = dao.findByFieldList("estado", true);
+			SelectItemGroup select = new SelectItemGroup("Categoria");
+			int i = 0;
+			SelectItem[] items = new SelectItem[list.size()];
+			for (Categoria categoria : list) {
+				items[i] = new SelectItem(categoria.getId(), categoria.getNombre());
+				getEstado_categoria().add(false);
+				getNombre_categoria().add(categoria.getNombre());
+				i++;
+			}
+			select.setSelectItems(items);
+			this.categoria.add(select);
+			renderizar_categoria = false;
+		}
+
+		return categoria;
 	}
 
 	///////////////////////////////////////////////////////
@@ -228,6 +267,50 @@ public class CatalogoBean implements Serializable {
 		}
 		return aux;
 	}
+	
+	/**
+	 * 
+	 */
+	public void activarCategoria() {
+		int index = Face.getInt("index-categoria");
+		this.message = null;
+		if(this.estado_categoria  != null && this.estado_categoria.size() > 0 ) {
+			if(index >= 0) {
+				if(this.estado_categoria.size() > index) {
+					boolean aux = this.estado_categoria.get(index);
+					this.estado_categoria.set(index, (!aux));
+					this.message = new FacesMessage(FacesMessage.SEVERITY_INFO, "", "Se ha cambiado el estado categoria posición "+index+" a "+(!aux ? "Activado" : "Bloqueado")+".");
+				}else {
+					this.message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "", "El index de la categoria supera el tamaño de la lista de categoria("+this.estado_categoria.size()+").");
+				}
+			}else {
+				this.message = new FacesMessage(FacesMessage.SEVERITY_WARN, "", "El index de la categoria no es valido.");
+			}
+		}else {
+			this.message = new FacesMessage(FacesMessage.SEVERITY_WARN, "", "La lista de categoria esta vacia.");
+		}
+		if(this.message != null) {
+			FacesContext.getCurrentInstance().addMessage(null, message);
+		}
+	}
+	
+	/**
+	 * 
+	 */
+	public void filtrarPorCategorias() {
+		this.detalles_productos_inicio_copia = this.detalles_productos_inicio;
+		this.detalles_productos_inicio = new ArrayList<DetalleProducto>();
+		for(int i=0; i<this.estado_categoria.size(); i++) {
+			boolean aux = this.estado_categoria.get(i);
+			if(aux) {
+				String id = this.nombre_categoria.get(i);
+				List<DetalleProducto> list = buscar(id);
+				for(DetalleProducto dp : list) {
+					this.detalles_productos_inicio.add(dp);
+				}
+			}
+		}
+	}
 
 	///////////////////////////////////////////////////////
 	// Method Operation
@@ -333,5 +416,33 @@ public class CatalogoBean implements Serializable {
 
 	public void setDetalles_productos_inicio_copia(List<DetalleProducto> detalles_productos_inicio_copia) {
 		this.detalles_productos_inicio_copia = detalles_productos_inicio_copia;
+	}
+
+	public List<Boolean> getEstado_categoria() {
+		return estado_categoria;
+	}
+
+	public void setEstado_categoria(List<Boolean> estado_categoria) {
+		this.estado_categoria = estado_categoria;
+	}
+
+	public List<String> getNombre_categoria() {
+		return nombre_categoria;
+	}
+
+	public void setNombre_categoria(List<String> nombre_categoria) {
+		this.nombre_categoria = nombre_categoria;
+	}
+
+	public boolean isRenderizar_categoria() {
+		return renderizar_categoria;
+	}
+
+	public void setRenderizar_categoria(boolean renderizar_categoria) {
+		this.renderizar_categoria = renderizar_categoria;
+	}
+
+	public void setCategoria(List<SelectItem> categoria) {
+		this.categoria = categoria;
 	}
 }

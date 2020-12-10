@@ -194,12 +194,23 @@ public class VendedorBean implements Serializable {
 
 			UsuarioController dao = new UsuarioController();
 			Usuario aux = dao.find(this.usuario.getPersona().getDocumento());
+
 			if (aux == null) {
 				PersonaController pDao = new PersonaController();
 				this.usuario = new Usuario();
 				this.usuario.setPersona(pDao.find(documento));
 				if (this.usuario.getPersona() != null) {
-					if (this.usuario.getPersona().getTipoDocumentoBean().getTipoDocumento().equals(tipo_documento)) {
+					boolean seguir = false;
+					if(this.usuario.getPersona().getTipoDocumentoBean() == null) {
+						seguir = true;
+					}else if (this.usuario.getPersona().getTipoDocumentoBean().getTipoDocumento().equals(tipo_documento)) {
+						seguir = true;
+					} else {
+						message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "",
+								"No se han encontrado la persona con este documento " + documento + ".");
+					}
+					
+					if(seguir) {
 						message = new FacesMessage(FacesMessage.SEVERITY_INFO, "",
 								"Se han encontrado los datos de la persona este documento " + documento + ".");
 						this.search = true;
@@ -207,9 +218,6 @@ public class VendedorBean implements Serializable {
 						this.active = true;
 						this.filtro_persona = true;
 						this.validar = vendedor(this.usuario);
-					} else {
-						message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "",
-								"No se han encontrado la persona con este documento " + documento + ".");
 					}
 				} else {
 					message = new FacesMessage(FacesMessage.SEVERITY_WARN, "",
@@ -217,7 +225,7 @@ public class VendedorBean implements Serializable {
 				}
 			} else {
 				message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "",
-						"Ya esta registrado un vendedor con ese documento " + documento + ".");
+						"Ya esta registrado un asistente con ese documento " + documento + ".");
 			}
 		} else {
 			message = new FacesMessage(FacesMessage.SEVERITY_WARN, "", "El campo documento es obligatorio.");
