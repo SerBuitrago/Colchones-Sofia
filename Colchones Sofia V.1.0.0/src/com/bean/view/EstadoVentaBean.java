@@ -1,7 +1,6 @@
 package com.bean.view;
 
 import java.io.Serializable;
-import java.util.List;
 
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
@@ -32,14 +31,13 @@ public class EstadoVentaBean implements Serializable {
 
 	private String id;
 	private FacesMessage mensage;
-	private List<DetalleCompraVenta> detalleCompraVenta_filter;
 
 	///////////////////////////////////////////////////////
 	// Builders
 	///////////////////////////////////////////////////////
 	public EstadoVentaBean() {
 	}
-	
+
 	///////////////////////////////////////////////////////
 	// Post
 	///////////////////////////////////////////////////////
@@ -85,8 +83,8 @@ public class EstadoVentaBean implements Serializable {
 					this.mensage = new FacesMessage(FacesMessage.SEVERITY_WARN, "Warn",
 							"Esta venta no tiene ningun estado.");
 				}
-			}else {
-				
+			} else {
+
 				this.mensage = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Warn",
 						"No existe ninguna venta con ese id.");
 			}
@@ -98,27 +96,26 @@ public class EstadoVentaBean implements Serializable {
 			FacesContext.getCurrentInstance().addMessage(null, this.mensage);
 		}
 	}
-	
+
 	/**
 	 * 
 	 */
-	public void limpiarFiltroEstadoVenta(){
-		if(this.detalleCompraVenta_filter!= null && this.detalleCompraVenta_filter.size() > 0) {
-			this.detalleCompraVenta_filter = null;
-			this.id=null;
-			
+	public void limpiarFiltroEstadoVenta() {
+		if (this.estadoVenta != null && this.estadoVenta.getVentaEstadoVenta() != null
+				&& this.estadoVenta.getVentaEstadoVenta().getDetalleCompraVentas().size() > 0) {
+			this.initEstadoVenta();
+			this.id = null;
+
 			this.mensage = new FacesMessage(FacesMessage.SEVERITY_INFO, "",
 					"Se ha limpiado el filtro de estado venta.");
-		}else {
-			this.mensage = new FacesMessage(FacesMessage.SEVERITY_WARN, "",
-					"No has filtrado ningun estado venta.");
+		} else {
+			this.mensage = new FacesMessage(FacesMessage.SEVERITY_WARN, "", "No has filtrado ningun estado venta.");
 		}
-		
+
 		if (this.mensage != null) {
 			FacesContext.getCurrentInstance().addMessage(null, this.mensage);
 		}
 	}
-	
 
 	///////////////////////////////////////////////////////
 	// Getter and Setters
@@ -147,13 +144,4 @@ public class EstadoVentaBean implements Serializable {
 	public void setId(String id) {
 		this.id = id;
 	}
-
-	public List<DetalleCompraVenta> getDetalleCompraVenta_filter() {
-		return detalleCompraVenta_filter;
-	}
-
-	public void setDetalleCompraVenta_filter(List<DetalleCompraVenta> detalleCompraVenta_filter) {
-		this.detalleCompraVenta_filter = detalleCompraVenta_filter;
-	}
-
 }

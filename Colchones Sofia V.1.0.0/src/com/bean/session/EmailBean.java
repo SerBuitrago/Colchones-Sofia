@@ -2,13 +2,15 @@ package com.bean.session;
 
 import java.io.Serializable;
 import java.math.BigInteger;
+import java.util.List;
 
 import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.SessionScoped;
 
-import com.model.other.Email;
+import com.model.*;
+import com.model.other.*;
 
 /**
  * Implementation EmailBean.
@@ -25,6 +27,7 @@ public class EmailBean implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	private Email mail;
+	private boolean estado;
 
 	private String de;
 	private String clave;
@@ -62,9 +65,11 @@ public class EmailBean implements Serializable {
 	 * @param cuerpo     representa el mensaje de cuerpo.
 	 */
 	public void send(String para, String encabezado, String cuerpo) {
+		estado=false;
 		try {
 			Email mailSender = new Email(de, de, clave, para, encabezado, cuerpo);
 			mailSender.sendMail();
+			estado=true;
 		} catch (Exception e) {
 			System.out.println("Error send(String para, String encabezado, String cuerpo): " + e.getMessage());
 		}
@@ -126,6 +131,76 @@ public class EmailBean implements Serializable {
 				+ "</div></div></div></div></div></div></div></div></div></font></div>";
 		return pie;
 	}
+	
+	/**
+	 * 
+	 * @param persona
+	 * @param detalle
+	 * @param total
+	 * @return
+	 */
+	public String formatPagar(Persona persona, List<DetalleCompraVenta> detalle, BigInteger total, int id) {
+		String rta="<div>"
+				+"<h1> VENTA ONLINE </h1>"
+				+"<table style='width: 100%;text-align: center;'>"
+				+"<thead> </thead>"
+				+"<tbody> "
+				+ "<tr style='padding:16px;'> "
+				+ "<td style='font-weight: bold;text-transform uppercase'>ID Venta</td> "
+				+ "<td style='padding:16px'>"+id+"</td>"
+				+ "</tr>"
+				+ "<tr style='padding:16px;background:#f5f5f5;'> "
+				+ "<td style='font-weight: bold;text-transform uppercase'>Nombre</td> "
+				+ "<td style='padding:16px'>"+persona.getNombre()+" "+persona.getApellido()+"</td>"
+				+ "</tr>"
+				+ "<tr> "
+				+ "<td style='font-weight: bold;text-transform uppercase'>Email</td> "
+				+ "<td style='padding:16px'>"+persona.getEmail()+"</td> "
+				+ "</tr>"
+				+ "<tr style='padding:16px;background:#f5f5f5;'> "
+				+ "<td style='font-weight: bold;text-transform uppercase;padding:16px'>Telefono</td> "
+				+ "<td style='padding:16px'>"+persona.getTelefono()+"</td> "
+				+ "</tr>"
+				+ "<tr> "
+				+ "<td style='font-weight: bold;text-transform uppercase;padding:16px'>Direccion</td> "
+				+ "<td style='padding:16px'>"+persona.getDireccion()+"</td> "
+				+ "</tr>"
+				+ "</tbody>"
+				+ "</table>"
+				+ "</div>";
+		
+				String aux="<h1>DETALLE VENTA</h1>"
+						+"<table style='width: 100%;text-align: center;'> "
+						+"<thead style='text-transform: uppercase;'>"
+						+ "<tr style='padding:16px;background:#f5f5f5;'>"
+						+ "<th style='font-weight: bold;text-transform: uppercase;padding:16px'>ID</th>"
+						+ "<th style='font-weight: bold;text-transform: uppercase;padding:16px'>ID Detalle</th>"
+						+ "<th style='font-weight: bold;text-transform: uppercase;padding:16px'>Cantidad</th>"
+						+ "<th style='font-weight: bold;text-transform uppercase;padding:16px'>Descuento</th>"
+						+ "<th style='font-weight: bold;text-transform uppercase;padding:16px'>Subtotal</th>"
+						+ "</tr>"
+						+ " </thead>"
+						+"<tbody>";
+				int si = 0;
+				for(DetalleCompraVenta p:detalle) {
+					aux +=    "<tr "+(si%2 == 0 ? "style='padding:16px;background:#f5f5f5;'" : "")+">"
+							+ "<td style='padding:16px'>"+p.getId()+"</td> "
+							+ "<td style='padding:16px'>"+p.getDetalleProducto().getId()+"</td> "
+							+ "<td style='padding:16px'>"+p.getCantidad()+"</td> "
+							+ "<td style='padding:16px'>"+p.getDescuento()+"</td> "
+							+ "<td style='padding:16px'>"+p.getSubtotal()+"</td> "
+							+ "</tr>"; 
+					
+					si++;
+					
+				}
+				aux+="<tr "+(si%2 == 0 ? "style='padding:16px;background:#f5f5f5;'" : "")+"><td colspan='4' style='padding:16px'>TOTAL</td><td style='padding:16px'>"+total+"</td></tr>";
+				aux+="</tbody>"
+						+ "</table>";	
+				rta+=aux;
+		return rta;
+	}
+	
 
 	///////////////////////////////////////////////////////
 	// Getter and Setters
@@ -164,5 +239,13 @@ public class EmailBean implements Serializable {
 
 	public void setApp(AppBean app) {
 		this.app = app;
+	}
+
+	public boolean isEstado() {
+		return estado;
+	}
+
+	public void setEstado(boolean estado) {
+		this.estado = estado;
 	}
 }

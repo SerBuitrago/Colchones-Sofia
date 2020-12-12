@@ -1,8 +1,10 @@
 package com.bean.session;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
@@ -18,6 +20,7 @@ import com.controller.*;
 import com.model.*;
 import com.model.other.Convertidor;
 import com.util.Face;
+import com.util.Fecha;
 
 /**
  * Implementation VentaOnlineBean.
@@ -36,6 +39,8 @@ public class VentaOnlineBean implements Serializable {
 	private FacesMessage message;
 
 	private Venta venta;
+	private boolean registro_venta;
+	private int index_detalle_producto;
 	private List<DetalleCompraVenta> tabla_venta;
 	private List<DetalleCompraVenta> tabla_venta_copia;
 
@@ -58,6 +63,8 @@ public class VentaOnlineBean implements Serializable {
 	private boolean ingresar_cliente;
 	private boolean continuar_cliente;
 
+	private BigInteger subtotal_sin_iva;
+
 	///////////////////////////////////////////////////////
 	// Managed
 	///////////////////////////////////////////////////////
@@ -66,6 +73,12 @@ public class VentaOnlineBean implements Serializable {
 
 	@ManagedProperty("#{catalogo}")
 	private CatalogoBean catalogo;
+
+	@ManagedProperty("#{mail}")
+	private EmailBean email;
+	
+	@ManagedProperty("#{image}")
+	private ImageBean image;
 
 	///////////////////////////////////////////////////////
 	// Builder
@@ -102,6 +115,7 @@ public class VentaOnlineBean implements Serializable {
 		this.venta.setIva(this.app.getEmpresa().getIva());
 		this.venta.setCostoEnvio(BigInteger.ZERO);
 		this.tabla_venta = new ArrayList<DetalleCompraVenta>();
+		registro_venta = false;
 	}
 
 	/**
@@ -175,7 +189,7 @@ public class VentaOnlineBean implements Serializable {
 			}
 		}
 	}
-	
+
 	///////////////////////////////////////////////////////
 	// Wizard
 	///////////////////////////////////////////////////////
@@ -190,6 +204,49 @@ public class VentaOnlineBean implements Serializable {
 			siguiente = event.getNewStep();
 		}
 		return siguiente;
+	}
+
+	///////////////////////////////////////////////////////
+	// Method Paypal
+	///////////////////////////////////////////////////////
+	/**
+	 * 
+	 */
+	public void pagarPayPal() {
+		this.message = null;
+		registro_venta = false;
+		Usuario u = this.venta.getUsuario1();
+		BigInteger total = this.venta.getTotal();
+		List<DetalleCompraVenta> list =  this.tabla_venta;
+		int id = this.venta.getId();
+		this.registrarVenta();
+		if(registro_venta) {
+			email.send(app.getApp().getEmpresa().getEmail(), "Pago PayPal",
+					email.formatPagar(u.getPersona(), list, total,id));
+			if (email.isEstado()) { 
+				email.send(u.getPersona().getEmail(), "Confirmación Compra",
+						email.formatPagar(u.getPersona(), list, total,id));
+				if (email.isEstado()) {
+					catalogo.initProducto();
+					initAllDetalleVenta();
+					this.contador_detalle_venta = 0;
+					this.cantidad_actualizar = 0;
+					this.initAllDetalles();
+					this.message = new FacesMessage(FacesMessage.SEVERITY_INFO, "",
+							"Se ha completado al venta.");
+				} else {
+					this.message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "",
+							"No se ha podido procesar la compra, vuelva a intentarlo.");
+				}
+			} else {
+				this.message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "",
+						"No se ha podido procesar la compra, vuelva a intentarlo.");
+			}
+		}
+		if (this.message != null) {
+			FacesContext.getCurrentInstance().addMessage(null, message);
+		}
+
 	}
 
 	///////////////////////////////////////////////////////
@@ -250,8 +307,8 @@ public class VentaOnlineBean implements Serializable {
 		if (message != null) {
 			FacesContext.getCurrentInstance().addMessage(null, this.message);
 		}
-	} 
-	
+	}
+
 	/**
 	 * Metodo que permite limpiar filtro cliente.
 	 */
@@ -279,7 +336,7 @@ public class VentaOnlineBean implements Serializable {
 			}
 		}
 	}
-	
+
 	/**
 	 * Metodo que permite conocer la información unica del cliente.
 	 * 
@@ -330,11 +387,12 @@ public class VentaOnlineBean implements Serializable {
 							existe = dao.registrar(this.venta.getUsuario1().getPersona().getEmail(), null);
 						} else if (!Convertidor.equals(numero, this.cliente.getPersona().getTelefono())) {
 							existe = dao.registrar(null, numero);
-						} /*else {
-							existe = dao.registrar(this.venta.getUsuario1().getPersona().getEmail(),
-									this.venta.getUsuario1().getPersona().getTelefono());
-						}*/
-						
+						} /*
+							 * else { existe =
+							 * dao.registrar(this.venta.getUsuario1().getPersona().getEmail(),
+							 * this.venta.getUsuario1().getPersona().getTelefono()); }
+							 */
+
 						if (!existe) {
 							continuar_cliente = true;
 						} else {
@@ -505,6 +563,107 @@ public class VentaOnlineBean implements Serializable {
 		}
 	}
 
+	@SuppressWarnings("deprecation")
+	public void registrarVenta() {
+		registro_venta = false;
+		if (venta != null) {
+			VentaController dao = new VentaController();
+			Venta aux = dao.find(this.venta.getId());
+			if (aux == null) {
+				if (this.tabla_venta != null && this.tabla_venta.size() > 0) {
+					this.validarVenta(this.venta);
+					if (this.message == null) {
+						registrarCliente(venta.getUsuario1());
+						if (this.message == null) {
+							Fecha fecha = new Fecha();
+							this.venta.setFechaRegistro(new Date(fecha.fecha()));
+							this.venta.setEstado(true);
+							this.venta.setMetodoPagoBean(null);
+							this.venta.setUsuario2(null);
+							this.venta.setUsuario3(null); 
+							dao = new VentaController();
+							dao.insert(this.venta);
+							FacesContext.getCurrentInstance().addMessage(null,
+									new FacesMessage(FacesMessage.SEVERITY_INFO, "",
+											"Se ha registrado la venta con ID " + venta.getId() + "."));
+							registrarDetalleVenta();
+							if (this.message == null) {
+								// CORREO
+								BigInteger presupuesto = app.getEmpresa().getPresupuesto();
+								presupuesto = presupuesto.add(total());
+								EmpresaController edao = new EmpresaController();
+								Empresa e = edao.find(app.getNIT());
+								if (e != null) {
+									e.setPresupuesto(presupuesto);
+									edao.update(e);
+									app.getEmpresa().setPresupuesto(presupuesto);
+									this.message = new FacesMessage(FacesMessage.SEVERITY_INFO, "",
+											"Se ha completado la venta online sin errores.");
+									tabla_venta_copia = this.tabla_venta;
+									this.initVenta();
+									initVenta();
+									this.tabla_venta = new ArrayList<DetalleCompraVenta>();
+									this.contador_detalle_venta = 0;
+									this.detalle_venta = null;
+									this.cantidad_actualizar = 0;
+									registro_venta = true;
+								} else {
+									this.message = new FacesMessage(FacesMessage.SEVERITY_WARN, "",
+											"No se ha encontrado la empresa.");
+								}
+
+							}
+						}
+					}
+				} else {
+					this.message = new FacesMessage(FacesMessage.SEVERITY_WARN, "Warn",
+							"No has selecionado ningun producto en la venta con ID " + venta.getId() + ".");
+				}
+			} else {
+				this.message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error",
+						"Ya existe una venta con ese ID " + venta.getId() + ".");
+			}
+		} else {
+			this.message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error",
+					"No se ha podido comenzar el registro de la venta online.");
+		}
+		if (this.message != null) {
+			FacesContext.getCurrentInstance().addMessage(null, this.message);
+		}
+	}
+
+	/**
+	 * Metodo que permite validar la información de la venta.
+	 * 
+	 * @param venta representa la venta a validar.
+	 * @return el error obtenido;
+	 */
+	public FacesMessage validarVenta(Venta venta) {
+		this.message = null;
+		if (venta != null) {
+			if (venta.getId() > 0) {
+				if (venta.getUsuario1() != null && venta.getUsuario1().getPersona() != null
+						&& Convertidor.isCadena(venta.getUsuario1().getPersona().getDocumento())) {
+					if (venta.getCostoEnvio() != null && venta.getCostoEnvio().compareTo(BigInteger.ZERO) >= 0) {
+					} else {
+						this.message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error",
+								"El campo costo envio es obligatorio.");
+					}
+				} else {
+					this.message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error",
+							"El campo cliente de la venta es obligatorio.");
+				}
+			} else {
+				this.message = new FacesMessage(FacesMessage.SEVERITY_WARN, "Warn",
+						"El campo ID de la venta es obligatorio.");
+			}
+		} else {
+			this.message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error",
+					"Se ha presentado un error al validar la información de la venta.");
+		}
+		return message;
+	}
+
 	///////////////////////////////////////////////////////
 	// Method Detail Sale
 	///////////////////////////////////////////////////////
@@ -540,6 +699,63 @@ public class VentaOnlineBean implements Serializable {
 					"No se ha recibido ningun detalle producto");
 		}
 		return dp;
+	}
+	
+	/**
+	 * Metodo que permite registrar los detalles de venta.
+	 */
+	public void registrarDetalleVenta() {
+		this.message = null;
+		if (this.venta != null) {
+			if (this.tabla_venta != null && this.tabla_venta.size() > 0) {
+				int contador = 0;
+				String error = "";
+				for (DetalleCompraVenta dv : this.tabla_venta) {
+					DetalleCompraVentaController dao = new DetalleCompraVentaController();
+					DetalleCompraVenta aux = dao.find(dv.getId());
+					if (aux == null) {
+						ProductoController g = new ProductoController();
+						Producto a = g.findByField("nombre", dv.getDetalleProducto().getProductoBean().getNombre());
+						if (a != null) {
+							dv.setGarantia(a.getGarantia());
+							dv.setVentaBean(this.venta);
+							dv.setSubtotal(subTotal(dv));
+							dv.setSubtotalSinIva(this.subtotal_sin_iva);
+							this.subtotal_sin_iva = BigInteger.ZERO;
+							dao.insert(dv);
+							DetalleProductoController dpDao = new DetalleProductoController();
+							DetalleProducto dp = dpDao.find(dv.getDetalleProducto().getId());
+							if (dp != null) {
+								int resta = dp.getStock() - dv.getCantidad();
+								dp.setStock(resta);
+								dpDao.update(dp);
+							}
+							contador++;
+						}
+					} else {
+						error += "El detalle venta con ID " + dv.getId() + " ya se encuentra registrado. \n";
+					}
+				}
+				if (contador == this.tabla_venta.size()) {
+					FacesContext.getCurrentInstance().addMessage(null,
+							new FacesMessage(FacesMessage.SEVERITY_INFO, "",
+									"Se han registrado (" + contador + "/" + this.tabla_venta.size()
+											+ ") detalles de venta de la venta con ID " + venta.getId() + "."));
+				} else {
+					FacesContext.getCurrentInstance().addMessage(null,
+							new FacesMessage(FacesMessage.SEVERITY_WARN, "",
+									"Se han registrado (" + contador + "/" + this.tabla_venta.size()
+											+ ") detalles de venta de la venta con ID " + venta.getId()
+											+ "\nLos errores fueron: \n" + error + "."));
+				}
+			} else {
+				this.message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "",
+						"No se ha podido registrar los detalles de ventas de la venta " + venta.getId() + ".");
+			}
+		} else {
+			this.message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "",
+					"Primero debes registrar la venta, al momento de buscar la venta esta no existe.");
+		}
 	}
 
 	///////////////////////////////////////////////////////
@@ -655,19 +871,41 @@ public class VentaOnlineBean implements Serializable {
 	// Method Product
 	///////////////////////////////////////////////////////
 	/**
+	 * Metodo que permite eliminar un detalle producto del carrito de compra.
+	 */
+	public void quitarProducto() {
+		int id = Face.getInt("id-detalle-producto");
+		this.message = null;
+		if(id > 0) {
+			DetalleCompraVenta dp = indexDetalleProducto(this.tabla_venta, id, -1, false, false);
+			if(dp  != null) {
+				this.tabla_venta.remove(this.index);
+				this.message = new FacesMessage(FacesMessage.SEVERITY_INFO, "", "Se ha eliminado el detalle de producto con ID "+id+".");
+				this.venta.setTotal(total());
+				this.index = -1;
+			}else {
+				this.message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "", "No se ha eliminado el detalle de producto con ID "+id+".");
+			}
+		}else {
+			this.message = new FacesMessage(FacesMessage.SEVERITY_WARN, "", "El id del detalle a quitar del carrito no fue recibido.");
+		}
+		if(this.message != null) {
+			FacesContext.getCurrentInstance().addMessage(null, message);
+		}
+	}
+	
+	/**
 	 * Metodo que permite agregar uno por uno de los productos seleccionados.
 	 */
 	public void addProductosCliente() {
 		this.message = null;
 		this.index = -1;
 		boolean reset = false;
-
 		if (this.detalle_venta == null) {
 			this.detalle_venta = consultarDetalleVenta();
 			this.detalle_venta.setCantidad(1);
 			reset = true;
 		}
-
 		if (this.message == null) {
 			if (this.detalle_venta != null && this.detalle_venta.getDetalleProducto() != null
 					&& this.detalle_venta.getDetalleProducto().getProductoBean() != null) {
@@ -676,12 +914,7 @@ public class VentaOnlineBean implements Serializable {
 				if (index >= 0 && aux != null) {
 					if (this.detalle_venta.getCantidad() > 0) {
 						if (this.detalle_venta.getDetalleProducto().getStock() >= this.detalle_venta.getCantidad()) {
-							int resta = this.detalle_venta.getDetalleProducto().getStock()
-									- this.detalle_venta.getCantidad();
-
-							this.detalle_venta.getDetalleProducto().setStock(resta);
 							int cantidad = this.detalle_venta.getCantidad();
-							// this.detalle_venta.getDetalleProducto().getProductoBean().setStock(resta);
 							/* OTHER */
 							int index = this.index;
 							if (addDetalleProductoCliente(this.detalle_venta)) {
@@ -778,6 +1011,88 @@ public class VentaOnlineBean implements Serializable {
 
 		return respuesta;
 	}
+	
+	/**
+	 * Metodo que permite registrar un cliente.
+	 * 
+	 * @param cliente representa el cliente a registrar.
+	 */
+	@SuppressWarnings("deprecation")
+	public void registrarCliente(Usuario cliente) {
+		this.message = null;
+		if (cliente != null) {
+			validar(cliente);
+			if (this.message == null) {
+				UsuarioController dao = new UsuarioController();
+				PersonaController pDao = new PersonaController();
+				Usuario aux = dao.usuarioRol("CLIENTE", cliente.getPersona().getDocumento());
+				if (aux != null) {
+					aux.setFechaCreacion(cliente.getFechaCreacion());
+					aux.setEstado(cliente.getEstado());
+					aux.setPuntos(cliente.getPuntos());
+					aux.getPersona().setNombre(cliente.getPersona().getNombre().toUpperCase());
+					aux.getPersona().setApellido(cliente.getPersona().getApellido().toUpperCase());
+					aux.getPersona().setEmail(cliente.getPersona().getEmail());
+					aux.getPersona().setTelefono(Convertidor.telefono(cliente.getPersona().getTelefono()));
+					aux.getPersona().setDireccion(cliente.getPersona().getDireccion());
+					aux.getPersona().setFechaNacimiento(cliente.getPersona().getFechaNacimiento());
+					aux.getPersona().setGenero(cliente.getPersona().getGenero());
+					dao.update(aux);
+
+					if (this.image.getImage() != null) {
+						aux.getPersona().setFoto(this.image.getImage());
+						this.image.setImage(null);
+					}
+
+					pDao.update(aux.getPersona());
+					FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "",
+							"Se ha actualizado el cliente con documento " + cliente.getPersona().getDocumento() + "."));
+				} else {
+					Fecha fecha = new Fecha();
+					cliente.setId(generarKEYUsuario());
+					cliente.setFechaCreacion(new Date(fecha.fecha()));
+					cliente.setEstado(true);
+					cliente.setPuntos(BigInteger.ZERO);
+					cliente.setRolBean(new Rol());
+					cliente.getRolBean().setRol("CLIENTE");
+
+					if (this.image.getImage() != null) {
+						cliente.getPersona().setFoto(this.image.getImage());
+						this.image.setImage(null);
+					}
+
+					Persona p = pDao.find(cliente.getPersona().getDocumento());
+					if (p != null) {
+						pDao.update(cliente.getPersona());
+					} else {
+						pDao.insert(cliente.getPersona());
+					}
+					dao.insert(cliente);
+					FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "",
+							"Se ha registrado el cliente con documento " + cliente.getPersona().getDocumento() + "."));
+				}
+			}
+		} else {
+			this.message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error",
+					"No se ha podido registrar el cliente.");
+		}
+	}
+	
+	/**
+	 * Metodo que permite generar una llave de un usuario.
+	 * 
+	 * @return representa la llave generada.
+	 */
+	public String generarKEYUsuario() {
+		UsuarioController dao = new UsuarioController();
+		Usuario aux = dao.ultimoAdd();
+		if (aux != null) {
+			int id = Integer.parseInt(aux.getId()) + 1;
+			return String.valueOf(id);
+		}
+		return "1";
+	}
+
 
 	///////////////////////////////////////////////////////
 	// Method Operation
@@ -789,13 +1104,27 @@ public class VentaOnlineBean implements Serializable {
 	 */
 	public BigInteger subTotal(DetalleCompraVenta dp) {
 		BigInteger valor = BigInteger.ZERO;
+		this.subtotal_sin_iva = BigInteger.ZERO;
 		if (dp != null) {
 			DetalleCompraVenta venta = dp;
 			BigInteger cantidad = new BigInteger(String.valueOf(venta.getCantidad()));
 			valor = cantidad.multiply(venta.getPrecio());
-			valor = valor.subtract(venta.getDescuento());
+			valor = valor.subtract(cantidad.multiply(venta.getDescuento()));
+			subtotalSinIva(venta.getPrecio(), cantidad, venta.getDescuento());
 		}
 		return valor;
+	}
+
+	public void subtotalSinIva(BigInteger valor, BigInteger cantidad, BigInteger descuento) {
+		// SIN IVA
+		int iva = Integer.parseInt(this.venta.getIva());
+		double per = (double) (iva / 100d);
+		BigDecimal precio = new BigDecimal(valor);
+		precio = precio.multiply(new BigDecimal(per));
+		BigInteger valorIva = precio.toBigInteger();
+		BigInteger valorProducto = valor.subtract(valorIva);
+		this.subtotal_sin_iva = cantidad.multiply(valorProducto);
+		this.subtotal_sin_iva = this.subtotal_sin_iva.subtract(cantidad.multiply(descuento));
 	}
 
 	/**
@@ -805,10 +1134,14 @@ public class VentaOnlineBean implements Serializable {
 	 */
 	public BigInteger total() {
 		BigInteger valor = BigInteger.ZERO;
+		BigInteger valor2 = BigInteger.ZERO;
 		for (DetalleCompraVenta v : this.tabla_venta) {
 			valor = valor.add(subTotal(v));
+			valor2 = valor2.add(this.subtotal_sin_iva);
+			this.subtotal_sin_iva = BigInteger.ZERO;
 		}
 		this.venta.setTotal(valor);
+		this.venta.setTotalSinIva(valor2);
 		return valor;
 	}
 
@@ -1022,5 +1355,45 @@ public class VentaOnlineBean implements Serializable {
 
 	public void setCantidad_actualizar(int cantidad_actualizar) {
 		this.cantidad_actualizar = cantidad_actualizar;
+	}
+
+	public BigInteger getSubtotal_sin_iva() {
+		return subtotal_sin_iva;
+	}
+
+	public void setSubtotal_sin_iva(BigInteger subtotal_sin_iva) {
+		this.subtotal_sin_iva = subtotal_sin_iva;
+	}
+
+	public EmailBean getEmail() {
+		return email;
+	}
+
+	public void setEmail(EmailBean email) {
+		this.email = email;
+	}
+
+	public ImageBean getImage() {
+		return image;
+	}
+
+	public void setImage(ImageBean image) {
+		this.image = image;
+	}
+
+	public boolean isRegistro_venta() {
+		return registro_venta;
+	}
+
+	public void setRegistro_venta(boolean registro_venta) {
+		this.registro_venta = registro_venta;
+	}
+
+	public int getIndex_detalle_producto() {
+		return index_detalle_producto;
+	}
+
+	public void setIndex_detalle_producto(int index_detalle_producto) {
+		this.index_detalle_producto = index_detalle_producto;
 	}
 }

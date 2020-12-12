@@ -230,8 +230,8 @@ public class UsuarioController extends Conexion<Usuario>{
 	 * @return la lista con el resultado
 	 */
 	public List<ChartJS> ventasCliente() {
-		String jpa = "SELECT COUNT(v.usuario1),CONCAT(v.usuario1.persona.nombre,' ',v.usuario1.persona.apellido)"
-				+ ", SUM(v.total)" + " FROM Venta v GROUP BY v.usuario1 ORDER BY COUNT(v.usuario1) DESC";
+		String jpa = "SELECT COUNT(v.usuario1.persona),CONCAT(v.usuario1.persona.nombre,' ',v.usuario1.persona.apellido)"
+				+ ", SUM(v.total)" + " FROM Venta v WHERE v.usuario1.rolBean.rol='CLIENTE' GROUP BY v.usuario1.persona ORDER BY COUNT(v.usuario1.persona) DESC";
 		Query query = getEm().createQuery(jpa);
 		@SuppressWarnings("rawtypes")
 		List result = query.getResultList();

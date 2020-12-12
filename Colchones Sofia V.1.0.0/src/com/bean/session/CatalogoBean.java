@@ -311,6 +311,43 @@ public class CatalogoBean implements Serializable {
 			}
 		}
 	}
+	
+	/**
+	 * 
+	 */
+	public void filtrarPorColor() {
+		String color = Face.get("color");
+		this.message = null;
+		if(Convertidor.isCadena(color)) {
+			this.detalles_productos_inicio_copia = this.detalles_productos_inicio;
+			this.detalles_productos_inicio = new ArrayList<DetalleProducto>();
+			
+			if(color.equals("todos")) {
+				for (DetalleProducto dp : this.detalles_productos) {
+					this.detalles_productos_inicio.add(dp);	
+				}
+				this.message = new FacesMessage(FacesMessage.SEVERITY_INFO, "", "Se ha colocado todos los productos.");
+			}else {
+				for (DetalleProducto dp : this.detalles_productos) {
+					if(dp.getColor().equals(color)) {
+						this.detalles_productos_inicio.add(dp);	
+					}
+				}
+				if(this.detalles_productos_inicio!= null && this.detalles_productos_inicio.size() > 0) {
+					this.message = new FacesMessage(FacesMessage.SEVERITY_INFO, "", "Se ha encontrado "+this.detalles_productos_inicio.size()+" detalle producto con color "+color+".");
+				}else {
+					this.message = new FacesMessage(FacesMessage.SEVERITY_WARN, "", "No se ha encontrado un detalle producto con color "+color+".");
+				}
+			}
+
+		}else {
+			this.message = new FacesMessage(FacesMessage.SEVERITY_WARN, "", "No se ha recibido el color a filtrar.");
+		}
+		if(message != null) {
+			FacesContext.getCurrentInstance().addMessage(null, message);
+		}
+		
+	}
 
 	///////////////////////////////////////////////////////
 	// Method Operation
