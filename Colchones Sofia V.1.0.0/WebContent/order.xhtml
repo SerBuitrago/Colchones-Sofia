@@ -21,29 +21,27 @@
 	<ui:define name="menu-top">
 		<p:commandLink value="Conocenos"
 			action="/faces/know-us?faces-redirect=true" />
+		<a href="#">Contactanos</a>
 	</ui:define>
 
 	<!--  -->
 	<ui:define name="component">
-		<h:form>
+		<h:form style="padding:2em;min-height:60vh">
 			<p:growl showDetail="true"></p:growl>
-			<h:panelGroup layout="block" styleClass="sofia-container-know-main">
-				<!--      -->
-				<!-- DATE -->
-				<!--      -->
+			<h:panelGroup layout="block">
 				<p:fieldset legend="Estado Venta" toggleable="true"
 					toggleSpeed="500">
 
 					<h:panelGroup layout="block"
 						styleClass="ui-fluid p-formgrid p-d-flex p-jc-between p-ac-center">
-						
+
 						<!--    -->
 						<!-- ID -->
 						<!--    -->
 						<h:panelGroup layout="block" styleClass="p-field p-col p-md-4">
-							<p:outputLabel for="id-estadoVenta" value="id Venta" />
+							<p:outputLabel for="id-estadoVenta" value="Codigo Venta:" />
 							<p:inputText id="id-estadoVenta" required="true"
-								requiredMessage="El campo id Venta no puede estar vacia."
+								requiredMessage="El campo codigo venta no puede estar vacia."
 								value="#{estadoVenta.id}" />
 						</h:panelGroup>
 					</h:panelGroup>
@@ -56,95 +54,77 @@
 						styleClass="p-d-flex p-jc-between p-ac-center p-mb-3">
 						<p:commandButton update="@(.sofia-container-main-template)"
 							styleClass="sofia-button-succes" icon="fa fa-fw fa-search"
+							disabled="#{fn:length(estadoVenta.estadoVenta.ventaEstadoVenta.detalleCompraVentas) gt 0}"
 							action="#{estadoVenta.consultarEstadoVenta}" value="Consultar" />
 						<p:commandButton update="@(.sofia-container-main-template)"
 							styleClass="sofia-button-warn" icon="fa fa-fw fa-brush"
-							disabled="#{fn:length(estadoVenta.detalleCompraVenta_filter) gt 0 ? 'false' : 'true'}"
-							action="#{estadoVenta.limpiarFiltroEstadoVenta()}" value="Limpiar" />						
+							disabled="#{fn:length(estadoVenta.estadoVenta.ventaEstadoVenta.detalleCompraVentas) gt 0 ? 'false' : 'true'}"
+							action="#{estadoVenta.limpiarFiltroEstadoVenta()}"
+							value="Limpiar" />
 					</h:panelGroup>
 					<p:separator styleClass="p-mt-3 p-mb-3" />
 				</p:fieldset>
 
-				<!--           -->
-				<!-- DATA VIEW -->
-				<!--           -->
-				<p:dataTable
-					rendered="#{estadoVenta.estadoVenta.ventaEstadoVenta.detalleCompraVentas.size()>0}"
-					var="p"
-					value="#{estadoVenta.estadoVenta.ventaEstadoVenta.detalleCompraVentas}"
-					widgetVar="sofia-table-update" id="sofia-table-update"
-					emptyMessage="No se encontro ningun detalle de venta"
-					filteredValue="#{estadoVenta.detalleCompraVenta_filter}"
-					paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink}
-										   {PreviousPageLink} {CurrentPageReport} 
-										   {NextPageLink} {LastPageLink}"
-					paginator="true" rows="20" rowIndexVar="index"
-					rowsPerPageTemplate="5,10,15,20,50,100" reflow="true"
-					scrollable="true" styleClass="p-mt-4">
 
-					<!-- HEADER -->
-					<f:facet name="header">
-						<p:outputPanel layout="block"
-							styleClass="p-d-flex p-jc-end p-ac-center">
-							<h:outputText value="Buscar:" styleClass="p-mt-1 p-mr-2" />
-							<p:inputText id="globalFilter"
-								onkeyup="PF('sofia-table-update').filter()" />
-						</p:outputPanel>
-						<p:outputPanel layout="block"
-							styleClass="p-d-flex p-jc-center p-ac-center p-p-3">
-							<h2> Estado de Venta </h2>
-							<h4 class="p-as-end">( ID: #{ estadoVenta.estadoVenta.venta} )</h4>
-						</p:outputPanel>
-						<p:inputTextarea value="#{estadoVenta.estadoVenta.descripcion}"></p:inputTextarea>
-					</f:facet>
-
-					<!--        -->
-					<!-- COLUMN -->
-					<!--        -->
-					<p:column style="width:50px">
+				<h:panelGroup layout="block" styleClass="p-d-block"
+					style="margin-top:2em"
+					rendered="#{fn:length(estadoVenta.estadoVenta.ventaEstadoVenta.detalleCompraVentas) gt 0}">
+					<p:fieldset legend="Resultado" toggleable="true"
+						toggleSpeed="500" style="min-width: 100%;">
 						<h:panelGroup layout="block"
-							styleClass="p-d-flex p-jc-center p-ac-center">
-							<h:outputLabel value="#{index + 1}" />
+							styleClass="ui-fluid p-formgrid p-grid p-jc-star">
+							<h:panelGroup layout="block" style="margin-bottom:1em"
+								styleClass="p-field p-col p-col-12 p-md">
+								<h:outputLabel value="Estado Pedido: " />
+								<p:inputTextarea value="#{fn:length(estadoVenta.estadoVenta.descripcion) gt 0 ? estadoVenta.estadoVenta.descripcion : 'No se ha registrado ningun estado para esta venta.'} "
+									disabled="true" />
+							</h:panelGroup>
 						</h:panelGroup>
-					</p:column>
 
-					<!-- PRODUCTO -->
-					<p:column filterBy="#{p.detalleProducto.productoBean.nombre}"
-						sortBy="#{p.detalleProducto.productoBean.nombre}"
-						footerText="Producto" filterMatchMode="contains">
-						<f:facet name="header">
-							<h:outputText value="Producto" />
-						</f:facet>
-						<h:panelGroup layout="block"
-							styleClass="p-d-flex p-jc-center p-ac-center">
-							<h:outputText value="#{p.detalleProducto.productoBean.nombre}" />
-						</h:panelGroup>
-					</p:column>
 
-					<!-- CANTIDAD -->
-					<p:column filterBy="#{p.cantidad}" footerText="Cantidad"
-						sortBy="#{p.cantidad}" filterMatchMode="contains">
-						<f:facet name="header">
-							<h:outputText value="Cantidad" />
-						</f:facet>
-						<h:panelGroup layout="block"
-							styleClass="p-d-flex p-jc-center p-ac-center">
-							<h:outputText value="#{p.cantidad}" />
-						</h:panelGroup>
-					</p:column>
+						<p:carousel
+							value="#{estadoVenta.estadoVenta.ventaEstadoVenta.detalleCompraVentas}"
+							headerText="Codigo: #{ estadoVenta.estadoVenta.venta}" var="v"
+							itemStyle="text-align:center" responsive="true">
+							<p:panelGrid columns="2" style="width:100%;padding:2em" 
+								columnClasses="label,value" layout="grid"
+								styleClass="ui-panelgrid-blank">
+								<f:facet name="header">
+									<h:panelGroup layout="block"
+										styleClass="p-d-flex p-jc-center p-ac-center">
+										<h:panelGroup layout="block" styleClass="p-d-block"
+											style="width: 200px; height: 200px;">
+											<p:graphicImage value="#{image.detalle_producto}"
+												cache="false"
+												style="width: 100%; height: 100%;object-fit: contain;margin-left: 0em!important;">
+												<f:param name="id-detalle-producto"
+													value="#{v.detalleProducto.id}" />
+											</p:graphicImage>
+										</h:panelGroup>
+									</h:panelGroup>
+								</f:facet>
 
-					<!-- SUBTOTAL -->
-					<p:column filterBy="#{p.subtotal}" footerText="SubTotal"
-						sortBy="#{p.subtotal}" filterMatchMode="contains">
-						<f:facet name="header">
-							<h:outputText value="SubTotal" />
-						</f:facet>
-						<h:panelGroup layout="block"
-							styleClass="p-d-flex p-jc-center p-ac-center">
-							<h:outputText value="#{p.subtotal}" />
-						</h:panelGroup>
-					</p:column>
-				</p:dataTable>
+								<h:outputText value="Producto:" />
+								<h:outputText value="#{v.detalleProducto.productoBean.nombre}" />
+
+								<h:outputText value="Detalle:" />
+								<h:outputText value="#{v.detalleProducto.id}" />
+
+								<h:outputText value="Cantidad:" />
+								<h:outputText value="#{v.cantidad}"
+									styleClass="sofia-statu #{v.cantidad > 0 ? 'sofia-statu-succes' : 'sofia-statu-warn'}" />
+
+								<h:outputText value="SubTotal:" />
+								<h:outputText value="#{v.subtotal}"
+									styleClass="sofia-statu sofia-statu-succes" />
+							</p:panelGrid>
+
+							<f:facet name="footer">
+                			Compró una cantidad de #{fn:length(estadoVenta.estadoVenta.ventaEstadoVenta.detalleCompraVentas)} productos.
+        				</f:facet>
+						</p:carousel>
+					</p:fieldset>
+				</h:panelGroup>
 			</h:panelGroup>
 		</h:form>
 	</ui:define>

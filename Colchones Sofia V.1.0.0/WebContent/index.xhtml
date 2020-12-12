@@ -51,8 +51,9 @@
 									<div class="cart-item" style="width: auto;">
 										<div class="img-wrap">
 											<h:graphicImage rendered="#{c.detalleProducto.foto == null}"
-												library="img" styleClass="product.png"
+												library="img" name="product.png"
 												style="object-fit: contain;width: 100%;height: 100%;position: none !important;top: 0!important;" />
+
 											<p:graphicImage rendered="#{c.detalleProducto.foto != null}"
 												value="#{image.detalle_producto}" cache="false"
 												style="object-fit: contain;width: 100%;height: 100%;position: none !important;top: 0!important;">
@@ -79,8 +80,10 @@
 							<ul>
 								<ui:repeat var="c" value="#{catalogo.categoria}">
 									<ui:repeat var="l" value="#{c.getSelectItems()}" varStatus="ij">
-										<li><p:commandLink update="@form" action="#{catalogo.activarCategoria()}">
-												<span style="background: #{catalogo.estado_categoria.get(ij.index) == true ? 'green' : 'white'}"></span>#{l.label}
+										<li><p:commandLink update="@form"
+												action="#{catalogo.activarCategoria()}">
+												<span
+													style="background: #{catalogo.estado_categoria.get(ij.index) == true ? 'green' : 'white'}"></span>#{l.label}
 												<f:param name="index-categoria" value="#{ij.index}" />
 											</p:commandLink></li>
 									</ui:repeat>
@@ -98,8 +101,14 @@
 						<h3>COLORES</h3>
 						<div class="checklist colors">
 							<ul>
+								<li><p:commandLink action="#{catalogo.filtrarPorColor()}"
+										update="@form">
+										<span style="background: rgba(0, 0, 0, .5)"></span>Todos(#{catalogo.detalles_productos.size()})
+												<f:param name="color" value="todos"></f:param>
+									</p:commandLink></li>
 								<ui:repeat var="c" value="#{requests.colores()}">
-									<li><p:commandLink>
+									<li><p:commandLink action="#{catalogo.filtrarPorColor()}"
+											update="@form">
 											<span
 												style="background: #{c.nombre == 'ROJO' ? 'red' :
 											 c.nombre == 'AZUL' ? 'blue' :  c.nombre == 'BLANCO' ? 'white' : c.nombre == 'GRIS' ? 'gray' : c.nombre == 'NEGRO' ? 'black' : 
@@ -147,9 +156,10 @@
 
 					</div>
 
-					<div class="p-d-flex p-jc-star p-ac-center p-flex-column" style="padding-bottom: 3em;">
+					<div class="p-d-flex p-jc-star p-ac-center p-flex-column"
+						style="padding-bottom: 3em;">
 						<div id="grid-selector"
-							style="width: 100%; padding: 40px 40px 40px 30px;min-width: 100%;">
+							style="width: 100%; padding: 40px 40px 40px 30px; min-width: 100%;">
 							<div id="grid-menu">
 								View:
 								<ul>
@@ -163,7 +173,7 @@
 						</div>
 
 						<div id="grid"
-							style="width: 90%; margin: 1em auto; position: relative; left: 50%; top: 40%; transform: translate(-40%, -40%); padding: 1em;min-width: 100%;">
+							style="width: 90%; margin: 1em auto; position: relative; left: 50%; top: 40%; transform: translate(-40%, -40%); padding: 1em; min-width: 100%;">
 							<h:panelGroup layout="block"
 								styleClass="sofia-range-preci-update"
 								id="sofia-range-preci-update">
@@ -314,9 +324,7 @@
 			styleClass="sofia-container-slider-main-one-index">
 			<h:panelGroup layout="block" styleClass="sofia-container-text-image">
 				<h1 class="sofia-container-text-image__h1"
-					style="background: url(https://www.pngfind.com/pngs/m/618-6188512_rayas-blanco-tumblr-portadas-png-portadas-tumblr-fondo.png) repeat; 
-					background-size: 200%; background-clip: text; font-family: $- -project-font-family; position: relative; text-align: center; 
-					line-height: 120px; -webkit-background-clip: text; letter-spacing: -5px; font-weight: 900; font-family: Arial !important; font-size: 100px;">
+					style="background: url(https://www.pngfind.com/pngs/m/618-6188512_rayas-blanco-tumblr-portadas-png-portadas-tumblr-fondo.png) repeat; background-size: 200%; background-clip: text; font-family: $- -project-font-family; position: relative; text-align: center; line-height: 120px; -webkit-background-clip: text; letter-spacing: -5px; font-weight: 900; font-family: Arial !important; font-size: 100px;">
 					PROMOCIONES</h1>
 			</h:panelGroup>
 			<div class="content-product" style="margin-top: 0px !important">
@@ -552,8 +560,8 @@
 				<h1 class="sofia-container-text-image__h1"
 					style="background: url(https://us.123rf.com/450wm/nexusplexus/nexusplexus1803/nexusplexus180301586/97569029-imagen-de-fondo-abstracto-con-planetas-espaciales-y-paisaje-natural-.jpg?ver=6) repeat; background-size: 200%; background-clip: text; font-family: $- -project-font-family; position: relative; text-align: center; line-height: 120px; -webkit-background-clip: text; letter-spacing: -5px; font-weight: 900; font-family: Arial !important; font-size: 100px;">Contacto</h1>
 			</h:panelGroup>
-
 			<section class="form_wrap">
+
 				<section class="cantact_info">
 					<section class="info_title">
 						<h:form>
@@ -578,8 +586,9 @@
 						</p>
 						<p>
 							<span class="fa fa-mobile" style="font-size: 2em"></span> +(57)
-							3118938189
+							3136306742 +(57) 3503981677
 						</p>
+
 					</section>
 				</section>
 
@@ -587,19 +596,37 @@
 					<h2>Envia un mensaje</h2>
 					<div class="user_info">
 						<label for="names">Nombre <span style="color: red">*</span></label>
-						<p:inputText />
+						<p:inputText value="#{email.name}" required="true" requiredMessage="El campo nombre no puede estar vacio."
+							style="padding-left:1em" />
 
 						<label for="phone">Telefono / Celular</label>
-						<p:inputMask mask="###-####-####" />
+						<p:inputMask mask="999-9999-999" value="#{email.telefono}"
+							style="padding-left:1em" required="true" requiredMessage="El campo telefono no puede estar vacio."/>
 
-						<label for="email">Correo electronico <span
+						<label for="email">Correo Electronico <span
 							style="color: red">*</span></label>
-						<p:inputText />
+						<p:inputText value="#{email.mailAddress}" required="true"
+							style="padding-left:1em" validator="#{validator.isEmail}"
+							requiredMessage="El campo email no puede estar vacio." />
+
+
+						<p:outputLabel for="@next" value="Tipo" />
+						<p:selectOneMenu id="tipo" value="#{email.tipo}" required="true" requiredMessage="El campo tipo no puede estar vacio."
+							style="width:100%;margin-bottom:.5em" dir="tipo">
+							<f:selectItem itemLabel="Queja" itemValue="Queja" />
+							<f:selectItem itemLabel="Reclamo" itemValue="Reclamo" />
+							<f:selectItem itemLabel="Sugerencia" itemValue="Sugerencia" />
+							<f:selectItem itemLabel="Peticion" itemValue="Peticion" />
+						</p:selectOneMenu>
 
 						<label for="mensaje">Mensaje <span style="color: red">*</span></label>
-						<p:inputTextarea />
+						<p:inputTextarea value="#{email.mensaje}" required=""
+							style="padding-left:1em" />
 
-						<p:commandButton styleClass="sofia-button-primary" value="Enviar" />
+
+						<p:commandButton styleClass="sofia-button-primary" value="Enviar"
+							icon="fa fa-fw fa-paper-plane" action="#{email.sendemail}"
+							update="@(.sofia-container-update-form), @form" />
 					</div>
 				</h:form>
 			</section>

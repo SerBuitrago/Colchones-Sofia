@@ -64,8 +64,7 @@
 				</div>
 
 				<div class="contenedor contenedor-enlaces-nav">
-					<p:commandLink
-						action="/faces/index?faces-redirect=true">
+					<p:commandLink action="/faces/index?faces-redirect=true">
 						<p:graphicImage value="#{image.logo}" title="Inicio" cache="false"
 							styleClass="sofia-logo" />
 					</p:commandLink>
@@ -166,10 +165,77 @@
 		<ui:insert name="component" />
 
 
+<!--        -->
+			<!-- FOOTER -->
+			<!--        -->
+			<h:panelGroup layout="block" styleClass="sofia-container-footer-main">
+				<footer>
+
+				<div class="container-footer-all">
+					<div class="container-body">
+						<div class="colum1">
+							<h1>Mas informacion de la compañia</h1>
+
+							<p>#{app.app.empresa.descripcion}</p>
+
+						</div>
+
+						<div class="colum2">
+							<h1>Redes Sociales</h1>
+
+							<div class="row">
+								<img src="https://granodesal.com/wp-content/uploads/2020/07/Facebook.png" /> <label>Siguenos en
+										Facebook</label>
+							</div>
+							<div class="row">
+								<img src="https://assets.stickpng.com/images/580b57fcd9996e24bc43c53e.png" /> <label>Siguenos en
+										Twitter</label>
+							</div>
+							<div class="row">
+								<img src="https://assets.stickpng.com/images/580b57fcd9996e24bc43c521.png" /> <label>Siguenos en
+										Instagram</label>
+							</div>
+							<div class="row">
+								<img src="https://assets.stickpng.com/images/580b57fcd9996e24bc43c543.png" /> <label>Whatsapp</label>
+							</div>
+						</div>
+
+						<div class="colum3">
+							<h1>Informacion Contactos</h1>
+
+							<div class="row2">
+								<img src="https://cdn1.iconfinder.com/data/icons/color-bold-style/21/14_1-512.png" /> <label>#{app.app.empresa.direccion}</label>
+							</div>
+
+							<div class="row2">
+								<img src="https://assets.stickpng.com/images/5a452570546ddca7e1fcbc7d.png" /> <label>+1-829-395-2064</label>
+							</div>
+
+							<div class="row2">
+								<img src="https://cdn4.iconfinder.com/data/icons/social-media-logos-6/512/112-gmail_email_mail-512.png" /> <label>#{app.app.empresa.email}</label>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="container-footer">
+					<div class="footer">
+						<div class="copyright">
+							© 2017 Todos los Derechos Reservados | <a href="">#{app.app.empresa.nombre}</a>
+						</div>
+
+						<div class="information">
+							<a href="">Informacion Compañia</a> | <a href="">Privacion y
+								Politica</a> | <a href="">Terminos y Condiciones</a>
+						</div>
+					</div>
+				</div>
+				</footer>
+			</h:panelGroup>
+
 		<!--        -->
 		<!-- DIALOG -->
 		<!--        -->
-
 		<!--                           -->
 		<!-- DIALOG CONFIMATION REMOVE -->
 		<!--                            -->
@@ -257,7 +323,7 @@
 												update="@(.sofia-container-main-template)">
 												<f:param name="id-detalle-producto" value="#{p.id}"></f:param>
 											</p:commandButton>
-											<a style="width: auto !important;"
+											<a style="width: auto !important; color: #2e6e9e !important;text-decoration: none;border-radius: .3em;padding-top: .9em;outline: none;"
 												href="faces/detail-product.xhtml?detalle-producto=#{p.id}"
 												class="add-cart-large"> Ver </a>
 										</h:panelGroup>
@@ -332,8 +398,6 @@
 					</div>
 				</h:panelGroup>
 			</h:form>
-
-
 		</h:panelGroup>
 
 		<!--    -->

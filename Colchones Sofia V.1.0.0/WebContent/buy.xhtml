@@ -19,8 +19,6 @@
 	<!-- NAVBAR -->
 	<!--        -->
 	<ui:define name="menu-top">
-		<p:commandLink value="Inicio"
-			action="/faces/index?faces-redirect=true" />
 		<p:commandLink value="Conocenos"
 			action="/faces/know-us?faces-redirect=true" />
 	</ui:define>
@@ -29,7 +27,8 @@
 	<!-- SECTION -->
 	<!--         -->
 	<ui:define name="component">
-		<h:form style="width:90%; margin:auto" styleClass="p-d-block">
+		<h:form style="width:90%; margin:auto;margin-bottom:10em"
+			styleClass="p-d-block">
 			<p:growl showDetail="true" />
 
 			<!--        -->
@@ -112,6 +111,19 @@
 											styleClass="sofia-statu sofia-statu-succes">
 											<f:convertNumber currencySymbol="$" type="currency" />
 										</h:outputLabel>
+									</h:panelGroup>
+
+									<h:panelGroup>
+										<p:commandButton action="#{venta_online.quitarProducto()}"
+											update="@(.sofia-container-main-template)"
+											icon="fa fa-fw fa-brush"
+											styleClass="sofia-button-error sofia-button-icon sofia-button-icon-small">
+											<f:param name="id-detalle-producto"
+												value="#{p.detalleProducto.id}" />
+												<p:confirm header="Eliminar Detalle Carrito"
+													icon="pi pi-exclamation-triangle"
+														message="¿Quiere eliminar el detalle ID #{p.detalleProducto.id} del carrito de compra?" />
+										</p:commandButton>
 									</h:panelGroup>
 								</h:panelGroup>
 							</h:panelGroup>
@@ -197,7 +209,8 @@
 						<h:panelGroup layout="block"
 							styleClass="p-d-flex p-ac-center p-ai-center p-flex-wrap p-mb-4 #{venta_online.filter_cliente ? 'p-jc-between' : 'p-jc-center'}">
 
-							<h:panelGroup layout="block" rendered="#{venta_online.filter_cliente}"
+							<h:panelGroup layout="block"
+								rendered="#{venta_online.filter_cliente}"
 								styleClass="sofia-container-image-profile-square">
 								<h:graphicImage
 									styleClass="sofia-container-image-profile-square__img"
@@ -359,15 +372,78 @@
 					<h:panelGroup layout="block"
 						styleClass="p-d-flex p-jc-center p-ac-center p-mt-3 p-mb-3">
 						<p:commandButton icon="fa fa-fw fa-check" value="Validar"
-							update="@(.sofia-container-main-template)"
+							update="@(.sofia-container-main-template)" ajax="false"
 							styleClass="sofia-button-succes"
 							action="#{venta_online.validarCliente()}" />
 					</h:panelGroup>
 
+					<h:panelGroup layout="block"
+						styleClass="p-d-flex p-jc-center p-ac-center p-mt-3 p-mb-3">
+						<p:remoteCommand name="increment"
+							update="@(.sofia-container-main-template)"
+							actionListener="#{venta_online.pagarPayPal()}" out="count" />
+
+						<h:panelGroup rendered="#{venta_online.continuar_cliente}">
+							<button id="paypal-button-container"
+								data-total="#{venta_online.venta.total}" />
+						</h:panelGroup>
+
+					</h:panelGroup>
 				</p:tab>
+
 
 			</p:wizard>
 		</h:form>
 	</ui:define>
 
+	<ui:define name="js">
+		<script src="https://www.paypalobjects.com/api/checkout.js"></script>
+		<script>
+			let x = document.getElementById("paypal-button-container");
+			var a = 0;
+			var usd = 0.00029;
+			if (x != null) {
+				a = parseFloat(x.getAttribute("data-total"));
+				a = Math.round(a * parseFloat(usd));
+			}
+
+			paypal.Button
+					.render(
+							{
+								env : 'sandbox', // sandbox | production
+								style : {
+									label : 'checkout',
+									size : 'large',
+									shape : 'pill',
+									color : 'gold'
+								},
+								client : {
+									sandbox : 'AS3Ahubkji6vArRtxKh_86E8geS9Lgon-CGDzX6TL9yePAh_MunDFEuxCosmbhCeNXPe2XBm88ncq78Y',
+								},
+								payment : function(data, actions) {
+									return actions.payment
+											.create({
+												payment : {
+													transactions : [ {
+														amount : {
+															total : '' + a,
+															currency : 'USD'
+														},
+														description : "Compra de productos a Develoteca:$0.01",
+														custom : "Codigo"
+													} ]
+												}
+											});
+								},
+								onAuthorize : function(data, actions) {
+									return actions.payment.execute().then(
+											function() {
+												console.log(data);
+												increment();
+											});
+								}
+
+							}, '#paypal-button-container');
+		</script>
+	</ui:define>
 </ui:composition>
