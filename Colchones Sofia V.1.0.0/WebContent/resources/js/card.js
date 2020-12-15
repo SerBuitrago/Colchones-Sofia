@@ -183,7 +183,7 @@ $(document).ready(function(){
 			$(carousel).attr('rel', currSlide);
 			setTimeout(function(){isAnimating = false;}, 300);			
 		});
-		
+		 
 		// Load Previous Image
 		$(el).find('div.carouselPrev').on('click', function(){
 			var currentLeft = Math.abs(parseInt($(carousel).css("left")));

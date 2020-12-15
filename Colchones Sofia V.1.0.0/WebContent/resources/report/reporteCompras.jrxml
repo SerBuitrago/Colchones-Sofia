@@ -172,7 +172,7 @@
 					<pen lineWidth="1.0" lineStyle="Solid" lineColor="#707070"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle"/>
-				<textFieldExpression><![CDATA[$F{detalleCompraVentas}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{detalleCompraVentas}.size()]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement mode="Opaque" x="574" y="0" width="114" height="30" backcolor="#F5F5F5" uuid="d4dea855-6411-4d51-8ae9-c3b93172c7a2">
@@ -182,7 +182,7 @@
 					<pen lineWidth="1.0" lineStyle="Solid" lineColor="#707070"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle"/>
-				<textFieldExpression><![CDATA[$F{iva}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{iva}+"%"]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement mode="Opaque" x="688" y="0" width="114" height="30" backcolor="#F5F5F5" uuid="323214f6-f5a7-4285-9d83-1a08532a33cc">

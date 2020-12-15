@@ -152,7 +152,7 @@
 					<pen lineWidth="1.0" lineStyle="Solid" lineColor="#707070"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle"/>
-				<textFieldExpression><![CDATA[$F{usuario2}.getPersona().getNombre()]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{usuario2}.getPersona().getDocumento()]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement mode="Opaque" x="346" y="0" width="114" height="30" backcolor="#F5F5F5" uuid="51010324-8002-48a2-ae22-1252e07b7935">
@@ -162,7 +162,7 @@
 					<pen lineWidth="1.0" lineStyle="Solid" lineColor="#707070"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle"/>
-				<textFieldExpression><![CDATA[$F{usuario1}.getPersona().getNombre()]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{usuario1}.getPersona().getDocumento()]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement mode="Opaque" x="460" y="0" width="114" height="30" backcolor="#F5F5F5" uuid="fcb6a11f-24d9-43d6-85fc-8d51c670978b">
@@ -172,7 +172,7 @@
 					<pen lineWidth="1.0" lineStyle="Solid" lineColor="#707070"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle"/>
-				<textFieldExpression><![CDATA[$F{detalleCompraVentas}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{detalleCompraVentas}.size()]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement mode="Opaque" x="574" y="0" width="114" height="30" backcolor="#F5F5F5" uuid="0b477020-af2b-4c82-992f-976ef992d795">
@@ -182,7 +182,7 @@
 					<pen lineWidth="1.0" lineStyle="Solid" lineColor="#707070"/>
 				</box>
 				<textElement textAlignment="Center" verticalAlignment="Middle"/>
-				<textFieldExpression><![CDATA[$F{iva}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{iva}+"%"]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement mode="Opaque" x="688" y="0" width="114" height="30" backcolor="#F5F5F5" uuid="5ae78391-6aa0-4fd5-abec-408e0d5745fa">
