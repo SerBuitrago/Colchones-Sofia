@@ -55,7 +55,6 @@ public class EstadoVentaBean implements Serializable {
 	 */
 	public void initEstadoVenta() {
 		this.id = "";
-		this.estadoVenta = null;
 		this.estadoVenta = new EstadoVenta();
 
 	}

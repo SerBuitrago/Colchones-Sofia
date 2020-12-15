@@ -246,7 +246,6 @@ public class VentaOnlineBean implements Serializable {
 		if (this.message != null) {
 			FacesContext.getCurrentInstance().addMessage(null, message);
 		}
-
 	}
 
 	///////////////////////////////////////////////////////

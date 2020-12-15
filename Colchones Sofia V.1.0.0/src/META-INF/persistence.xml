@@ -36,13 +36,13 @@
 		<!-- -->
 		<properties>
 		
-			<!--<property name="javax.persistence.jdbc.url" value="jdbc:mysql://dbpj4sas.cehwcy24fwlr.us-east-1.rds.amazonaws.com:3306/sofia?zeroDateTimeBehavior=convertToNull" />
+			<!--  <property name="javax.persistence.jdbc.url" value="jdbc:mysql://dbpj4sas.cehwcy24fwlr.us-east-1.rds.amazonaws.com:3306/sofia?zeroDateTimeBehavior=convertToNull" />
 			<property name="javax.persistence.jdbc.driver" 
 				value="com.mysql.jdbc.Driver" />
 			<property name="javax.persistence.jdbc.user" value="admin" /> 
 			<property name="javax.persistence.jdbc.password" value="ko2gBEskJZRAu797mZYR" />		
 			<property name="hibernate.dialect" 
-				value="org.hibernate.dialect.MariaDB53Dialect" />--> 
+				value="org.hibernate.dialect.MariaDB53Dialect" />-->
  
 		
 			<property name="javax.persistence.jdbc.url"
