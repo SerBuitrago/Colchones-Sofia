@@ -10,6 +10,11 @@ import javax.persistence.Query;
 import com.model.*;
 import com.model.other.*;
 import com.util.*;
+import static com.util.Conexion.getEm;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import javax.persistence.EntityManager;
+import javax.persistence.EntityTransaction;
 
 /**
  * Implementation VentaDao.
@@ -177,5 +182,64 @@ public class VentaController extends Conexion<Venta> {
 			c.add(cc);
 		}
 		return c;
+	}
+        
+        
+
+	/**
+	 * Metodo para crear tarea programada de cambiar estado de pedido 
+	 * 
+	 */
+        @SuppressWarnings("rawtypes")
+	public void crearEventosEstadoPedido(Venta venta) {
+		String jpa = "SELECT numero_dias FROM programacion_ventas WHERE estado = 0";
+		Query query = getEm().createNativeQuery(jpa);
+		Object result = (Object) query.getSingleResult();
+                
+                int dias_despacho = 0;
+                try {
+                    dias_despacho = (int) result;
+                } catch (Exception e) {
+                }
+                
+                
+		jpa = "SELECT numero_dias FROM programacion_ventas WHERE estado = 1";
+		query = getEm().createNativeQuery(jpa);           
+		result = (Object) query.getSingleResult();
+                
+                int dias_entrega = 0;
+                try {
+                    dias_entrega = (int) result;
+                } catch (Exception e) {
+                }
+                
+                String evento = "CREATE EVENT %s ON SCHEDULE AT '%s' DO UPDATE venta SET estado_pedido = %d WHERE id = %d";
+                SimpleDateFormat formato = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                Calendar calendar = Calendar.getInstance();
+                calendar.setTime(venta.getFechaRegistro());
+                
+                calendar.add(Calendar.DAY_OF_YEAR, dias_despacho);
+                String fechaDespacho = formato.format(calendar.getTime());
+                
+                calendar.setTime(venta.getFechaRegistro());                
+                
+                calendar.add(Calendar.DAY_OF_YEAR, dias_entrega);
+                String fechaEntrega = formato.format(calendar.getTime());
+                
+                EntityManager emf = getEm();  
+                EntityTransaction  trans = emf.getTransaction();
+                trans.begin();
+                
+                String query1 = String.format(evento, "evento_despacho_venta_"+venta.getId(), fechaDespacho, 1, venta.getId());
+                String query2 = String.format(evento, "evento_entrega_venta_"+venta.getId(), fechaEntrega, 2, venta.getId());
+                                
+                Query n = emf.createNativeQuery(query1);
+                Query m = emf.createNativeQuery(query2);
+                
+                n.executeUpdate();
+                m.executeUpdate();
+
+                trans.commit();  
+                
 	}
 }

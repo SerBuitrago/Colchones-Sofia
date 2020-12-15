@@ -33,6 +33,9 @@ public class Venta implements Serializable {
 	@Column(name="total_sin_iva")
 	private BigInteger totalSinIva;
 	
+	@Column(name="estado_pedido")
+	private Integer estadoPedido = 0;
+	
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name="fecha_registro")
 	private Date fechaRegistro;
@@ -209,4 +212,14 @@ public class Venta implements Serializable {
 	public void setTotalSinIva(BigInteger totalSinIva) {
 		this.totalSinIva = totalSinIva;
 	}
+
+        public Integer getEstadoPedido() {
+            return estadoPedido;
+        }
+
+        public void setEstadoPedido(Integer estadoPedido) {
+            this.estadoPedido = estadoPedido;
+        }
+        
+        
 }

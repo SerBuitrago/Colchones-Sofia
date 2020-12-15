@@ -581,8 +581,14 @@ public class VentaOnlineBean implements Serializable {
 							this.venta.setMetodoPagoBean(null);
 							this.venta.setUsuario2(null);
 							this.venta.setUsuario3(null); 
+							this.venta.setEstadoPedido(0); 
 							dao = new VentaController();
 							dao.insert(this.venta);
+                                                        /********************* ************************/
+                                                        /********** INSERTAR EVENTO PROGRAMADO  *******/
+                                                        /********************* ************************/
+                                                        dao.crearEventosEstadoPedido(venta);
+                                                        
 							FacesContext.getCurrentInstance().addMessage(null,
 									new FacesMessage(FacesMessage.SEVERITY_INFO, "",
 											"Se ha registrado la venta con ID " + venta.getId() + "."));

@@ -181,6 +181,79 @@
 						</p:dataTable>
 					</p:panel>
 				</p:fieldset>
+                                
+                                <!--       -->
+				<!-- PROGRAMACIONES -->
+				<!--       -->
+				<h:panelGroup layout="block" styleClass="p-mt-4 p-mb-4">
+					<p:staticMessage severity="warn" summary="" styleClass="p-p-3"
+						detail="Numero de telefono de #{app.empresa.nombre}." />
+				</h:panelGroup>
+
+				<p:fieldset legend="Información Prgramaciones" toggleable="true"
+					toggleSpeed="500" styleClass="p-mb-4">
+
+					
+                                        <p:panel header="Programaciones">
+
+						<!--           -->
+						<!-- DATA VIEW -->
+						<!--           -->
+                                                <p:dataTable var="e" value="#{programacionVentas.programaciones}"
+							widgetVar="sofia-table-update-programaciones" id="sofia-table-update-programaciones"
+							emptyMessage="No se encontro ninguna programacion."
+							paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} 
+								   				   {PreviousPageLink} {CurrentPageReport} 
+								                   {NextPageLink} {LastPageLink}"
+							paginator="true" rows="20" rowIndexVar="index"
+							rowsPerPageTemplate="5,10,15,20,50,100" reflow="true"
+							scrollable="true" styleClass="p-mt-4">
+
+							<!-- ID -->
+							<p:column headerText="ID" footerText="ID" sortBy="#{e.id}">
+								<p:rowToggler />
+								<h:panelGroup layout="block"
+									styleClass="p-d-flex p-jc-center p-ac-center">
+									<h:outputText value="#{e.id}" />
+								</h:panelGroup>
+							</p:column>
+
+							<!-- estado -->
+							<p:column filterBy="#{e.estado}" headerText="estado"
+								footerText="estado" sortBy="#{e.estado}"
+								filterMatchMode="contains">
+								<h:panelGroup layout="block"
+									styleClass="p-d-flex p-jc-center p-ac-center">
+									<h:outputText value="#{e.getEstadoName()}" />
+								</h:panelGroup>
+							</p:column>
+
+							<!-- numeroDias -->
+							<p:column filterBy="#{e.numeroDias}" headerText="numeroDias"
+								footerText="numeroDias" sortBy="#{e.numeroDias}"
+								filterMatchMode="contains">
+								<h:panelGroup layout="block"
+									styleClass="p-d-flex p-jc-center p-ac-center">
+									<h:outputText value="#{e.numeroDias}" />
+								</h:panelGroup>
+							</p:column>
+                                                        
+
+							<p:column headerText="Acciones" footerText="Acciones">
+								<h:panelGroup layout="block"
+									styleClass="p-d-flex p-jc-between p-ac-center">
+									<p:commandButton icon="fa fa-fw fa-edit"
+                                                                                action="#{programacionVentas.statuEditarProgramacion()}"
+										styleClass="sofia-button-icon sofia-button-primary sofia-button-icon-small" 
+										update="@(.sofia-dialog-programacion-update)">
+										<f:param name="id-programacion" value="#{e.id}" />
+									</p:commandButton>
+								</h:panelGroup>
+							</p:column>
+						</p:dataTable>
+					</p:panel>
+					
+				</p:fieldset>
 
 				<!--        -->
 				<!-- EMAILS -->
@@ -368,6 +441,41 @@
 						<p:commandButton action="#{app.editarTelefono()}"
 							value="Actualizar" styleClass="sofia-button sofia-button-primary"
 							oncomplete="PF('sofia-table-update').clearFilters());"
+							icon="fa fa-fw fa-plus" update="@(.sofia-update-generic)" />
+					</h:panelGroup>
+				</h:panelGroup>
+			</h:form>
+		</p:dialog>
+
+		<!--                     -->
+		<!-- DIALOG UPDATE PROGRAMACION -->
+		<!--                     -->
+		<p:dialog header="Actualizar Programacion"
+			widgetVar="sofia-dialog-programacion-update" id="sofia-dialog-programacion-update"
+			resizable="false" showEffect="explode" width="80%"
+			styleClass="sofia-dialog-programacion-update" modal="true">
+			<h:form style="padding:1em">
+				<h:panelGroup layout="block">
+					<h:panelGroup layout="block"
+						styleClass="p-mt-3 p-mb-3 ui-fluid p-formgrid p-d-flex p-jc-star">
+						<h:panelGroup layout="block" styleClass="p-field p-col p-md">
+							<h:outputLabel value="estado: " for="mail-editar-programacion" />
+                                                        <p:inputText value="#{programacionVentas.programacion.estadoName}" disabled="true"
+								id="mail-editar-programacion" />
+						</h:panelGroup>
+					</h:panelGroup>
+					<h:panelGroup layout="block"
+						styleClass="ui-fluid p-formgrid p-grid p-mb-3">
+						<h:panelGroup layout="block" styleClass="p-field p-col-12">
+							<h:outputLabel value="Descripción:" for="descripcion-editar-programacion" />
+							<p:inputTextarea value="#{programacionVentas.programacion.numeroDias}"
+								id="descripcion-editar-programacion"></p:inputTextarea>
+						</h:panelGroup>
+					</h:panelGroup>
+					<h:panelGroup layout="block"
+						styleClass="p-d-flex p-jc-center p-ac-center">
+						<p:commandButton action="#{programacionVentas.editarProgramacion()}" value="Actualizar"
+							styleClass="sofia-button sofia-button-primary"
 							icon="fa fa-fw fa-plus" update="@(.sofia-update-generic)" />
 					</h:panelGroup>
 				</h:panelGroup>
