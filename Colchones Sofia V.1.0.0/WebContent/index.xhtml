@@ -329,16 +329,16 @@
 			</h:panelGroup>
 			<div class="content-product" style="margin-top: 0px !important">
 				<!--Container das imagens do slide-->
-				<div class="img-product">
+				<div class="img-product" style="overflow: hidden;">
 					<ui:repeat var="i" value="#{catalogo.promocion}" varStatus="j">
 						<!--Item Slide-->
-						<div class="product-img-item" id="img#{j.index + 1}">
+						<div class="product-img-item" id="img#{j.index + 1}" style="width: 100%;height: 100%;">
 							<p:graphicImage rendered="#{i.foto != null}"
-								value="#{image.detalle_producto}" styleClass="product-img-img">
+								value="#{image.detalle_producto}" styleClass="product-img-img" style="width: 100%;height: 100%; object-fit: contain;">
 								<f:param name="id-detalle-producto" value="#{i.id}" />
 							</p:graphicImage>
 							<h:graphicImage library="img" name="product.jpg"
-								rendered="#{i.foto == null}" styleClass="product-img-img" />
+								rendered="#{i.foto == null}" styleClass="product-img-img" style="width: 100%;height: 100%; object-fit: contain;"/>
 						</div>
 					</ui:repeat>
 				</div>

@@ -384,7 +384,7 @@
 							actionListener="#{venta_online.pagarPayPal()}" out="count" />
 
 						<h:panelGroup rendered="#{venta_online.continuar_cliente}">
-							<button id="paypal-button-container"
+							<button id="paypal-button-container" 
 								data-total="#{venta_online.venta.total}" />
 						</h:panelGroup>
 
@@ -400,8 +400,8 @@
 		<script src="https://www.paypalobjects.com/api/checkout.js"></script>
 		<script>
 			let x = document.getElementById("paypal-button-container");
-			var a = 0;
-			var usd = 0.00029;
+			let a = 0;
+			let usd = 0.00029;
 			if (x != null) {
 				a = parseFloat(x.getAttribute("data-total"));
 				a = Math.round(a * parseFloat(usd));
